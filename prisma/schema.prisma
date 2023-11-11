@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Profile {
+  id     String @id @default(uuid())
+  userId String @unique
+
+  displayName           String
+  username              String
+  about                 String?
+  bannerUrl             String? @db.Text
+  email                 String  @db.Text
+  imageUrl              String  @db.Text
+  allowFollows          Boolean @default(true)
+  contentIsVisible      Boolean @default(true)
+  showJoinedCommunities Boolean @default(true)
+  karma                 Int     @default(1)
+
+  communities Community[]
+  members     Member[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Community {
+  id String @id @default(uuid())
+
+  name        String
+  uniqueName  String  @unique
+  description String
+  imageUrl    String  @db.Text
+  bannerUrl   String  @db.Text
+  rule1       String?
+  rule2       String?
+  rule3       String?
+  rule4       String?
+  rule5       String?
+  rule6       String?
+  rule7       String?
+  rule8       String?
+  rule9       String?
+  rule10      String?
+
+  members Member[]
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId])
+}
+
+enum MemberRole {
+  GUEST
+  MODERATOR
+  ADMIN
+}
+
+model Member {
+  id String @id @default(uuid())
+
+  role MemberRole @default(GUEST)
+
+  posts             Post[]
+  comments          Comment[]
+  repliesToComments ReplyToComment[]
+  repliesToReplies  ReplyToReply[]
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id])
+
+  communityId String
+  communities Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId])
+  @@index([communityId])
+}
+
+model Post {
+  id String @id @default(uuid())
+
+  title    String
+  content  String?
+  imageUrl String? @db.Text
+  videoUrl String? @db.Text
+  spoiler  Boolean @default(false)
+
+  comments Comment[]
+
+  memberId String
+  member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([memberId])
+}
+
+model Comment {
+  id String @id @default(uuid())
+
+  content  String
+  imageUrl String?
+
+  replies ReplyToComment[]
+
+  memberId String
+  member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([memberId])
+  @@index([postId])
+}
+
+model ReplyToComment {
+  id String @id @default(uuid())
+
+  content  String
+  imageUrl String?
+
+  replies ReplyToReply[]
+
+  memberId String
+  member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  commentId String
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([memberId])
+  @@index([commentId])
+}
+
+model ReplyToReply {
+  id String @id @default(uuid())
+
+  content  String
+  imageUrl String?
+
+  memberId String
+  member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  replyId String
+  reply   ReplyToComment @relation(fields: [replyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([memberId])
+  @@index([replyId])
+}
