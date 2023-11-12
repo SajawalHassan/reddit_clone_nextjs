@@ -17,8 +17,7 @@ export const Header = () => {
     <div className="bg-white dark:bg-[#1A1A1B] px-10">
       <div className="flex items-center gap-x-2 cursor-pointer w-max" onClick={() => router.push("/")}>
         <Image src={RedditLogo} alt="Reddit Logo" className="h-[30px] w-[30px]" />
-        {resolvedTheme === "light" && <Image src={RedditLogoText} alt="Reddit Logo Text" className="h-[60px] w-[60px]" />}
-        {resolvedTheme === "dark" && <Image src={RedditLogoTextDark} alt="Reddit Logo Text Dark" className="h-[60px] w-[60px]" />}
+        <Image src={resolvedTheme === "dark" ? RedditLogoTextDark : RedditLogoText} alt="Reddit Logo Text" className="h-[60px] w-[60px]" />
       </div>
     </div>
   );

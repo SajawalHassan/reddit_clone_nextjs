@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body suppressHydrationWarning className="bg-[#DAE0E6] dark:bg-black">
+      <html lang="en" suppressHydrationWarning>
+        <body className="bg-[#DAE0E6] dark:bg-black">
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={true} storageKey="reddit-clone-theme">
             {children}
           </ThemeProvider>
