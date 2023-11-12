@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ModalsProvider } from "@/components/providers/modals-provider";
 
 export const metadata: Metadata = {
   title: "Reddit clone",
@@ -15,6 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en" suppressHydrationWarning>
         <body className="bg-[#DAE0E6] dark:bg-black">
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={true} storageKey="reddit-clone-theme">
+            <ModalsProvider />
             {children}
           </ThemeProvider>
         </body>
