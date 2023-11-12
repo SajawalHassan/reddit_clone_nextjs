@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className="bg-[#DAE0E6] dark:bg-black">
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={true} storageKey="reddit-clone-theme">
+          <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="reddit-clone-theme">
             <ModalsProvider />
             {children}
           </ThemeProvider>

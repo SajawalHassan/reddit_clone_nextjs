@@ -22,7 +22,7 @@ export const Header = () => {
         <Image src={RedditLogo} alt="Reddit Logo" className="h-[30px] w-[30px]" />
         <Image src={resolvedTheme === "dark" ? RedditLogoTextDark : RedditLogoText} alt="Reddit Logo Text" className="h-[60px] w-[60px]" />
       </div>
-      <div className="p-1.5 cursor-pointer rounded-full bg-zinc-200" onClick={() => handleOpen("createCommunity")}>
+      <div className="p-1.5 cursor-pointer rounded-full bg-zinc-200 dark:bg-transparent" onClick={() => handleOpen("createCommunity")}>
         <Plus />
       </div>
     </div>

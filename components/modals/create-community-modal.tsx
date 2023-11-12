@@ -1,7 +1,8 @@
 "use client";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { useModal } from "@/hooks/use-modal-store";
+import { Separator } from "@/components/ui/seperator";
 
 export const CreateCommunityModal = () => {
   const { isOpen, type, handleClose } = useModal();
@@ -11,7 +12,10 @@ export const CreateCommunityModal = () => {
   return (
     <Dialog open={modalIsOpen} onOpenChange={handleClose}>
       <DialogContent>
-        <p className="text-black font-bold">Hello!</p>
+        <DialogHeader>
+          <p className="font-semibold text-lg">Create a community</p>
+          <Separator />
+        </DialogHeader>
       </DialogContent>
     </Dialog>
   );
