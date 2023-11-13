@@ -82,6 +82,12 @@ body,
   }
 }
 
+@layer components {
+  .community-type-button {
+    @apply flex items-center justify-center gap-x-1 p-4 text-center cursor-pointer rounded-sm bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition w-full text-sm sm:text-base;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -93,7 +99,7 @@ body,
 
 @keyframes pulse {
   50% {
-    opacity: 0.2;
+    opacity: 0.3;
   }
 }
 

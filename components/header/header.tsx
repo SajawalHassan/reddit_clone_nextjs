@@ -19,7 +19,7 @@ export const Header = () => {
   }, []);
 
   const { resolvedTheme } = useTheme();
-  const { handleOpen } = useModal();
+  const { openModal } = useModal();
 
   const router = useRouter();
   if (!isMounted) return <div className="bg-white dark:bg-[#1A1A1B] h-[60px] animate-pulse"></div>;
@@ -28,11 +28,10 @@ export const Header = () => {
     <div className="bg-white dark:bg-[#1A1A1B] px-10 flex items-center gap-x-2">
       <div className="flex items-center gap-x-2 cursor-pointer w-max" onClick={() => router.push("/")}>
         <Image src={RedditLogo} alt="Reddit Logo" className="h-[30px] w-[30px]" />
-        {/* <Image src={resolvedTheme === "dark" ? RedditLogoTextDark : RedditLogoText} alt="Reddit Logo Text" className="h-[60px] w-[60px]" /> */}
         {resolvedTheme === "dark" && <Image src={RedditLogoTextDark} alt="Reddit Logo Text" className="h-[60px] w-[60px]" />}
         {resolvedTheme === "light" && <Image src={RedditLogoText} alt="Reddit Logo Text" className="h-[60px] w-[60px]" />}
       </div>
-      <div className="p-1.5 cursor-pointer rounded-full bg-zinc-200 dark:bg-transparent" onClick={() => handleOpen("createCommunity")}>
+      <div className="p-1.5 cursor-pointer rounded-full bg-zinc-200 dark:bg-transparent" onClick={() => openModal("createCommunity")}>
         <Plus />
       </div>
     </div>

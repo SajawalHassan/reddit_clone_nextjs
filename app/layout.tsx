@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ModalsProvider } from "@/components/providers/modals-provider";
 
 export const metadata: Metadata = {
-  title: "Reddit clone",
+  title: "Reddit clone - Dive into anything",
   description: "Reddit clone made by Sajawal Hassan",
 };
 

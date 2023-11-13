@@ -30,14 +30,20 @@ model Profile {
   updatedAt DateTime @updatedAt
 }
 
+enum CommunityType {
+  PUBLIC
+  RESTRICTED
+  PRIVATE
+}
+
 model Community {
   id String @id @default(uuid())
 
   name        String
-  uniqueName  String  @unique
-  description String
-  imageUrl    String  @db.Text
-  bannerUrl   String  @db.Text
+  uniqueName  String        @unique
+  description String?
+  imageUrl    String        @db.Text
+  bannerUrl   String?       @db.Text
   rule1       String?
   rule2       String?
   rule3       String?
@@ -48,6 +54,7 @@ model Community {
   rule8       String?
   rule9       String?
   rule10      String?
+  type        CommunityType @default(PUBLIC)
 
   members Member[]
 

@@ -5,13 +5,13 @@ export type ModalTypes = "createCommunity";
 interface ModalStores {
   type: ModalTypes | null;
   isOpen: Boolean;
-  handleOpen: (type: ModalTypes) => void;
-  handleClose: () => void;
+  openModal: (type: ModalTypes) => void;
+  closeModal: () => void;
 }
 
 export const useModal = create<ModalStores>((set) => ({
   type: null,
   isOpen: false,
-  handleOpen: (type) => set({ type, isOpen: true }),
-  handleClose: () => set({ isOpen: false, type: null }),
+  openModal: (type) => set({ type, isOpen: true }),
+  closeModal: () => set({ isOpen: false, type: null }),
 }));
