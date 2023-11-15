@@ -11,7 +11,14 @@ body,
   font-family: "Open Sans", sans-serif;
 }
 
-.my-config {
+.upload-file {
+  --darkmode: 0;
+  --h-accent: 223;
+  --s-accent: 100%;
+  --l-accent: 61%;
+}
+
+.upload-file-dark {
   --darkmode: 1;
   --h-accent: 223;
   --s-accent: 100%;

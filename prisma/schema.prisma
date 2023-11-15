@@ -23,8 +23,8 @@ model Profile {
   showJoinedCommunities Boolean @default(true)
   karma                 Int     @default(1)
 
-  communities Community[]
-  members     Member[]
+  createdCommunities Community[]
+  members            Member[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -87,7 +87,7 @@ model Member {
   profile   Profile @relation(fields: [profileId], references: [id])
 
   communityId String
-  communities Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  communitiy  Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
