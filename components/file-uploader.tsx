@@ -70,7 +70,9 @@ export const FileUploader = ({ onChange, value, isLoading: isSubmitting }: PropT
       ) : (
         <>
           <UploadCloud className="h-10 w-10" />
-          <p className="text-blue-500 font-bold cursor-pointer dark:hover:text-blue-400 hover:text-blue-600 transition">Upload community image</p>
+          <p className="text-sm sm:text-base text-blue-500 font-bold cursor-pointer dark:hover:text-blue-400 hover:text-blue-600 transition">
+            Upload community image
+          </p>
         </>
       )}
 
