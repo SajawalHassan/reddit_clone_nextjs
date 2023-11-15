@@ -91,7 +91,7 @@ body,
 
 @layer components {
   .community-type-button {
-    @apply flex items-center justify-center gap-x-1 p-4 text-center cursor-pointer rounded-sm bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition w-full text-sm sm:text-base;
+    @apply flex items-center justify-center gap-x-1 p-4 text-center cursor-pointer rounded-sm bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition w-full text-sm sm:text-base disabled:opacity-50 disabled:hover:bg-zinc-100/50;
   }
 }
 
@@ -112,4 +112,16 @@ body,
 
 .animate-pulse {
   animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.image-overlay-wrapper:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 40;
+  border-radius: 1000px;
 }

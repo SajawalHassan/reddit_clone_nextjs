@@ -1,6 +1,7 @@
 import { getCurrentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { createCommunityFormSchema } from "@/schemas/community-schema";
+import { MemberRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { fromZodError } from "zod-validation-error";
 
@@ -31,6 +32,9 @@ export async function POST(req: Request) {
         uniqueName,
         type,
         imageUrl,
+        members: {
+          create: [{ profileId: profile.id, role: MemberRole.ADMIN }],
+        },
       },
     });
 

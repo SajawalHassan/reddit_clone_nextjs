@@ -2,19 +2,19 @@
 
 import { X, UploadCloud, Upload, Loader2 } from "lucide-react";
 
-import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { UploadClient } from "@uploadcare/upload-client";
 import { cn } from "@/lib/utils";
 
 interface PropTypes {
   value: string;
   onChange: (url?: string) => void;
+  isLoading: boolean;
 }
 
 const client = new UploadClient({ publicKey: process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY as string });
 
-export const FileUploader = ({ onChange, value }: PropTypes) => {
+export const FileUploader = ({ onChange, value, isLoading: isSubmitting }: PropTypes) => {
   const [uploadIsFinished, setUploadIsFinished] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -45,12 +45,13 @@ export const FileUploader = ({ onChange, value }: PropTypes) => {
 
   if (value && uploadIsFinished) {
     return (
-      <div className="relative h-20 w-20">
-        <img src={value} alt="Upload" className="rounded-full bg-gray-500" />
+      <div className={cn("relative h-20 w-20", isSubmitting && "image-overlay-wrapper")}>
+        <img src={value} alt="Upload" className="rounded-full bg-gray-500 h-full w-full" />
         <button
           type="button"
-          className="absolute top-0 right-0 bg-rose-500 rounded-full p-1 hover:bg-rose-400 shadow-sm"
-          onClick={() => onChange("")}>
+          className="absolute top-0 right-0 bg-rose-500 rounded-full p-1 hover:bg-rose-400 shadow-sm disabled:bg-rose-300 z-50"
+          onClick={() => onChange("")}
+          disabled={isSubmitting}>
           <X className="h-4 w-4" />
         </button>
       </div>

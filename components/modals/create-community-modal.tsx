@@ -75,7 +75,7 @@ export const CreateCommunityModal = () => {
                     name="imageUrl"
                     render={({ field }) => (
                       <FormControl>
-                        <FileUploader value={field.value} onChange={field.onChange} />
+                        <FileUploader isLoading={isLoading} value={field.value} onChange={field.onChange} />
                       </FormControl>
                     )}
                   />
@@ -99,7 +99,7 @@ export const CreateCommunityModal = () => {
                     name="uniqueName"
                     render={({ field }) => (
                       <FormItem>
-                        <div className="border border-input rounded-md mt-2 py-0 px-2">
+                        <div className={cn("border border-input rounded-md mt-2 py-0 px-2", isLoading && "opacity-50")}>
                           <div className="flex items-center">
                             <p className="text-zinc-500">r/</p>
                             <FormControl>
@@ -131,6 +131,7 @@ export const CreateCommunityModal = () => {
                           isSelected={field.value === "PUBLIC"}
                           onChange={() => field.onChange(CommunityType.PUBLIC.toString())}
                           value={field.value}
+                          isLoading={isLoading}
                         />
                       </FormControl>
                     </FormItem>
@@ -143,6 +144,7 @@ export const CreateCommunityModal = () => {
                           isSelected={(field.value as string) === "RESTRICTED"}
                           onChange={() => field.onChange(CommunityType.RESTRICTED.toString())}
                           value={field.value}
+                          isLoading={isLoading}
                         />
                       </FormControl>
                     </FormItem>
@@ -155,6 +157,7 @@ export const CreateCommunityModal = () => {
                           isSelected={(field.value as string) === "PRIVATE"}
                           onChange={() => field.onChange(CommunityType.PRIVATE.toString())}
                           value={field.value}
+                          isLoading={isLoading}
                         />
                       </FormControl>
                     </FormItem>
