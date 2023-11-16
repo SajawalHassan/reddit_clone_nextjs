@@ -43,3 +43,24 @@ export async function POST(req: Request) {
     console.log("[MESSAGES_POST]", error);
   }
 }
+
+export async function GET(req: Request) {
+  try {
+    const profile = await getCurrentProfile();
+    if (!profile) return new NextResponse("Unauthorized", { status: 401 });
+
+    const communities = await db.community.findMany({
+      where: {
+        members: {
+          some: {
+            profileId: profile.id,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json(communities);
+  } catch (error) {
+    console.log("[MESSAGES_GET]", error);
+  }
+}

@@ -1,6 +1,6 @@
 import { Header } from "@/components/header/header";
 
-const MainLayout = ({ children }: { children: React.ReactNode }) => {
+const MainLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <Header />
