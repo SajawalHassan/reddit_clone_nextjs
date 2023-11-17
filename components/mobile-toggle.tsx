@@ -26,7 +26,7 @@ export const MobileToggle = () => {
         <Menu className="h-10 w-10" />
       </SheetTrigger>
       <SheetContent className="p-0 dark:bg-[#1A1A1B]" side="left">
-        <HeaderCommunitiesMenu communities={communities} allCommunities={communities} type="sheet" setCommunities={setCommunities} />
+        <HeaderCommunitiesMenu communities={communities} allCommunities={allCommunities} type="sheet" setCommunities={setCommunities} />
       </SheetContent>
     </Sheet>
   );
