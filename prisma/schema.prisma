@@ -14,7 +14,6 @@ model Profile {
   userId String @unique
 
   displayName           String
-  username              String
   about                 String?
   bannerUrl             String? @db.Text
   email                 String  @db.Text
@@ -23,6 +22,7 @@ model Profile {
   contentIsVisible      Boolean @default(true)
   showJoinedCommunities Boolean @default(true)
   karma                 Int     @default(1)
+  pinnedPosts           Post[]
 
   createdCommunities Community[]
   members            Member[]
@@ -111,10 +111,14 @@ model Post {
   memberId String
   member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
+  pinnedPostProfileId String
+  pinnedPostProfile   Profile @relation(fields: [pinnedPostProfileId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([memberId])
+  @@index([pinnedPostProfileId])
 }
 
 model Comment {
