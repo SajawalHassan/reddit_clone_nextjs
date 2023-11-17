@@ -7,6 +7,7 @@ import Image from "next/image";
 
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 interface Props {
   className?: string;
@@ -14,7 +15,15 @@ interface Props {
 }
 
 export const RedditLogo = ({ className, onClick }: Props) => {
+  const [isMounted, setIsMounted] = useState(false);
+
   const { resolvedTheme } = useTheme();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return;
 
   return (
     <div className={cn("flex items-center gap-x-2 w-max", className)} onClick={onClick}>
