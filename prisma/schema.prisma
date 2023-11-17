@@ -22,8 +22,8 @@ model Profile {
   contentIsVisible      Boolean @default(true)
   showJoinedCommunities Boolean @default(true)
   karma                 Int     @default(1)
-  pinnedPosts           Post[]
 
+  pinnedPosts        Post[]
   createdCommunities Community[]
   members            Member[]
 
