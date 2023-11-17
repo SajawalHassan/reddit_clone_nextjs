@@ -22,7 +22,7 @@ export const HeaderCommunityOption = ({ Icon, text, type, modalType, communityId
       return openModal(modalType as ModalTypes);
     }
 
-    router.push(`communities/${communityId}`);
+    router.push(`/main/communities/${communityId}`);
   };
 
   return (

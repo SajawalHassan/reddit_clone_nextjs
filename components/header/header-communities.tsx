@@ -7,10 +7,20 @@ import { HeaderCommunityOption } from "./header-community-option";
 import { HeaderCommunitiesSearch } from "./header-communities-search";
 import { RedditLogo } from "@/components/reddit-logo";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useParams } from "next/navigation";
+import Image from "next/image";
+
+interface ActivePlaceType {
+  imageUrl: string | undefined;
+  text: string | undefined;
+}
 
 export const HeaderCommunities = () => {
   const [communities, setCommunities] = useState<Community[]>();
   const [allCommunities, setAllCommunities] = useState<Community[]>();
+  const [activePlace, setActivePlace] = useState<ActivePlaceType>();
+
+  const params: any = useParams();
 
   useEffect(() => {
     const getCommunities = async () => {
@@ -22,13 +32,32 @@ export const HeaderCommunities = () => {
     getCommunities();
   }, []);
 
+  useEffect(() => {
+    if (params.communityId) {
+      const activeCommunity = allCommunities?.filter((community: Community) => community.id == params.communityId)[0];
+
+      setActivePlace({ imageUrl: activeCommunity?.imageUrl, text: activeCommunity?.uniqueName });
+    } else {
+      setActivePlace({ imageUrl: undefined, text: undefined });
+    }
+  }, [allCommunities, params.communityId]);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="flex-grow">
         <div className="flex items-center justify-between max-w-[20rem] p-2 border border-transparent hover:border-zinc-200 cursor-pointer">
           <div className="flex items-center gap-x-2">
-            <Home className="text-black dark:text-white" />
-            <p className="text-sm font-bold">Home</p>
+            {!activePlace?.imageUrl || !activePlace?.text ? (
+              <>
+                <Home className="text-black dark:text-white" />
+                <p className="text-sm font-bold">Home</p>
+              </>
+            ) : (
+              <>
+                <img src={activePlace.imageUrl} alt="Active place" className="rounded-full h-6 w-6" />
+                <p className="text-sm font-bold">{activePlace.text}</p>
+              </>
+            )}
           </div>
           <ArrowDown />
         </div>
@@ -46,7 +75,13 @@ export const HeaderCommunities = () => {
           <HeaderCommunityOption type="modalOpener" modalType="createCommunity" Icon={Plus} text="Create Community" />
           <ScrollArea className="max-h-[20rem] overflow-scroll">
             {communities?.map((community) => (
-              <HeaderCommunityOption type="communityLink" communityId={community.id} text={community.uniqueName} imageUrl={community.imageUrl} />
+              <HeaderCommunityOption
+                type="communityLink"
+                communityId={community.id}
+                text={community.uniqueName}
+                imageUrl={community.imageUrl}
+                key={community.id}
+              />
             ))}
           </ScrollArea>
         </div>
