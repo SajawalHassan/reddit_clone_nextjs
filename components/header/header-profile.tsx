@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Profile } from "@prisma/client";
 import axios from "axios";
-import { ArrowDownCircle, Eye, LogOut, Plus, PlusCircle, UserCircle } from "lucide-react";
+import { ArrowDownCircle, Eye, LogOut, PlusCircle, UserCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { HeaderProfileMenuHeading } from "./header-profile-menu-heading";
 import { Separator } from "@/components/ui/seperator";
@@ -14,7 +14,7 @@ import { useModal } from "@/hooks/use-modal-store";
 export const HeaderProfile = () => {
   const [profile, setProfile] = useState<Profile>();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [onlineStatus, setOnlineStatus] = useState(false);
+  const [onlineStatus, setOnlineStatus] = useState(true);
 
   const router = useRouter();
 

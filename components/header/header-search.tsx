@@ -52,7 +52,9 @@ export const HeaderSearch = ({ className }: Props) => {
       <div
         className={cn(
           "flex items-center gap-x-2 w-full bg-gray-100 dark:bg-[#272729] dark:border-[#3c3c3d] border border-gray-200 px-4 hover:bg-white hover:border-blue-500 hover:dark:bg-[#1A1A1B] hover:dark:border-white focus-within:bg-white focus-within:border-blue-500 focus-within:dark:bg-[#1A1A1B] focus-within:dark:border-white",
-          showResults ? "rounded-t-3xl rounded-b-none focus-within:border-b-0" : "rounded-3xl"
+          showResults
+            ? "rounded-t-3xl rounded-b-none focus-within:border-b-0 border-blue-500 dark:border-white bg-white dark:bg-[#1A1A1B]"
+            : "rounded-3xl"
         )}>
         <Search className="text-zinc-600" />
         <Input
