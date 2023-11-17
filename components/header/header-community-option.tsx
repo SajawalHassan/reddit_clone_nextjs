@@ -11,7 +11,7 @@ interface Props {
   Icon?: LucideIcon;
   communityId?: string;
   imageUrl?: string;
-  setMenuIsOpen: Dispatch<SetStateAction<boolean>>;
+  setMenuIsOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
 export const HeaderCommunityOption = ({ Icon, text, type, modalType, communityId, imageUrl, setMenuIsOpen }: Props) => {
@@ -22,13 +22,13 @@ export const HeaderCommunityOption = ({ Icon, text, type, modalType, communityId
   const handleOnClick = () => {
     if (type === "modalOpener") {
       openModal(modalType as ModalTypes);
-      setMenuIsOpen(false);
+      setMenuIsOpen && setMenuIsOpen(false);
       return;
     }
 
     router.push(`/main/communities/${communityId}`);
 
-    setMenuIsOpen(false);
+    setMenuIsOpen && setMenuIsOpen(false);
   };
 
   return (

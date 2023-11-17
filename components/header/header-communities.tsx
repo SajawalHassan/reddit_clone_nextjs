@@ -8,6 +8,7 @@ import { RedditLogo } from "@/components/reddit-logo";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useParams } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { HeaderCommunitiesMenu } from "./header-communities-menu";
 
 interface ActivePlaceType {
   imageUrl: string | undefined;
@@ -45,7 +46,7 @@ export const HeaderCommunities = () => {
   };
 
   return (
-    <div className="relative flex-grow max-w-[20rem]">
+    <div className="relative flex-grow max-w-[20rem] hidden md:flex md:flex-col">
       <div
         onClick={handleOpenMenu}
         className={cn(
@@ -69,29 +70,36 @@ export const HeaderCommunities = () => {
       </div>
       {menuIsOpen && <div className="fixed inset-0 z-20 h-full w-full" onClick={() => setMenuIsOpen(false)} />}
       {menuIsOpen && (
-        <div className="w-[20rem] py-2 px-0 mr-5 sm:mr-0 space-y-3 bg-white dark:bg-[#1A1A1B] dark:text-white absolute border border-zinc-200 dark:border-zinc-800 border-t-0 z-30">
-          <div>
-            <div className="flex flex-col items-center mx-5">
-              <HeaderCommunitiesSearch setCommunities={setCommunities} allCommunities={allCommunities} />
-            </div>
-          </div>
-          <div>
-            <p className="uppercase text-[10px] font-bold text-zinc-500 px-3 pb-2">Your communities</p>
-            <HeaderCommunityOption setMenuIsOpen={setMenuIsOpen} type="modalOpener" modalType="createCommunity" Icon={Plus} text="Create Community" />
-            <ScrollArea className="max-h-[20rem] overflow-scroll">
-              {communities?.map((community) => (
-                <HeaderCommunityOption
-                  setMenuIsOpen={setMenuIsOpen}
-                  type="communityLink"
-                  communityId={community.id}
-                  text={community.uniqueName}
-                  imageUrl={community.imageUrl}
-                  key={community.id}
-                />
-              ))}
-            </ScrollArea>
-          </div>
-        </div>
+        <HeaderCommunitiesMenu
+          allCommunities={allCommunities}
+          communities={communities}
+          setCommunities={setCommunities}
+          setMenuIsOpen={setMenuIsOpen}
+          type="menu"
+        />
+        // <div className="w-[20rem] py-2 px-0 mr-5 sm:mr-0 space-y-3 bg-white dark:bg-[#1A1A1B] dark:text-white absolute border border-zinc-200 dark:border-zinc-800 border-t-0 z-30">
+        //   <div>
+        //     <div className="flex flex-col items-center mx-5">
+        //       <HeaderCommunitiesSearch setCommunities={setCommunities} allCommunities={allCommunities} />
+        //     </div>
+        //   </div>
+        //   <div>
+        //     <p className="uppercase text-[10px] font-bold text-zinc-500 px-3 pb-2">Your communities</p>
+        //     <HeaderCommunityOption setMenuIsOpen={setMenuIsOpen} type="modalOpener" modalType="createCommunity" Icon={Plus} text="Create Community" />
+        //     <ScrollArea className="max-h-[20rem] overflow-scroll">
+        //       {communities?.map((community) => (
+        //         <HeaderCommunityOption
+        //           setMenuIsOpen={setMenuIsOpen}
+        //           type="communityLink"
+        //           communityId={community.id}
+        //           text={community.uniqueName}
+        //           imageUrl={community.imageUrl}
+        //           key={community.id}
+        //         />
+        //       ))}
+        //     </ScrollArea>
+        //   </div>
+        // </div>
       )}
     </div>
   );

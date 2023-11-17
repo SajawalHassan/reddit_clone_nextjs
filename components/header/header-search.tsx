@@ -48,7 +48,7 @@ export const HeaderSearch = () => {
       <div
         className={cn(
           "flex items-center gap-x-2 w-full bg-gray-100 dark:bg-[#272729] dark:border-[#3c3c3d] border border-gray-200 px-4 hover:bg-white hover:border-blue-500 hover:dark:bg-[#1A1A1B] hover:dark:border-white focus-within:bg-white focus-within:border-blue-500 focus-within:dark:bg-[#1A1A1B] focus-within:dark:border-white",
-          showResults ? "rounded-t-3xl rounded-b-none" : "rounded-3xl"
+          showResults ? "rounded-t-3xl rounded-b-none focus-within:border-b-0" : "rounded-3xl"
         )}>
         <Search className="text-zinc-600" />
         <Input
@@ -61,7 +61,7 @@ export const HeaderSearch = () => {
       </div>
       {showResults && <div className="fixed inset-0 h-full w-full z-20" onClick={() => setInputIsFocused(false)} />}
       {showResults && (
-        <div className="bg-white dark:bg-[#1A1A1B] w-full absolute z-30 py-4 max-h-[20rem] overflow-scroll">
+        <div className="bg-white dark:bg-[#1A1A1B] w-full absolute z-30 py-4 max-h-[20rem] overflow-scroll border border-blue-500 border-t-0">
           {isLoading && (
             <div className="flex items-center justify-center w-full h-[10rem]">
               <Loader2 className="h-6 w-6 animate-spin" />
