@@ -16,5 +16,11 @@ export const HeaderCommunitiesSearch = ({ setCommunities, allCommunities }: Prop
     }
   };
 
-  return <Input placeholder="Search Communities" className="w-full rounded-none bg-gray-100 border border-gray-200" onChange={handleOnChange} />;
+  return (
+    <Input
+      placeholder="Search Communities"
+      className="w-full rounded-none bg-gray-100 dark:bg-[#272729] dark:border-[#3c3c3d] border border-gray-200"
+      onChange={handleOnChange}
+    />
+  );
 };

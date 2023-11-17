@@ -27,13 +27,13 @@ export const HeaderCommunities = () => {
       <DropdownMenuTrigger asChild className="flex-grow">
         <div className="flex items-center justify-between max-w-[20rem] p-2 border border-transparent hover:border-zinc-200 cursor-pointer">
           <div className="flex items-center gap-x-2">
-            <Home className="text-black" />
+            <Home className="text-black dark:text-white" />
             <p className="text-sm font-bold">Home</p>
           </div>
           <ArrowDown />
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[20rem] py-2 px-0 mr-5 sm:mr-0 space-y-3">
+      <DropdownMenuContent className="w-[20rem] py-2 px-0 mr-5 sm:mr-0 space-y-3 bg-white dark:bg-[#1A1A1B] dark:text-white">
         <div>
           <RedditLogo className="pl-5" />
 
