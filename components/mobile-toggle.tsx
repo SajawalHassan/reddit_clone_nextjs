@@ -22,10 +22,10 @@ export const MobileToggle = () => {
 
   return (
     <Sheet>
-      <SheetTrigger asChild className="p-1.5 cursor-pointer rounded-md hover:bg-gray-200 transition md:hidden">
-        <Menu className="h-8 w-8" />
+      <SheetTrigger asChild className="p-1.5 cursor-pointer rounded-md hover:bg-gray-200 dark:hover:bg-zinc-800 transition md:hidden">
+        <Menu className="h-10 w-10" />
       </SheetTrigger>
-      <SheetContent className="p-0" side="left">
+      <SheetContent className="p-0 bg-[#1A1A1B]" side="left">
         <HeaderCommunitiesMenu communities={communities} allCommunities={communities} type="sheet" setCommunities={setCommunities} />
       </SheetContent>
     </Sheet>

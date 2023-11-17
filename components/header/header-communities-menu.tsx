@@ -23,7 +23,7 @@ export const HeaderCommunitiesMenu = ({ setCommunities, allCommunities, communit
         "w-full py-2 px-0 mr-5 sm:mr-0 space-y-3 bg-white dark:bg-[#1A1A1B] dark:text-white border border-zinc-200 dark:border-zinc-800 border-t-0 z-30",
         type === "menu" ? "absolute top-9" : "mt-10 border-none"
       )}>
-      <p className="md:hidden text-sm font-bold mx-5">Your communities</p>
+      <p className="md:hidden font-bold mx-5 text-xl">Your communities</p>
       <div className="flex flex-col items-center mx-5">
         <HeaderCommunitiesSearch setCommunities={setCommunities} allCommunities={allCommunities} />
       </div>

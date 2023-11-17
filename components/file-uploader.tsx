@@ -63,7 +63,7 @@ export const FileUploader = ({ onChange, value, isLoading: isSubmitting }: PropT
       onClick={() => uploadRef?.current?.click()}
       className={cn(
         "flex flex-col items-center cursor-pointer justify-center gap-y-2 py-10 px-20 rounded-lg border border-dotted border-gray-500",
-        isLoading && "cursor-not-allowed bg-gray-100"
+        isLoading && "cursor-not-allowed bg-gray-100 dark:bg-[#1A1A1B]"
       )}>
       {isLoading ? (
         <Loader2 className="h-6 w-6 animate-spin mb-2" />

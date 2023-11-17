@@ -34,8 +34,9 @@ export const HeaderCommunityOption = ({ Icon, text, type, modalType, communityId
   return (
     <div
       className={cn(
-        "flex items-center px-2 py-2 hover:bg-gray-100 dark:hover:bg-zinc-800 cursor-pointer",
-        type === "modalOpener" ? "gap-x-1" : "gap-x-1.5"
+        "flex items-center py-2 hover:bg-gray-100 dark:hover:bg-zinc-800 cursor-pointer",
+        type === "modalOpener" ? "gap-x-1" : "gap-x-1.5",
+        !setMenuIsOpen ? "pl-5 pr-2" : "px-2"
       )}
       onClick={handleOnClick}>
       {Icon && <Icon className="h-6 w-6" />}

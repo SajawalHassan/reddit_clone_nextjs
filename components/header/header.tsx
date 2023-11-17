@@ -5,6 +5,8 @@ import { HeaderCommunities } from "./header-communities";
 import { RedditLogo } from "@/components/reddit-logo";
 import { HeaderSearch } from "./header-search";
 import { MobileToggle } from "../mobile-toggle";
+import { HeaderIconButton } from "./header-icon-button";
+import { Search } from "lucide-react";
 
 export const Header = () => {
   const router = useRouter();
@@ -14,7 +16,10 @@ export const Header = () => {
       <MobileToggle />
       <RedditLogo onClick={() => router.push("/")} className="cursor-pointer" />
       <HeaderCommunities />
-      <HeaderSearch />
+      <HeaderSearch className="hidden md:flex" />
+      <div className="flex items-center flex-grow justify-end">
+        <HeaderIconButton onClick={() => router.push("/search")} Icon={Search} className="md:hidden" />
+      </div>
     </div>
   );
 };

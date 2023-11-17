@@ -8,7 +8,11 @@ import { cn } from "@/lib/utils";
 import { HeaderSearchItem } from "./header-search-item";
 import { CommunityWithMembers } from "@/types";
 
-export const HeaderSearch = () => {
+interface Props {
+  className?: string;
+}
+
+export const HeaderSearch = ({ className }: Props) => {
   const [filteredCommunities, setFilteredCommunities] = useState<CommunityWithMembers[]>();
   const [filteredProfiles, setFilteredProfiles] = useState<Profile[]>();
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +48,7 @@ export const HeaderSearch = () => {
   };
 
   return (
-    <div className="flex-grow relative">
+    <div className={cn("flex-grow relative md:flex-col", className)}>
       <div
         className={cn(
           "flex items-center gap-x-2 w-full bg-gray-100 dark:bg-[#272729] dark:border-[#3c3c3d] border border-gray-200 px-4 hover:bg-white hover:border-blue-500 hover:dark:bg-[#1A1A1B] hover:dark:border-white focus-within:bg-white focus-within:border-blue-500 focus-within:dark:bg-[#1A1A1B] focus-within:dark:border-white",
@@ -61,7 +65,7 @@ export const HeaderSearch = () => {
       </div>
       {showResults && <div className="fixed inset-0 h-full w-full z-20" onClick={() => setInputIsFocused(false)} />}
       {showResults && (
-        <div className="bg-white dark:bg-[#1A1A1B] w-full absolute z-30 py-4 max-h-[20rem] overflow-scroll border border-blue-500 border-t-0">
+        <div className="bg-white dark:bg-[#1A1A1B] w-full absolute z-30 py-4 max-h-[20rem] overflow-scroll border border-blue-500 dark:border-gray-200 border-t-0">
           {isLoading && (
             <div className="flex items-center justify-center w-full h-[10rem]">
               <Loader2 className="h-6 w-6 animate-spin" />
