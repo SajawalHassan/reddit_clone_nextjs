@@ -2,6 +2,7 @@ import { ModalTypes, useModal } from "@/hooks/use-modal-store";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction } from "react";
 
 interface Props {
   text: string;
@@ -10,19 +11,24 @@ interface Props {
   Icon?: LucideIcon;
   communityId?: string;
   imageUrl?: string;
+  setMenuIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const HeaderCommunityOption = ({ Icon, text, type, modalType, communityId, imageUrl }: Props) => {
+export const HeaderCommunityOption = ({ Icon, text, type, modalType, communityId, imageUrl, setMenuIsOpen }: Props) => {
   const { openModal } = useModal();
 
   const router = useRouter();
 
   const handleOnClick = () => {
     if (type === "modalOpener") {
-      return openModal(modalType as ModalTypes);
+      openModal(modalType as ModalTypes);
+      setMenuIsOpen(false);
+      return;
     }
 
     router.push(`/main/communities/${communityId}`);
+
+    setMenuIsOpen(false);
   };
 
   return (
