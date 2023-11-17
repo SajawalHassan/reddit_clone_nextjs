@@ -65,7 +65,7 @@ export const HeaderSearch = ({ className }: Props) => {
       </div>
       {showResults && <div className="fixed inset-0 h-full w-full z-20" onClick={() => setInputIsFocused(false)} />}
       {showResults && (
-        <div className="bg-white dark:bg-[#1A1A1B] w-full absolute z-30 py-4 max-h-[20rem] overflow-scroll border border-blue-500 dark:border-gray-200 border-t-0">
+        <div className="bg-white dark:bg-[#1A1A1B] w-full absolute top-9 z-30 py-4 max-h-[20rem] overflow-scroll border border-blue-500 dark:border-gray-200 border-t-0">
           {isLoading && (
             <div className="flex items-center justify-center w-full h-[10rem]">
               <Loader2 className="h-6 w-6 animate-spin" />

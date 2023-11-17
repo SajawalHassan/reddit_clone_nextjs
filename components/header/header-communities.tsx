@@ -23,6 +23,12 @@ export const HeaderCommunities = () => {
 
   const params: any = useParams();
 
+  const getCommunities = async () => {
+    const res = await axios.get("/api/communities");
+    setCommunities(res.data);
+    setAllCommunities(res.data);
+  };
+
   useEffect(() => {
     if (params.communityId) {
       const activeCommunity = allCommunities?.filter((community: Community) => community.id == params.communityId)[0];
@@ -33,11 +39,9 @@ export const HeaderCommunities = () => {
     }
   }, [allCommunities, params.communityId]);
 
-  const getCommunities = async () => {
-    const res = await axios.get("/api/communities");
-    setCommunities(res.data);
-    setAllCommunities(res.data);
-  };
+  useEffect(() => {
+    getCommunities();
+  }, []);
 
   const handleOpenMenu = () => {
     setMenuIsOpen(true);
@@ -46,23 +50,23 @@ export const HeaderCommunities = () => {
   };
 
   return (
-    <div className="relative flex-grow max-w-[20rem] hidden md:flex md:flex-col">
+    <div className="relative lg:flex-grow max-w-[20rem] w-max hidden md:flex md:flex-col">
       <div
         onClick={handleOpenMenu}
         className={cn(
-          "flex items-center flex-grow justify-between p-2 border-[0.5px] border-transparent hover:border-zinc-200 hover:dark:border-zinc-800 cursor-pointer",
+          "flex items-center flex-grow gap-x-4 lg:gap-x-0 lg:justify-between p-2 border-[0.5px] border-transparent hover:border-zinc-200 hover:dark:border-zinc-800 cursor-pointer",
           menuIsOpen && "border-zinc-200 dark:border-zinc-800 border-b-0"
         )}>
         <div className="flex items-center gap-x-2">
           {!activePlace?.imageUrl || !activePlace?.text ? (
             <>
               <Home className="text-black dark:text-white" />
-              <p className="text-sm font-bold">Home</p>
+              <p className="hidden lg:flex text-sm font-bold">Home</p>
             </>
           ) : (
             <>
               <img src={activePlace.imageUrl} alt="Active place" className="rounded-full h-6 w-6" />
-              <p className="text-sm font-bold">{activePlace.text}</p>
+              <p className="hidden lg:flex text-sm font-bold">{activePlace.text}</p>
             </>
           )}
         </div>
@@ -77,29 +81,6 @@ export const HeaderCommunities = () => {
           setMenuIsOpen={setMenuIsOpen}
           type="menu"
         />
-        // <div className="w-[20rem] py-2 px-0 mr-5 sm:mr-0 space-y-3 bg-white dark:bg-[#1A1A1B] dark:text-white absolute border border-zinc-200 dark:border-zinc-800 border-t-0 z-30">
-        //   <div>
-        //     <div className="flex flex-col items-center mx-5">
-        //       <HeaderCommunitiesSearch setCommunities={setCommunities} allCommunities={allCommunities} />
-        //     </div>
-        //   </div>
-        //   <div>
-        //     <p className="uppercase text-[10px] font-bold text-zinc-500 px-3 pb-2">Your communities</p>
-        //     <HeaderCommunityOption setMenuIsOpen={setMenuIsOpen} type="modalOpener" modalType="createCommunity" Icon={Plus} text="Create Community" />
-        //     <ScrollArea className="max-h-[20rem] overflow-scroll">
-        //       {communities?.map((community) => (
-        //         <HeaderCommunityOption
-        //           setMenuIsOpen={setMenuIsOpen}
-        //           type="communityLink"
-        //           communityId={community.id}
-        //           text={community.uniqueName}
-        //           imageUrl={community.imageUrl}
-        //           key={community.id}
-        //         />
-        //       ))}
-        //     </ScrollArea>
-        //   </div>
-        // </div>
       )}
     </div>
   );
