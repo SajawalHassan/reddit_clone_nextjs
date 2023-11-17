@@ -1,5 +1,5 @@
 import { Community } from "@prisma/client";
-import { ArrowDown, Home, Plus } from "lucide-react";
+import { ArrowDown, ArrowDownCircle, Home, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { HeaderCommunityOption } from "./header-community-option";
@@ -70,7 +70,7 @@ export const HeaderCommunities = () => {
             </>
           )}
         </div>
-        <ArrowDown />
+        <ArrowDownCircle className="h-5 w-5" />
       </div>
       {menuIsOpen && <div className="fixed inset-0 z-20 h-full w-full" onClick={() => setMenuIsOpen(false)} />}
       {menuIsOpen && (

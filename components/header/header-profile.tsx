@@ -53,7 +53,7 @@ export const HeaderProfile = () => {
             <p className="font-semibold text-zinc-500 text-sm">{formattedKarma} karma</p>
           </div>
         )}
-        <ArrowDownCircle className="w-6 h-6 text-zinc-700" />
+        <ArrowDownCircle className="w-6 h-6 text-black dark:text-white lg:text-zinc-700 lg:dark:text-zinc-700" />
       </div>
       {menuIsOpen && <div className="z-20 fixed inset-0 h-full w-full" onClick={() => setMenuIsOpen(false)} />}
       {menuIsOpen && (
