@@ -13,6 +13,9 @@ export async function GET(req: Request) {
           contains: searchText,
         },
       },
+      include: {
+        members: true,
+      },
     });
 
     const profiles = await db.profile.findMany({

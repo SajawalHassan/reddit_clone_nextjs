@@ -19,7 +19,6 @@ export const getInitialProfile = async () => {
       data: {
         userId: user?.id,
         displayName: `${user?.firstName} ${user?.lastName}`,
-        username: user?.firstName || user?.id.toString(),
         email: user.emailAddresses[0].emailAddress,
         imageUrl: user.imageUrl,
       },

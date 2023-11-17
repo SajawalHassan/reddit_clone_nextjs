@@ -3,16 +3,19 @@ import { Input } from "@/components/ui/input";
 import { ChangeEvent, useState } from "react";
 import axios from "axios";
 import qs from "query-string";
-import { Community, Profile } from "@prisma/client";
+import { Profile } from "@prisma/client";
 import { cn } from "@/lib/utils";
+import { HeaderSearchItem } from "./header-search-item";
+import { CommunityWithMembers } from "@/types";
 
 export const HeaderSearch = () => {
-  const [filteredCommunities, setFilteredCommunities] = useState<Community[]>();
+  const [filteredCommunities, setFilteredCommunities] = useState<CommunityWithMembers[]>();
   const [filteredProfiles, setFilteredProfiles] = useState<Profile[]>();
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [inputIsFocused, setInputIsFocused] = useState(false);
 
-  const showResults = searchValue !== "";
+  const showResults = searchValue !== "" && inputIsFocused;
 
   const handleOnChange = async (e: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -53,32 +56,46 @@ export const HeaderSearch = () => {
           className="bg-transparent border-none focus-within:ring-0 focus-within:ring-offset-0 px-0"
           onChange={handleOnChange}
           value={searchValue}
+          onFocus={() => setInputIsFocused(true)}
         />
       </div>
+      {showResults && <div className="fixed inset-0 h-full w-full z-20" onClick={() => setInputIsFocused(false)} />}
       {showResults && (
-        <div className="bg-[#1A1A1B] w-full absolute min-h-[10rem] z-50">
+        <div className="bg-white dark:bg-[#1A1A1B] w-full absolute z-30 py-4 max-h-[20rem] overflow-scroll">
           {isLoading && (
             <div className="flex items-center justify-center w-full h-[10rem]">
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
           )}
 
-          {filteredCommunities?.length! > 0 && <p className="text-xs font-bold uppercase">Communities</p>}
+          {filteredCommunities?.length! > 0 && <p className="mx-5 mb-1 text-sm font-bold">Communities</p>}
 
           {!isLoading &&
-            filteredCommunities?.map((community: Community) => (
-              <div key={community.id}>
-                <p>r/{community.uniqueName}</p>
-              </div>
+            filteredCommunities?.map((community: CommunityWithMembers) => (
+              <HeaderSearchItem
+                setInputIsFocused={setInputIsFocused}
+                key={community.id}
+                type="community"
+                communityId={community.id}
+                name={community.uniqueName}
+                imageUrl={community.imageUrl}
+                members={community.members.length}
+              />
             ))}
 
-          {filteredProfiles?.length! > 0 && <p className="text-xs font-bold uppercase">Users</p>}
+          {filteredProfiles?.length! > 0 && <p className="mx-5 mb-1 mt-4 text-sm font-bold">Users</p>}
 
           {!isLoading &&
             filteredProfiles?.map((profile: Profile) => (
-              <div key={profile.id}>
-                <p>{profile.displayName}</p>
-              </div>
+              <HeaderSearchItem
+                setInputIsFocused={setInputIsFocused}
+                key={profile.id}
+                type="user"
+                profileId={profile.id}
+                name={profile.displayName}
+                imageUrl={profile.imageUrl}
+                karma={profile.karma}
+              />
             ))}
 
           {!isLoading && filteredCommunities?.length! < 1 && filteredProfiles?.length! < 1 && (
