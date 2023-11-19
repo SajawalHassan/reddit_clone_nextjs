@@ -7,7 +7,7 @@ interface Props {
   allCommunities: Community[] | undefined;
 }
 
-export const HeaderCommunitiesSearch = ({ setCommunities, allCommunities }: Props) => {
+export const CommunitiesSelectionSearch = ({ setCommunities, allCommunities }: Props) => {
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === "") {
       setCommunities(allCommunities?.filter((community) => community));

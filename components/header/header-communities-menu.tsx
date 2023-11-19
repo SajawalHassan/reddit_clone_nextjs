@@ -1,8 +1,7 @@
 "use client";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { HeaderCommunitiesSearch } from "./header-communities-search";
-import { HeaderCommunityOption } from "./header-community-option";
+import { CommunitiesSelectionSearch } from "@/components/communities-selection-menu/communities-search";
+import { CommunitySelectionOption } from "@/components/communities-selection-menu/community-option";
 import { Community } from "@prisma/client";
 import { Plus } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
@@ -25,11 +24,11 @@ export const HeaderCommunitiesMenu = ({ setCommunities, allCommunities, communit
       )}>
       <p className="md:hidden font-bold mx-5 text-xl">Your communities</p>
       <div className="flex flex-col items-center mx-5">
-        <HeaderCommunitiesSearch setCommunities={setCommunities} allCommunities={allCommunities} />
+        <CommunitiesSelectionSearch setCommunities={setCommunities} allCommunities={allCommunities} />
       </div>
       <div>
         {type === "menu" && <p className="uppercase text-[10px] font-bold text-zinc-500 px-3 pb-2">Your communities</p>}
-        <HeaderCommunityOption
+        <CommunitySelectionOption
           setMenuIsOpen={type === "menu" ? setMenuIsOpen : undefined}
           type="modalOpener"
           modalType="createCommunity"
@@ -38,7 +37,7 @@ export const HeaderCommunitiesMenu = ({ setCommunities, allCommunities, communit
         />
         <div className="max-h-[20rem] overflow-scroll">
           {communities?.map((community: Community) => (
-            <HeaderCommunityOption
+            <CommunitySelectionOption
               setMenuIsOpen={type === "menu" ? setMenuIsOpen : undefined}
               type="communityLink"
               communityId={community.id}

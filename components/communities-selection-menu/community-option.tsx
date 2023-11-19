@@ -12,9 +12,10 @@ interface Props {
   communityId?: string;
   imageUrl?: string;
   setMenuIsOpen?: Dispatch<SetStateAction<boolean>>;
+  customOnClick?: () => void;
 }
 
-export const HeaderCommunityOption = ({ Icon, text, type, modalType, communityId, imageUrl, setMenuIsOpen }: Props) => {
+export const CommunitySelectionOption = ({ Icon, text, type, modalType, communityId, imageUrl, setMenuIsOpen, customOnClick }: Props) => {
   const { openModal } = useModal();
 
   const router = useRouter();
@@ -31,6 +32,11 @@ export const HeaderCommunityOption = ({ Icon, text, type, modalType, communityId
     setMenuIsOpen && setMenuIsOpen(false);
   };
 
+  const handleCustomOnClick = () => {
+    customOnClick!();
+    setMenuIsOpen!(false);
+  };
+
   return (
     <div
       className={cn(
@@ -38,7 +44,7 @@ export const HeaderCommunityOption = ({ Icon, text, type, modalType, communityId
         type === "modalOpener" ? "gap-x-1" : "gap-x-1.5",
         !setMenuIsOpen ? "pl-5 pr-2" : "px-2"
       )}
-      onClick={handleOnClick}>
+      onClick={customOnClick ? handleCustomOnClick : handleOnClick}>
       {Icon && <Icon className="h-6 w-6" />}
       {imageUrl && <img loading="lazy" src={imageUrl} alt="Community" className="h-6 w-6 rounded-full" />}
       <p className={cn("text-zinc-800 dark:text-gray-200", type === "modalOpener" ? "text-[15px]" : "text-[14px] leading-[18px]")}>
