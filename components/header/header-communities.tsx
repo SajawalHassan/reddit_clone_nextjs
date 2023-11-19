@@ -1,11 +1,7 @@
 import { Community } from "@prisma/client";
-import { ArrowDown, ArrowDownCircle, Home, Plus } from "lucide-react";
+import { ArrowDownCircle, Home } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { HeaderCommunityOption } from "./header-community-option";
-import { HeaderCommunitiesSearch } from "./header-communities-search";
-import { RedditLogo } from "@/components/reddit-logo";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { HeaderCommunitiesMenu } from "./header-communities-menu";

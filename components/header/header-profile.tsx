@@ -67,8 +67,12 @@ export const HeaderProfile = () => {
               switchValue={onlineStatus}
               switchFunction={() => setOnlineStatus(!onlineStatus)}
             />
-            <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} text="Profile" onClick={() => router.push("/main/me")} />
-            <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} text="User Settings" onClick={() => router.push("/main/me/settings")} />
+            <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} text="Profile" onClick={() => router.push(`/main/users/${profile?.id}`)} />
+            <HeaderProfileMenuItem
+              setMenuIsOpen={setMenuIsOpen}
+              text="User Settings"
+              onClick={() => router.push(`/main/users/${profile?.id}/settings`)}
+            />
           </div>
           <Separator />
           <HeaderProfileMenuHeading Icon={Eye} text="View Options" />

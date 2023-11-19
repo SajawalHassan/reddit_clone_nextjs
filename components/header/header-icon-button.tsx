@@ -6,7 +6,7 @@ import { LucideIcon } from "lucide-react";
 interface Props {
   Icon: LucideIcon;
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export const HeaderIconButton = ({ Icon, className, onClick }: Props) => {
