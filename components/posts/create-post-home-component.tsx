@@ -9,7 +9,7 @@ import { HeaderIconButton } from "@/components/header/header-icon-button";
 import { Image, Link } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export const CreatePost = () => {
+export const CreatePostHomeComponent = () => {
   const [profile, setProfile] = useState<Profile>();
 
   const router = useRouter();

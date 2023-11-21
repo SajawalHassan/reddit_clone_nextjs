@@ -34,8 +34,8 @@ export const CommunitySelecter = () => {
     <div className="relative">
       <div
         className={cn(
-          "flex items-center justify-between flex-grow bg-white w-full p-2 max-w-[20rem] cursor-pointer",
-          menuIsOpen ? "rounded-none" : "rounded-md"
+          "flex items-center justify-between flex-grow bg-white dark:bg-[#272729] dark:hover:bg-[#1a1a1a] w-full p-2 max-w-[20rem] cursor-pointer",
+          menuIsOpen ? "rounded-b-none dark:bg-[#1a1a1a]" : "rounded-md"
         )}
         onClick={handleOpenMenu}>
         {activeCommunity ? (
@@ -44,17 +44,17 @@ export const CommunitySelecter = () => {
             <p className="font-semibold text-gray-700">{activeCommunity?.uniqueName}</p>
           </div>
         ) : (
-          <div className="flex items-center gap-x-2 text-gray-500">
+          <div className="flex items-center gap-x-2 text-gray-500 dark:text-white">
             <CircleDashed className="h-6 w-6" />
             <p className="font-semibold">Choose a community</p>
           </div>
         )}
-        <ArrowDownCircle className="h-5 w-5 text-gray-500" />
+        <ArrowDownCircle className="h-5 w-5 text-gray-500 dark:text-white" />
       </div>
 
       {menuIsOpen && <div className="z-20 fixed inset-0 h-full w-full" onClick={() => setMenuIsOpen(false)} />}
       {menuIsOpen && (
-        <div className="absolute w-full py-2 space-y-3 bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30">
+        <div className="absolute w-full max-w-[20rem] py-2 space-y-3 bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30">
           <div className="flex flex-col items-center mx-5">
             <CommunitiesSelectionSearch setCommunities={setFilteredCommunities} allCommunities={allCommunities} />
           </div>
