@@ -26,7 +26,7 @@ export const PostTypeItem = ({ Icon, text, isActive, type }: Props) => {
       )}
       onClick={changeType}>
       <Icon className="h-6 w-6" />
-      <p className="font-bold text-sm">{text}</p>
+      <p className="font-bold text-sm truncate">{text}</p>
     </div>
   );
 };

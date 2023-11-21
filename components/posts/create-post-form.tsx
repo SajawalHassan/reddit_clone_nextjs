@@ -18,6 +18,7 @@ import { IconButton } from "@/components/icon-button";
 import { Button } from "@/components/ui/button";
 import { CommunitySelecter } from "./community-selecter";
 import { Community } from "@prisma/client";
+import { PostTagItem } from "./post-tag-item";
 
 const FroalaEditor = dynamic(
   async () => {
@@ -39,6 +40,7 @@ const isCommunity = z.custom<any>();
 const plainFormSchema = z.object({
   title: z.string().min(1, "Please enter a title!").max(300, "Max characters for title exceeded!"),
   community: isCommunity,
+  isSpoiler: z.boolean(),
   foralaContent: z.string(),
   imageUrl: z.string(),
   link: z.string(),
@@ -47,6 +49,7 @@ const plainFormSchema = z.object({
 const mediaFormSchema = z.object({
   title: z.string().min(1, "Please enter a title!").max(300, "Max characters for title exceeded!"),
   community: isCommunity,
+  isSpoiler: z.boolean(),
   foralaContent: z.string(),
   imageUrl: z.string().min(1, "Please submit an image"),
   link: z.string(),
@@ -55,6 +58,7 @@ const mediaFormSchema = z.object({
 const linkFormSchema = z.object({
   title: z.string().min(1, "Please enter a title!").max(300, "Max characters for title exceeded!"),
   community: isCommunity,
+  isSpoiler: z.boolean(),
   foralaContent: z.string(),
   imageUrl: z.string(),
   link: z.string().min(1, "Please enter a link").url("Invalid url"),
@@ -69,7 +73,10 @@ export const CreatePostForm = () => {
   const isPlain = searchParams?.get("plain") ? true : false;
   const formSchema = isMedia ? mediaFormSchema : isLink ? linkFormSchema : plainFormSchema;
 
-  const form = useForm({ resolver: zodResolver(formSchema), defaultValues: { title: "", foralaContent: "", imageUrl: "", link: "", community: {} } });
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: { title: "", foralaContent: "", imageUrl: "", link: "", community: {}, isSpoiler: false },
+  });
 
   const isLoading = form.formState.isSubmitting;
 
@@ -109,7 +116,7 @@ export const CreatePostForm = () => {
           )}
         />
         <div className="bg-white dark:bg-[#1A1A1B] border pb-2 rounded-md mt-2 space-y-2">
-          <div className="grid grid-cols-3">
+          <div className="grid grid-cols-3 overflow-x-scroll">
             <PostTypeItem Icon={Menu} text="Post" type="plain" isActive={isPlain} />
             <PostTypeItem Icon={Image} text="Media & Video" type="media" isActive={isMedia} />
             <PostTypeItem Icon={Link} text="Link" type="link" isActive={isLink} />
@@ -182,6 +189,20 @@ export const CreatePostForm = () => {
                 )}
               />
             )}
+          </div>
+
+          <div className="ml-2">
+            <FormField
+              control={form.control}
+              name="isSpoiler"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <PostTagItem text="Spoiler" isActive={field.value} onChange={field.onChange} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           </div>
 
           <div className="flex items-center justify-end px-2">
