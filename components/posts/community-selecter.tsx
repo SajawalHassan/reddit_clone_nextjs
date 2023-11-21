@@ -8,8 +8,12 @@ import { CommunitySelectionOption } from "@/components/communities-selection-men
 import axios from "axios";
 import { cn } from "@/lib/utils";
 
-export const CommunitySelecter = () => {
-  const [activeCommunity, setActiveCommunity] = useState<Community>();
+interface Props {
+  value: any;
+  setValue: (newVal: any) => void;
+}
+
+export const CommunitySelecter = ({ value, setValue }: Props) => {
   const [filteredCommunities, setFilteredCommunities] = useState<Community[]>();
   const [allCommunities, setAllCommunities] = useState<Community[]>();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
@@ -38,10 +42,10 @@ export const CommunitySelecter = () => {
           menuIsOpen ? "rounded-b-none dark:bg-[#1a1a1a]" : "rounded-md"
         )}
         onClick={handleOpenMenu}>
-        {activeCommunity ? (
+        {Object.entries(value).length !== 0 ? (
           <div className="flex items-center gap-x-2">
-            <img src={activeCommunity?.imageUrl} alt={activeCommunity?.name} className="h-7 w-7 rounded-full" />
-            <p className="font-semibold text-gray-700">{activeCommunity?.uniqueName}</p>
+            <img src={value?.imageUrl} alt={value?.name} className="h-7 w-7 rounded-full" />
+            <p className="font-semibold text-gray-700 dark:text-white">{value?.uniqueName}</p>
           </div>
         ) : (
           <div className="flex items-center gap-x-2 text-gray-500 dark:text-white">
@@ -75,7 +79,7 @@ export const CommunitySelecter = () => {
                   communityId={community.id}
                   text={community.uniqueName}
                   imageUrl={community.imageUrl}
-                  customOnClick={() => setActiveCommunity(community)}
+                  customOnClick={() => setValue(community)}
                   key={community.id}
                 />
               ))}

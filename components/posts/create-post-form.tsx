@@ -16,6 +16,8 @@ import { PostTypeItem } from "./post-type-item";
 import { FileUploader } from "@/components/file-uploader";
 import { IconButton } from "@/components/icon-button";
 import { Button } from "@/components/ui/button";
+import { CommunitySelecter } from "./community-selecter";
+import { Community } from "@prisma/client";
 
 const FroalaEditor = dynamic(
   async () => {
@@ -32,8 +34,11 @@ const FroalaEditor = dynamic(
   }
 );
 
+const isCommunity = z.custom<any>();
+
 const plainFormSchema = z.object({
   title: z.string().min(1, "Please enter a title!").max(300, "Max characters for title exceeded!"),
+  community: isCommunity,
   foralaContent: z.string(),
   imageUrl: z.string(),
   link: z.string(),
@@ -41,6 +46,7 @@ const plainFormSchema = z.object({
 
 const mediaFormSchema = z.object({
   title: z.string().min(1, "Please enter a title!").max(300, "Max characters for title exceeded!"),
+  community: isCommunity,
   foralaContent: z.string(),
   imageUrl: z.string().min(1, "Please submit an image"),
   link: z.string(),
@@ -48,15 +54,10 @@ const mediaFormSchema = z.object({
 
 const linkFormSchema = z.object({
   title: z.string().min(1, "Please enter a title!").max(300, "Max characters for title exceeded!"),
+  community: isCommunity,
   foralaContent: z.string(),
   imageUrl: z.string(),
-  link: z
-    .string()
-    .min(1, "Please enter a link")
-    .regex(
-      /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gm,
-      "Invalid Url"
-    ),
+  link: z.string().min(1, "Please enter a link").url("Invalid url"),
 });
 
 export const CreatePostForm = () => {
@@ -68,7 +69,7 @@ export const CreatePostForm = () => {
   const isPlain = searchParams?.get("plain") ? true : false;
   const formSchema = isMedia ? mediaFormSchema : isLink ? linkFormSchema : plainFormSchema;
 
-  const form = useForm({ resolver: zodResolver(formSchema), defaultValues: { title: "", foralaContent: "", imageUrl: "", link: "" } });
+  const form = useForm({ resolver: zodResolver(formSchema), defaultValues: { title: "", foralaContent: "", imageUrl: "", link: "", community: {} } });
 
   const isLoading = form.formState.isSubmitting;
 
@@ -95,86 +96,99 @@ export const CreatePostForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white dark:bg-[#1A1A1B] border pb-2 rounded-md mt-2 space-y-2">
-        <div className="grid grid-cols-3">
-          <PostTypeItem Icon={Menu} text="Post" type="plain" isActive={isPlain} />
-          <PostTypeItem Icon={Image} text="Media & Video" type="media" isActive={isMedia} />
-          <PostTypeItem Icon={Link} text="Link" type="link" isActive={isLink} />
-        </div>
-        <div className="px-2 space-y-2">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder="Enter a title" className="bg-white" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {isPlain && (
-            <FormField
-              control={form.control}
-              name="foralaContent"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <FroalaEditor model={field.value} onModelChange={field.onChange} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-          )}{" "}
-          {isMedia && (
-            <FormField
-              control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <FileUploader
-                      isLoading={isLoading}
-                      onChange={field.onChange}
-                      value={field.value}
-                      text="Upload image"
-                      imageAvailableContent={
-                        <div className="border flex flex-col items-end">
-                          <div className="w-full relative overflow-hidden rounded-md">
-                            <img className="w-full h-full max-h-[10rem] blur-[20px] brightness-75" src={field.value} />
-                            <img className="w-[10rem] h-full max-h-[10rem] absolute inset-0 m-auto" src={field.value} />
-                          </div>
-                          <IconButton Icon={Trash} onClick={() => field.onChange("")} className="m-2" />
-                        </div>
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          )}{" "}
-          {isLink && (
-            <FormField
-              control={form.control}
-              name="link"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input placeholder="Url" className="bg-white" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        <FormField
+          control={form.control}
+          name="community"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <CommunitySelecter value={field.value} setValue={field.onChange} />
+              </FormControl>
+            </FormItem>
           )}
-        </div>
+        />
+        <div className="bg-white dark:bg-[#1A1A1B] border pb-2 rounded-md mt-2 space-y-2">
+          <div className="grid grid-cols-3">
+            <PostTypeItem Icon={Menu} text="Post" type="plain" isActive={isPlain} />
+            <PostTypeItem Icon={Image} text="Media & Video" type="media" isActive={isMedia} />
+            <PostTypeItem Icon={Link} text="Link" type="link" isActive={isLink} />
+          </div>
+          <div className="px-2 space-y-2">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Enter a title" className="bg-white" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {isPlain && (
+              <FormField
+                control={form.control}
+                name="foralaContent"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <FroalaEditor model={field.value} onModelChange={field.onChange} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            )}{" "}
+            {isMedia && (
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <FileUploader
+                        isLoading={isLoading}
+                        onChange={field.onChange}
+                        value={field.value}
+                        text="Upload image"
+                        imageAvailableContent={
+                          <div className="border flex flex-col items-end">
+                            <div className="w-full relative overflow-hidden rounded-md">
+                              <img className="w-full h-full max-h-[10rem] blur-[20px] brightness-75" src={field.value} />
+                              <img className="w-[10rem] h-full max-h-[10rem] absolute inset-0 m-auto" src={field.value} />
+                            </div>
+                            <IconButton Icon={Trash} onClick={() => field.onChange("")} className="m-2" />
+                          </div>
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}{" "}
+            {isLink && (
+              <FormField
+                control={form.control}
+                name="link"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Url" className="bg-white" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+          </div>
 
-        <div className="flex items-center justify-end px-2">
-          <Button variant="primary" type="submit" disabled={isLoading}>
-            Create post
-          </Button>
+          <div className="flex items-center justify-end px-2">
+            <Button variant="primary" type="submit" disabled={isLoading}>
+              Create post
+            </Button>
+          </div>
         </div>
       </form>
     </Form>
