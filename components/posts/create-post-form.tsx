@@ -35,7 +35,7 @@ const FroalaEditor = dynamic(
   }
 );
 
-const isCommunity = z.custom<any>();
+const isCommunity = z.custom<any>((val: any) => (Object.entries(val).length !== 0 ? true : false), "Please select a community");
 
 const plainFormSchema = z.object({
   title: z.string().min(1, "Please enter a title!").max(300, "Max characters for title exceeded!"),
@@ -112,6 +112,7 @@ export const CreatePostForm = () => {
               <FormControl>
                 <CommunitySelecter value={field.value} setValue={field.onChange} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
