@@ -55,9 +55,18 @@ export async function POST(req: Request) {
           create: [{ title, memberId: member?.id, spoiler: isSpoiler, content: froalaContent, imageUrl, link }],
         },
       },
+      include: {
+        posts: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
     });
 
-    return NextResponse.json(community);
+    const post = community.posts[0];
+
+    return NextResponse.json({ community, post });
   } catch (error) {
     console.log("POST_CREATE", error);
   }

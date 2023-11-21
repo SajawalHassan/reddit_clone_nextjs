@@ -12,7 +12,7 @@ import axios from "axios";
 import * as z from "zod";
 
 import "froala-editor/css/froala_editor.pkgd.css";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { PostTypeItem } from "./post-type-item";
 import { FileUploader } from "@/components/file-uploader";
 import { IconButton } from "@/components/icon-button";
@@ -45,6 +45,8 @@ export const CreatePostForm = () => {
   const isPlain = searchParams?.get("plain") ? true : false;
   const formSchema = isMedia ? mediaFormSchema : isLink ? linkFormSchema : plainFormSchema;
 
+  const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: { title: "", froalaContent: "", imageUrl: "", link: "", communityId: "", isSpoiler: false },
@@ -69,7 +71,11 @@ export const CreatePostForm = () => {
     }
 
     try {
-      await axios.post("/api/posts", { ...values, type: isPlain ? "plain" : isMedia ? "media" : "link" });
+      const response = await axios.post("/api/posts", { ...values, type: isPlain ? "plain" : isMedia ? "media" : "link" });
+      const data = response.data;
+
+      form.reset();
+      router.push(`/main/communities/${data.community.id}/posts/${data.post.id}`);
     } catch (error) {
       console.log(error);
     }
