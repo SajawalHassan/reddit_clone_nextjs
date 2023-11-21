@@ -10,11 +10,14 @@ interface PropTypes {
   value: string;
   onChange: (url?: string) => void;
   isLoading: boolean;
+  text: string;
+  className?: string;
+  imageAvailableContent?: JSX.Element;
 }
 
 const client = new UploadClient({ publicKey: process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY as string });
 
-export const FileUploader = ({ onChange, value, isLoading: isSubmitting }: PropTypes) => {
+export const FileUploader = ({ onChange, value, isLoading: isSubmitting, text, className, imageAvailableContent }: PropTypes) => {
   const [uploadIsFinished, setUploadIsFinished] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,6 +47,7 @@ export const FileUploader = ({ onChange, value, isLoading: isSubmitting }: PropT
   };
 
   if (value && uploadIsFinished) {
+    if (imageAvailableContent) return imageAvailableContent;
     return (
       <div className={cn("relative h-20 w-20", isSubmitting && "image-overlay-wrapper")}>
         <img src={value} alt="Upload" className="rounded-full bg-gray-500 h-full w-full" />
@@ -63,7 +67,8 @@ export const FileUploader = ({ onChange, value, isLoading: isSubmitting }: PropT
       onClick={() => uploadRef?.current?.click()}
       className={cn(
         "flex flex-col items-center cursor-pointer justify-center gap-y-2 py-10 px-20 rounded-lg border border-dotted border-gray-500",
-        isLoading && "cursor-not-allowed bg-gray-100 dark:bg-[#1A1A1B]"
+        isLoading && "cursor-not-allowed bg-gray-100 dark:bg-[#1A1A1B]",
+        className
       )}>
       {isLoading ? (
         <Loader2 className="h-6 w-6 animate-spin mb-2" />
@@ -71,7 +76,7 @@ export const FileUploader = ({ onChange, value, isLoading: isSubmitting }: PropT
         <>
           <UploadCloud className="h-10 w-10" />
           <p className="text-sm sm:text-base text-blue-500 font-bold cursor-pointer dark:hover:text-blue-400 hover:text-blue-600 transition">
-            Upload community image
+            {text}
           </p>
         </>
       )}

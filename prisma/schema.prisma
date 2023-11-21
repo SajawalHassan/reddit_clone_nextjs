@@ -103,7 +103,6 @@ model Post {
   title    String
   content  String?
   imageUrl String? @db.Text
-  videoUrl String? @db.Text
   spoiler  Boolean @default(false)
 
   comments Comment[]

@@ -5,7 +5,7 @@ import { HeaderCommunities } from "./header-communities";
 import { RedditLogo } from "@/components/reddit-logo";
 import { HeaderSearch } from "./header-search";
 import { HeaderMobileToggle } from "@/components/header/header-mobile-toggle";
-import { HeaderIconButton } from "./header-icon-button";
+import { IconButton } from "@/components/icon-button";
 import { Search } from "lucide-react";
 import { HeaderProfile } from "./header-profile";
 
@@ -19,7 +19,7 @@ export const Header = () => {
       <HeaderCommunities />
       <HeaderSearch className="hidden md:flex" />
       <div className="flex items-center justify-end flex-grow md:flex-none w-max">
-        <HeaderIconButton onClick={() => router.push("/search")} Icon={Search} className="md:hidden" />
+        <IconButton onClick={() => router.push("/search")} Icon={Search} className="md:hidden" />
         <HeaderProfile />
       </div>
     </div>

@@ -75,7 +75,7 @@ export const CreateCommunityModal = () => {
                     name="imageUrl"
                     render={({ field }) => (
                       <FormControl>
-                        <FileUploader isLoading={isLoading} value={field.value} onChange={field.onChange} />
+                        <FileUploader isLoading={isLoading} value={field.value} onChange={field.onChange} text="Upload community image" />
                       </FormControl>
                     )}
                   />
