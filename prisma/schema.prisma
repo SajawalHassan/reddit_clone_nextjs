@@ -58,6 +58,7 @@ model Community {
   type        CommunityType @default(PUBLIC)
 
   members Member[]
+  posts   Post[]
 
   profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -103,6 +104,7 @@ model Post {
   title    String
   content  String?
   imageUrl String? @db.Text
+  link     String? @db.Text
   spoiler  Boolean @default(false)
 
   comments Comment[]
@@ -110,14 +112,18 @@ model Post {
   memberId String
   member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
-  pinnedPostProfileId String
-  pinnedPostProfile   Profile @relation(fields: [pinnedPostProfileId], references: [id], onDelete: Cascade)
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+  pinnedPostProfileId String?
+  pinnedPostProfile   Profile? @relation(fields: [pinnedPostProfileId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([memberId])
   @@index([pinnedPostProfileId])
+  @@index([communityId])
 }
 
 model Comment {

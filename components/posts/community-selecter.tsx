@@ -14,6 +14,7 @@ interface Props {
 }
 
 export const CommunitySelecter = ({ value, setValue }: Props) => {
+  const [activeCommunity, setActiveCommunity] = useState<Community>();
   const [filteredCommunities, setFilteredCommunities] = useState<Community[]>();
   const [allCommunities, setAllCommunities] = useState<Community[]>();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
@@ -34,6 +35,11 @@ export const CommunitySelecter = ({ value, setValue }: Props) => {
     getCommunities();
   };
 
+  const changeActiveCommunity = (community: Community) => {
+    setActiveCommunity(community);
+    setValue(community.id);
+  };
+
   return (
     <div className="relative">
       <div
@@ -42,10 +48,10 @@ export const CommunitySelecter = ({ value, setValue }: Props) => {
           menuIsOpen ? "rounded-b-none dark:bg-[#1a1a1a]" : "rounded-md"
         )}
         onClick={handleOpenMenu}>
-        {Object.entries(value).length !== 0 ? (
+        {activeCommunity ? (
           <div className="flex items-center gap-x-2">
-            <img src={value?.imageUrl} alt={value?.name} className="h-7 w-7 rounded-full" />
-            <p className="font-semibold text-gray-700 dark:text-white">{value?.uniqueName}</p>
+            <img src={activeCommunity?.imageUrl} alt={activeCommunity?.name} className="h-7 w-7 rounded-full" />
+            <p className="font-semibold text-gray-700 dark:text-white">{activeCommunity?.uniqueName}</p>
           </div>
         ) : (
           <div className="flex items-center gap-x-2 text-gray-500 dark:text-white">
@@ -79,7 +85,7 @@ export const CommunitySelecter = ({ value, setValue }: Props) => {
                   communityId={community.id}
                   text={community.uniqueName}
                   imageUrl={community.imageUrl}
-                  customOnClick={() => setValue(community)}
+                  customOnClick={() => changeActiveCommunity(community)}
                   key={community.id}
                 />
               ))}

@@ -8,6 +8,7 @@ import { Image, Link, Loader2, Menu, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 import dynamic from "next/dynamic";
+import axios from "axios";
 import * as z from "zod";
 
 import "froala-editor/css/froala_editor.pkgd.css";
@@ -17,8 +18,8 @@ import { FileUploader } from "@/components/file-uploader";
 import { IconButton } from "@/components/icon-button";
 import { Button } from "@/components/ui/button";
 import { CommunitySelecter } from "./community-selecter";
-import { Community } from "@prisma/client";
 import { PostTagItem } from "./post-tag-item";
+import { linkFormSchema, mediaFormSchema, plainFormSchema } from "@/schemas/post-schema";
 
 const FroalaEditor = dynamic(
   async () => {
@@ -35,35 +36,6 @@ const FroalaEditor = dynamic(
   }
 );
 
-const isCommunity = z.custom<any>((val: any) => (Object.entries(val).length !== 0 ? true : false), "Please select a community");
-
-const plainFormSchema = z.object({
-  title: z.string().min(1, "Please enter a title!").max(300, "Max characters for title exceeded!"),
-  community: isCommunity,
-  isSpoiler: z.boolean(),
-  foralaContent: z.string(),
-  imageUrl: z.string(),
-  link: z.string(),
-});
-
-const mediaFormSchema = z.object({
-  title: z.string().min(1, "Please enter a title!").max(300, "Max characters for title exceeded!"),
-  community: isCommunity,
-  isSpoiler: z.boolean(),
-  foralaContent: z.string(),
-  imageUrl: z.string().min(1, "Please submit an image"),
-  link: z.string(),
-});
-
-const linkFormSchema = z.object({
-  title: z.string().min(1, "Please enter a title!").max(300, "Max characters for title exceeded!"),
-  community: isCommunity,
-  isSpoiler: z.boolean(),
-  foralaContent: z.string(),
-  imageUrl: z.string(),
-  link: z.string().min(1, "Please enter a link").url("Invalid url"),
-});
-
 export const CreatePostForm = () => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -75,7 +47,7 @@ export const CreatePostForm = () => {
 
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: { title: "", foralaContent: "", imageUrl: "", link: "", community: {}, isSpoiler: false },
+    defaultValues: { title: "", froalaContent: "", imageUrl: "", link: "", communityId: "", isSpoiler: false },
   });
 
   const isLoading = form.formState.isSubmitting;
@@ -89,14 +61,18 @@ export const CreatePostForm = () => {
       values.imageUrl = "";
       values.link = "";
     } else if (isMedia) {
-      values.foralaContent = "";
+      values.froalaContent = "";
       values.link = "";
     } else {
-      values.foralaContent = "";
+      values.froalaContent = "";
       values.imageUrl = "";
     }
 
-    console.log(values);
+    try {
+      await axios.post("/api/posts", { ...values, type: isPlain ? "plain" : isMedia ? "media" : "link" });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   if (!isMounted) return;
@@ -106,7 +82,7 @@ export const CreatePostForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
         <FormField
           control={form.control}
-          name="community"
+          name="communityId"
           render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -129,7 +105,7 @@ export const CreatePostForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Enter a title" className="bg-white" {...field} />
+                    <Input placeholder="Enter a title" className="bg-white" {...field} disabled={isLoading} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -138,7 +114,7 @@ export const CreatePostForm = () => {
             {isPlain && (
               <FormField
                 control={form.control}
-                name="foralaContent"
+                name="froalaContent"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -183,7 +159,7 @@ export const CreatePostForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input placeholder="Url" className="bg-white" {...field} />
+                      <Input placeholder="Url" className="bg-white" {...field} disabled={isLoading} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -199,7 +175,7 @@ export const CreatePostForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <PostTagItem text="Spoiler" isActive={field.value} onChange={field.onChange} />
+                    <PostTagItem text="Spoiler" isActive={field.value} onChange={field.onChange} disabled={isLoading} />
                   </FormControl>
                 </FormItem>
               )}
