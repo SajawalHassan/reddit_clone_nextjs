@@ -106,6 +106,7 @@ model Post {
   imageUrl String? @db.Text
   link     String? @db.Text
   spoiler  Boolean @default(false)
+  upvotes  Int?    @default(0)
 
   comments Comment[]
 

@@ -1,6 +1,7 @@
 import { getCurrentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { linkFormSchema, mediaFormSchema, plainFormSchema } from "@/schemas/post-schema";
+import { Community, Post } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { SafeParseReturnType } from "zod";
 import { fromZodError } from "zod-validation-error";
@@ -69,5 +70,96 @@ export async function POST(req: Request) {
     return NextResponse.json({ community, post });
   } catch (error) {
     console.log("POST_CREATE", error);
+  }
+}
+
+const POSTS_BATCH = 10;
+
+export async function GET(req: Request) {
+  try {
+    const profile = await getCurrentProfile();
+
+    const { searchParams } = new URL(req.url);
+
+    const cursor = searchParams.get("cursor");
+
+    if (!profile) return new NextResponse("Unauthorized", { status: 401 });
+
+    let posts: any = [];
+    let communities: any = [];
+    if (cursor) {
+      communities = await db.community.findMany({
+        where: {
+          members: {
+            some: {
+              profileId: profile.id,
+            },
+          },
+        },
+        include: {
+          posts: {
+            take: POSTS_BATCH,
+            skip: 1,
+            cursor: {
+              id: cursor as string,
+            },
+            include: {
+              member: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+            orderBy: {
+              upvotes: "desc",
+            },
+          },
+        },
+      });
+
+      for (let i = 0; i < communities.length; i++) {
+        posts.push(communities[i].posts);
+      }
+    } else {
+      communities = await db.community.findMany({
+        where: {
+          members: {
+            some: {
+              profileId: profile.id,
+            },
+          },
+        },
+        include: {
+          posts: {
+            take: POSTS_BATCH,
+            include: {
+              member: {
+                include: {
+                  profile: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
+        },
+      });
+
+      for (let i = 0; i < communities.length; i++) {
+        for (let j = 0; j < communities[i].posts.length; j++) {
+          posts.push(communities[i].posts[j]);
+        }
+      }
+    }
+
+    let nextCursor = null;
+
+    // If we haven't reached the end of posts
+    if (posts.length === POSTS_BATCH) nextCursor = posts[POSTS_BATCH - 1].id;
+
+    return NextResponse.json({ posts, communities, nextCursor });
+  } catch (error) {
+    console.log("POST_GET", error);
   }
 }
