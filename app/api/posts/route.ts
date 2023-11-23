@@ -86,9 +86,8 @@ export async function GET(req: Request) {
     if (!profile) return new NextResponse("Unauthorized", { status: 401 });
 
     let posts: any = [];
-    let communities: any = [];
     if (cursor) {
-      communities = await db.community.findMany({
+      const communities = await db.community.findMany({
         where: {
           members: {
             some: {
@@ -109,6 +108,7 @@ export async function GET(req: Request) {
                   profile: true,
                 },
               },
+              community: true,
             },
             orderBy: {
               upvotes: "desc",
@@ -118,10 +118,12 @@ export async function GET(req: Request) {
       });
 
       for (let i = 0; i < communities.length; i++) {
-        posts.push(communities[i].posts);
+        for (let j = 0; j < communities[i].posts.length; j++) {
+          posts.push(communities[i].posts[j]);
+        }
       }
     } else {
-      communities = await db.community.findMany({
+      const communities = await db.community.findMany({
         where: {
           members: {
             some: {
@@ -138,6 +140,7 @@ export async function GET(req: Request) {
                   profile: true,
                 },
               },
+              community: true,
             },
             orderBy: {
               createdAt: "desc",
@@ -153,12 +156,24 @@ export async function GET(req: Request) {
       }
     }
 
+    const indicies = Array.from({ length: posts.length }, (_, i) => i);
+
+    // Use fisher-yates algorithm to shuffle the array
+    for (let lastIndex = indicies.length - 1; lastIndex > 0; lastIndex--) {
+      if (indicies[lastIndex] === undefined) continue;
+
+      const randNum = Math.floor(Math.random() * (lastIndex + 1)) as number;
+      [indicies[lastIndex], indicies[randNum]] = [indicies[randNum], indicies[lastIndex]];
+    }
+
+    const shuffledPosts = indicies.map((i) => posts[i]);
+
     let nextCursor = null;
 
     // If we haven't reached the end of posts
-    if (posts.length === POSTS_BATCH) nextCursor = posts[POSTS_BATCH - 1].id;
+    if (shuffledPosts.length === POSTS_BATCH) nextCursor = posts[POSTS_BATCH - 1].id;
 
-    return NextResponse.json({ posts, communities, nextCursor });
+    return NextResponse.json({ items: shuffledPosts, nextCursor });
   } catch (error) {
     console.log("POST_GET", error);
   }
