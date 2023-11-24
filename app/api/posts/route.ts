@@ -79,12 +79,10 @@ const INITIAL_COMMUNITIES = 10;
 export async function GET(req: Request) {
   try {
     const profile = await getCurrentProfile();
+    if (!profile) return new NextResponse("Unauthorized", { status: 401 });
 
     const { searchParams } = new URL(req.url);
-
     const cursor = searchParams.get("cursor");
-
-    if (!profile) return new NextResponse("Unauthorized", { status: 401 });
 
     const joinedCommunities = await db.community.findMany({
       where: {
@@ -108,9 +106,9 @@ export async function GET(req: Request) {
       const randNum = Math.floor(Math.random() * (lastIndex + 1)) as number;
       [communityIndicies[lastIndex], communityIndicies[randNum]] = [communityIndicies[randNum], communityIndicies[lastIndex]];
     }
-
     const shuffledCommunities = communityIndicies.map((i) => joinedCommunities[i]);
 
+    // Calculate how many posts to get from each joined community to in total sum up to POSTS_BATCH var
     const postsToGet: number[] = [];
 
     let remainingPosts = POSTS_BATCH;
@@ -122,6 +120,7 @@ export async function GET(req: Request) {
         postsToGet.push(communityPosts);
         remainingPosts -= communityPosts;
       } else {
+        // If there aren't enough posts in community as there should be, described by the postsToGet array
         postsToGet.push(remainingPosts);
         remainingPosts = 0;
         break;
@@ -132,11 +131,7 @@ export async function GET(req: Request) {
     let posts: any[] = [];
     if (cursor) {
       for (let i = 0; i < shuffledCommunities.length; i++) {
-        console.log(i);
-
         if (i > INITIAL_COMMUNITIES) break;
-
-        console.log("With cursor posts to get", postsToGet);
 
         const foundPosts = await db.post.findMany({
           take: postsToGet[i],
@@ -160,16 +155,11 @@ export async function GET(req: Request) {
           },
         });
 
-        console.log("With cursor foundposts length", foundPosts.length);
         posts.push(...foundPosts);
       }
     } else {
       for (let i = 0; i < shuffledCommunities.length; i++) {
-        console.log(i);
-
         if (i > INITIAL_COMMUNITIES) break;
-
-        console.log("No cursor posts to get", postsToGet);
 
         const foundPosts = await db.post.findMany({
           take: postsToGet[i],
@@ -189,27 +179,24 @@ export async function GET(req: Request) {
           },
         });
 
-        console.log("No cursor foundposts length", foundPosts.length);
         posts.push(...foundPosts);
       }
     }
 
+    // Shuffle the posts
     const indicies = Array.from({ length: posts.length }, (_, i) => i);
 
-    // Use fisher-yates algorithm to shuffle the array
     for (let lastIndex = indicies.length - 1; lastIndex > 0; lastIndex--) {
       if (indicies[lastIndex] === undefined) continue;
 
       const randNum = Math.floor(Math.random() * (lastIndex + 1)) as number;
       [indicies[lastIndex], indicies[randNum]] = [indicies[randNum], indicies[lastIndex]];
     }
-
     const shuffledPosts = indicies.map((i) => posts[i]);
 
-    console.log(posts.length);
     let nextCursor = posts[POSTS_BATCH - 1]?.id;
-    console.log(nextCursor);
 
+    // Return the unshuffled posts for react-query and return the shuffled posts for the feed
     return NextResponse.json({ items: posts, feedItems: shuffledPosts, nextCursor });
   } catch (error) {
     console.log("POST_GET", error);
