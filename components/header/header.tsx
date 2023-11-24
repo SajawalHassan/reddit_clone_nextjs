@@ -15,7 +15,7 @@ export const Header = () => {
   return (
     <div className="bg-white dark:bg-[#1A1A1B] px-3 md:px-5 lg:px-10 flex items-center gap-x-2 md:gap-x-4 flex-initial">
       <HeaderMobileToggle />
-      <RedditLogo onClick={() => router.push("/")} className="cursor-pointer" />
+      <RedditLogo onClick={() => router.push("/main")} className="cursor-pointer" />
       <HeaderCommunities />
       <HeaderSearch className="hidden md:flex" />
       <div className="flex items-center justify-end flex-grow md:flex-none w-max">
