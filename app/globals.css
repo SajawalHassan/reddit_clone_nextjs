@@ -128,3 +128,22 @@ body,
   z-index: 40;
   border-radius: 1000px;
 }
+
+.fr-second-toolbar {
+  background-color: #1a1a1a !important;
+  color: #ffff !important;
+}
+
+.fr-toolbar {
+  background-color: #1a1a1a !important;
+  color: #ffff !important;
+}
+
+.fr-wrapper {
+  background-color: #1a1a1a !important;
+  color: #fff !important;
+}
+
+.fr-element {
+  color: #fff !important;
+}

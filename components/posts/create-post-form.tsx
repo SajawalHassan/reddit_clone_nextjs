@@ -3,7 +3,7 @@
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { useForm, FieldError } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Image, Link, Loader2, Menu, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
@@ -12,6 +12,7 @@ import axios from "axios";
 import * as z from "zod";
 
 import "froala-editor/css/froala_editor.pkgd.css";
+import "froala-editor/css/themes/dark.min.css";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PostTypeItem } from "./post-type-item";
 import { FileUploader } from "@/components/file-uploader";
@@ -124,7 +125,7 @@ export const CreatePostForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <FroalaEditor model={field.value} onModelChange={field.onChange} />
+                      <FroalaEditor model={field.value} onModelChange={field.onChange} config={{ theme: "dark" }} />
                     </FormControl>
                   </FormItem>
                 )}

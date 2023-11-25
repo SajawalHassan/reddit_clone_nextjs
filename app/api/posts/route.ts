@@ -74,7 +74,6 @@ export async function POST(req: Request) {
 }
 
 const POSTS_BATCH = 10;
-const INITIAL_COMMUNITIES = 10;
 
 export async function GET(req: Request) {
   try {
@@ -84,120 +83,41 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const cursor = searchParams.get("cursor");
 
-    const joinedCommunities = await db.community.findMany({
-      where: {
-        members: {
-          some: {
-            profileId: profile.id,
-          },
-        },
-      },
-      include: {
-        posts: true,
-      },
-    });
-
-    // Shuffle communities using fisher-yates algorithm
-    const communityIndicies = Array.from({ length: joinedCommunities.length }, (_, i) => i);
-
-    for (let lastIndex = communityIndicies.length - 1; lastIndex > 0; lastIndex--) {
-      if (communityIndicies[lastIndex] === undefined) continue;
-
-      const randNum = Math.floor(Math.random() * (lastIndex + 1)) as number;
-      [communityIndicies[lastIndex], communityIndicies[randNum]] = [communityIndicies[randNum], communityIndicies[lastIndex]];
-    }
-    const shuffledCommunities = communityIndicies.map((i) => joinedCommunities[i]);
-
-    // Calculate how many posts to get from each joined community to in total sum up to POSTS_BATCH var
-    const postsToGet: number[] = [];
-
-    let remainingPosts = POSTS_BATCH;
-    for (let i = 0; i < joinedCommunities.length; i++) {
-      if (i > INITIAL_COMMUNITIES) break;
-
-      const communityPosts = joinedCommunities[i].posts.length;
-      if (communityPosts < remainingPosts) {
-        postsToGet.push(communityPosts);
-        remainingPosts -= communityPosts;
-      } else {
-        // If there aren't enough posts in community as there should be, described by the postsToGet array
-        postsToGet.push(remainingPosts);
-        remainingPosts = 0;
-        break;
-      }
-    }
-    if (remainingPosts > 0) postsToGet[0] += remainingPosts;
-
     let posts: any[] = [];
-    if (cursor) {
-      for (let i = 0; i < shuffledCommunities.length; i++) {
-        if (i > INITIAL_COMMUNITIES) break;
 
-        const foundPosts = await db.post.findMany({
-          take: postsToGet[i],
-          skip: 1,
-          cursor: {
-            id: cursor,
-          },
-          where: {
-            communityId: shuffledCommunities[i].id,
-          },
-          include: {
-            member: {
-              include: {
-                profile: true,
-              },
+    if (!cursor) {
+      posts = await db.post.findMany({
+        take: POSTS_BATCH,
+        include: {
+          member: {
+            include: {
+              profile: true,
             },
-            community: true,
           },
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-
-        posts.push(...foundPosts);
-      }
+          community: true,
+        },
+      });
     } else {
-      for (let i = 0; i < shuffledCommunities.length; i++) {
-        if (i > INITIAL_COMMUNITIES) break;
-
-        const foundPosts = await db.post.findMany({
-          take: postsToGet[i],
-          where: {
-            communityId: shuffledCommunities[i].id,
-          },
-          include: {
-            member: {
-              include: {
-                profile: true,
-              },
+      posts = await db.post.findMany({
+        take: POSTS_BATCH,
+        skip: 1,
+        cursor: {
+          id: cursor,
+        },
+        include: {
+          member: {
+            include: {
+              profile: true,
             },
-            community: true,
           },
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-
-        posts.push(...foundPosts);
-      }
+          community: true,
+        },
+      });
     }
-
-    // Shuffle the posts
-    const indicies = Array.from({ length: posts.length }, (_, i) => i);
-
-    for (let lastIndex = indicies.length - 1; lastIndex > 0; lastIndex--) {
-      if (indicies[lastIndex] === undefined) continue;
-
-      const randNum = Math.floor(Math.random() * (lastIndex + 1)) as number;
-      [indicies[lastIndex], indicies[randNum]] = [indicies[randNum], indicies[lastIndex]];
-    }
-    const shuffledPosts = indicies.map((i) => posts[i]);
 
     let nextCursor = posts[POSTS_BATCH - 1]?.id;
 
-    // Return the unshuffled posts for react-query and return the shuffled posts for the feed
-    return NextResponse.json({ items: posts, feedItems: shuffledPosts, nextCursor });
+    return NextResponse.json({ items: posts, feedItems: posts, nextCursor });
   } catch (error) {
     console.log("POST_GET", error);
   }
