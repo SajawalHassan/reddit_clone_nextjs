@@ -29,11 +29,13 @@ export const CreatePostHomeComponent = () => {
   }, []);
 
   return (
-    <div className="flex items-center gap-x-2 home-component">
-      <ProfilePicture src={profile?.imageUrl} profileId={profile?.id as string} />
-      <Input placeholder="Create post" onClick={() => router.push("/main/create/post?plain=true")} />
-      <IconButton Icon={Image} onClick={() => router.push("/main/create/post?media=true")} />
-      <IconButton Icon={Link} onClick={() => router.push("/main/create/post?link=true")} />
+    <div className="px-2 w-full max-w-[40rem]">
+      <div className="flex items-center gap-x-2 home-component">
+        <ProfilePicture src={profile?.imageUrl} profileId={profile?.id as string} />
+        <Input placeholder="Create post" onClick={() => router.push("/main/create/post?plain=true")} />
+        <IconButton Icon={Image} onClick={() => router.push("/main/create/post?media=true")} />
+        <IconButton Icon={Link} onClick={() => router.push("/main/create/post?link=true")} />
+      </div>
     </div>
   );
 };

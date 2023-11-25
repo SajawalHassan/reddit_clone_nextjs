@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { CommunitySelecter } from "./community-selecter";
 import { PostTagItem } from "./post-tag-item";
 import { linkFormSchema, mediaFormSchema, plainFormSchema } from "@/schemas/post-schema";
+import { useTheme } from "next-themes";
 
 const FroalaEditor = dynamic(
   async () => {
@@ -47,6 +48,7 @@ export const CreatePostForm = () => {
   const formSchema = isMedia ? mediaFormSchema : isLink ? linkFormSchema : plainFormSchema;
 
   const router = useRouter();
+  const { resolvedTheme } = useTheme();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -125,8 +127,18 @@ export const CreatePostForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <FroalaEditor model={field.value} onModelChange={field.onChange} config={{ theme: "dark" }} />
+                      <FroalaEditor model={field.value} onModelChange={field.onChange} />
                     </FormControl>
+                    {/* {resolvedTheme === "light" && (
+                      <FormControl>
+                        <FroalaEditor model={field.value} onModelChange={field.onChange} config={{ theme: "gray" }} />
+                      </FormControl>
+                    )}
+                    {resolvedTheme === "dark" && (
+                      <FormControl>
+                        <FroalaEditor model={field.value} onModelChange={field.onChange} config={{ theme: "dark" }} />
+                      </FormControl>
+                    )} */}
                   </FormItem>
                 )}
               />
