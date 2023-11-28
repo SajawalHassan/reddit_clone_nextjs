@@ -8,7 +8,10 @@ import { format } from "date-fns";
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { MouseEvent } from "react";
+import { MouseEvent, useEffect, useState } from "react";
+import axios from "axios";
+import { useSocket } from "@/components/providers/socket-provider";
+
 const FroalaEditorView = dynamic(
   async () => {
     const values = await Promise.all([import("react-froala-wysiwyg/FroalaEditorView")]);
@@ -28,6 +31,10 @@ const DATE_FORMAT = "d MMM yyyy, HH:mm";
 const SHORT_DATE_FORMAT = "d MMM yyyy";
 
 export const PostFeedItemHomeComponent = ({ post }: { post: PostWithMemberWithProfileWithCommunity }) => {
+  const [upvotes, setUpvotes] = useState(0);
+
+  const { isConnected, socket } = useSocket();
+
   const isOnlyTitle = !post.content && !post.imageUrl && !post.link;
 
   const router = useRouter();
@@ -37,15 +44,40 @@ export const PostFeedItemHomeComponent = ({ post }: { post: PostWithMemberWithPr
     router.push(url);
   };
 
+  const votePost = async (e: MouseEvent, type: "upvote" | "downvote") => {
+    e.stopPropagation();
+
+    try {
+      await axios.patch("/api/socket/posts/vote", { type, postId: post.id });
+
+      router.refresh();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    setUpvotes(post.upvotes ? post.upvotes.length : 0);
+
+    if (isConnected) {
+      socket.on(`post:${post.id}:vote:up`, () => {
+        setUpvotes((upvotes) => upvotes + 1);
+      });
+      socket.on(`post:${post.id}:vote:down`, () => {
+        setUpvotes((upvotes) => upvotes - 1);
+      });
+    }
+  }, [socket]);
+
   return (
     <div className="px-2 w-full max-w-[40rem]">
       <div
         className="home-component flex p-0 hover:border hover:border-black cursor-pointer"
         onClick={() => router.push(`/main/communities/${post.communityId}/post/${post.id}`)}>
         <div className="w-[2.5rem] xs:w-[4rem] bg-gray-100 dark:bg-[#151516] p-1 xs:p-2 flex flex-col items-center rounded-l-md">
-          <IconButton Icon={ArrowUpCircle} className="rounded-sm w-max" />
-          <p className="text-sm font-bold">{post.upvotes}</p>
-          <IconButton Icon={ArrowDownCircle} className="rounded-sm w-max" />
+          <IconButton Icon={ArrowUpCircle} className="rounded-sm w-max" onClick={(e) => votePost(e, "upvote")} />
+          <p className="text-sm font-bold">{upvotes}</p>
+          <IconButton Icon={ArrowDownCircle} className="rounded-sm w-max" onClick={(e) => votePost(e, "downvote")} />
         </div>
 
         <div className="w-full p-2 overflow-hidden">
