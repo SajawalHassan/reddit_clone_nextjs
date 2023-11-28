@@ -156,10 +156,10 @@ export const CreatePostForm = () => {
                         value={field.value}
                         text="Upload image"
                         imageAvailableContent={
-                          <div className="border flex flex-col items-end">
-                            <div className="w-full relative overflow-hidden rounded-md">
-                              <img className="w-full h-full max-h-[10rem] blur-[20px] brightness-75" src={field.value} />
-                              <img className="w-[10rem] h-full max-h-[10rem] absolute inset-0 m-auto" src={field.value} />
+                          <div className="border flex flex-col items-end rounded-md">
+                            <div className="w-full relative overflow-hidden rounded-t-md">
+                              <img className="w-full max-h-[512px] blur-[20px] brightness-75" src={field.value} />
+                              <img className="max-w-full max-h-[512px] absolute inset-0 m-auto" src={field.value} />
                             </div>
                             <IconButton Icon={Trash} onClick={() => field.onChange("")} className="m-2" />
                           </div>
