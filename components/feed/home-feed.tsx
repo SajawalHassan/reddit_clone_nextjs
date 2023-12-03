@@ -11,7 +11,7 @@ import { LoadingSkeleton } from "@/components/loading-skeleton";
 export const HomeFeed = () => {
   const query = "feed:home";
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useFeedQuery({ query, apiUrl: "/api/posts" });
+  const { data, fetchNextPage, hasNextPage, status } = useFeedQuery({ query, apiUrl: "/api/posts" });
 
   let posts = data?.pages?.reduce((prev: any, current: any) => {
     return [...prev, ...current.feedItems];
@@ -31,7 +31,7 @@ export const HomeFeed = () => {
   }
 
   return (
-    <div>
+    <div className="w-full max-w-[40rem]">
       <InfiniteScroll
         dataLength={posts ? posts.length : 0}
         next={() => fetchNextPage()}
