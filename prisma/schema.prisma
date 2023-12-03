@@ -24,6 +24,8 @@ model Profile {
   karma                 Int     @default(1)
 
   pinnedPosts        Post[]
+  upvotedPosts       PostProfileUpvotes[]
+  downvotedPosts     PostProfileDownvotes[]
   createdCommunities Community[]
   members            Member[]
 
@@ -106,9 +108,10 @@ model Post {
   imageUrl String? @db.Text
   link     String? @db.Text
   spoiler  Boolean @default(false)
-  upvotes  Int?    @default(0)
 
-  comments Comment[]
+  comments  Comment[]
+  upvotes   PostProfileUpvotes[]
+  downvotes PostProfileDownvotes[]
 
   memberId String
   member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
@@ -125,6 +128,32 @@ model Post {
   @@index([memberId])
   @@index([pinnedPostProfileId])
   @@index([communityId])
+}
+
+model PostProfileUpvotes {
+  id String @id @default(uuid())
+
+  postId String @unique
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  profileId String  @unique
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@index([profileId])
+}
+
+model PostProfileDownvotes {
+  id String @id @default(uuid())
+
+  postId String @unique
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  profileId String  @unique
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@index([profileId])
 }
 
 model Comment {

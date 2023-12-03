@@ -94,7 +94,7 @@ body,
     @apply flex items-center justify-center gap-x-1 p-4 text-center cursor-pointer rounded-sm bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition w-full text-sm sm:text-base disabled:opacity-50 disabled:hover:bg-zinc-100/50;
   }
   .home-component {
-    @apply bg-white border border-gray-300 rounded-md w-full p-2 dark:bg-[#1a1a1a] dark:border-[#3c3c3d];
+    @apply bg-white border border-zinc-300 rounded-md w-full p-2 dark:bg-[#1a1a1a] dark:border-[#3c3c3d];
   }
 }
 
@@ -128,7 +128,7 @@ body,
   z-index: 40;
   border-radius: 1000px;
 }
-
+/* 
 .fr-top[class="dark-theme"] {
   border-color: #3c3c3d !important;
 }
@@ -151,4 +151,4 @@ body,
 
 .fr-element[class="dark-theme"] {
   color: #fff !important;
-}
+} */

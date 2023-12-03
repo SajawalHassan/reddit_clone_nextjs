@@ -95,6 +95,8 @@ export async function GET(req: Request) {
             },
           },
           community: true,
+          upvotes: true,
+          downvotes: true,
         },
       });
     } else {
@@ -111,6 +113,8 @@ export async function GET(req: Request) {
             },
           },
           community: true,
+          upvotes: true,
+          downvotes: true,
         },
       });
     }

@@ -2,11 +2,12 @@
 
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
+import { MouseEvent } from "react";
 
 interface Props {
   Icon: LucideIcon;
   className?: string;
-  onClick?: () => void;
+  onClick?: (e: MouseEvent) => void;
 }
 
 export const IconButton = ({ Icon, className, onClick }: Props) => {

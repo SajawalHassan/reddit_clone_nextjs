@@ -8,7 +8,10 @@ import { format } from "date-fns";
 import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { MouseEvent } from "react";
+import { MouseEvent, useEffect, useState } from "react";
+import { useSocket } from "../providers/socket-provider";
+import axios from "axios";
+import qs from "query-string";
 const FroalaEditorView = dynamic(
   async () => {
     const values = await Promise.all([import("react-froala-wysiwyg/FroalaEditorView")]);
@@ -28,8 +31,14 @@ const DATE_FORMAT = "d MMM yyyy, HH:mm";
 const SHORT_DATE_FORMAT = "d MMM yyyy";
 
 export const PostFeedItemHomeComponent = ({ post }: { post: PostWithMemberWithProfileWithCommunity }) => {
-  const isOnlyTitle = !post.content && !post.imageUrl && !post.link;
+  const { socket, isConnected } = useSocket();
 
+  const [upvotes, setUpvotes] = useState(0);
+  const [isVoting, setIsVoting] = useState(false);
+  const [hasUpvoted, setHasUpvoted] = useState(false);
+  const [hasDownvoted, setHasDownvoted] = useState(false);
+
+  const isOnlyTitle = !post.content && !post.imageUrl && !post.link;
   const router = useRouter();
 
   const pushToUrl = (e: MouseEvent, url: string) => {
@@ -37,15 +46,73 @@ export const PostFeedItemHomeComponent = ({ post }: { post: PostWithMemberWithPr
     router.push(url);
   };
 
+  useEffect(() => {
+    const setVotingStatus = async () => {
+      const url = qs.stringifyUrl({ url: "/api/socket/posts/vote", query: { postId: post.id } });
+
+      const response = await axios.get(url);
+      setHasUpvoted(response.data.hasUpvotedPost);
+      setHasDownvoted(response.data.hasDownvotedPost);
+    };
+
+    setUpvotes(post.upvotes.length);
+    setVotingStatus();
+  }, []);
+
+  if (!isConnected) return;
+
+  socket.on(`post:${post.id}:vote:up`, (data: any) => {
+    if (isVoting) return;
+
+    const { num, setDownvoteActive, setUpvoteActive } = data;
+
+    setUpvotes(upvotes + num);
+    setHasDownvoted(setDownvoteActive);
+    setHasUpvoted(setUpvoteActive);
+  });
+
+  socket.on(`post:${post.id}:vote:down`, (data: any) => {
+    if (isVoting) return;
+
+    const { num, setDownvoteActive, setUpvoteActive } = data;
+
+    setUpvotes(upvotes - num);
+    setHasDownvoted(setDownvoteActive);
+    setHasUpvoted(setUpvoteActive);
+  });
+
+  const votePost = async (e: MouseEvent, type: "upvote" | "downvote") => {
+    if (isVoting) return;
+
+    e.stopPropagation();
+    setIsVoting(true);
+
+    try {
+      await axios.patch("/api/socket/posts/vote", { type, postId: post.id });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsVoting(false);
+    }
+  };
+
   return (
     <div className="px-2 w-full max-w-[40rem]">
       <div
-        className="home-component flex p-0 hover:border hover:border-black cursor-pointer"
+        className="home-component flex p-0 hover:border-black hover:dark:border-[#818384] cursor-pointer"
         onClick={() => router.push(`/main/communities/${post.communityId}/post/${post.id}`)}>
         <div className="w-[2.5rem] xs:w-[4rem] bg-gray-100 dark:bg-[#151516] p-1 xs:p-2 flex flex-col items-center rounded-l-md">
-          <IconButton Icon={ArrowUpCircle} className="rounded-sm w-max" />
-          <p className="text-sm font-bold">{post.upvotes}</p>
-          <IconButton Icon={ArrowDownCircle} className="rounded-sm w-max" />
+          <IconButton
+            Icon={ArrowUpCircle}
+            className={cn("rounded-sm w-max", hasUpvoted && "text-orange-500 font-bold")}
+            onClick={(e: MouseEvent) => votePost(e, "upvote")}
+          />
+          <p className="text-sm font-bold">{upvotes}</p>
+          <IconButton
+            Icon={ArrowDownCircle}
+            className={cn("rounded-sm w-max", hasDownvoted && "text-orange-500 font-bold")}
+            onClick={(e: MouseEvent) => votePost(e, "downvote")}
+          />
         </div>
 
         <div className="w-full p-2 overflow-hidden">
