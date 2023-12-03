@@ -6,7 +6,7 @@ export const LoadingSkeleton = () => {
   const skeletons = [1, 2, 3];
 
   return (
-    <div className="w-full max-w-[40rem] space-y-5">
+    <div className="home-component-container space-y-5">
       {skeletons.map((i) => (
         <div className="home-component h-[20rem] w-full p-0 flex" key={i}>
           <div className="w-[4rem] bg-gray-100 dark:bg-[#151516] p-2 flex flex-col items-center rounded-l-md space-y-2 h-full">

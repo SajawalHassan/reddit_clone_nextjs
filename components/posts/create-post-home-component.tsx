@@ -29,7 +29,7 @@ export const CreatePostHomeComponent = () => {
   }, []);
 
   return (
-    <div className="px-2 w-full max-w-[40rem]">
+    <div className="px-2 home-component-container">
       <div className="flex items-center gap-x-2 home-component">
         <ProfilePicture src={profile?.imageUrl} profileId={profile?.id as string} />
         <Input placeholder="Create post" onClick={() => router.push("/main/create/post?plain=true")} />

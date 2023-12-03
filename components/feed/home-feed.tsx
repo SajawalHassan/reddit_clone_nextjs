@@ -3,7 +3,7 @@
 import { useFeedQuery } from "@/hooks/use-feed-query";
 import { Loader2 } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { PostFeedItemHomeComponent } from "./post-feed-item-home-component";
+import { PostHomeComponent } from "@/components/posts/post-home-component";
 import { PostWithMemberWithProfileWithCommunity } from "@/types";
 import { useEffect } from "react";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
@@ -24,14 +24,14 @@ export const HomeFeed = () => {
 
   if (status === "loading") {
     return (
-      <div className="w-full max-w-[40rem] px-2">
+      <div className="home-component-container px-2">
         <LoadingSkeleton />
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-[40rem]">
+    <div className="home-component-container">
       <InfiniteScroll
         dataLength={posts ? posts.length : 0}
         next={() => fetchNextPage()}
@@ -43,7 +43,7 @@ export const HomeFeed = () => {
         }
         className="overflow-auto mt-2 space-y-2">
         {posts?.map((post: PostWithMemberWithProfileWithCommunity) => (
-          <PostFeedItemHomeComponent post={post} key={post.id} />
+          <PostHomeComponent post={post} key={post.id} />
         ))}
       </InfiniteScroll>
     </div>

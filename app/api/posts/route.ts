@@ -97,6 +97,7 @@ export async function GET(req: Request) {
           community: true,
           upvotes: true,
           downvotes: true,
+          comments: true,
         },
       });
     } else {
@@ -115,6 +116,7 @@ export async function GET(req: Request) {
           community: true,
           upvotes: true,
           downvotes: true,
+          comments: true,
         },
       });
     }
