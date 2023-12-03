@@ -34,11 +34,13 @@ export const PostFeedItemHomeComponent = ({ post }: { post: PostWithMemberWithPr
   const { socket, isConnected } = useSocket();
 
   const [upvotes, setUpvotes] = useState(0);
+  const [formattedUpvotes, setFormattedUpvotes] = useState("");
   const [isVoting, setIsVoting] = useState(false);
   const [hasUpvoted, setHasUpvoted] = useState(false);
   const [hasDownvoted, setHasDownvoted] = useState(false);
 
   const isOnlyTitle = !post.content && !post.imageUrl && !post.link;
+  const formatter = Intl.NumberFormat("en", { notation: "compact" });
   const router = useRouter();
 
   const pushToUrl = (e: MouseEvent, url: string) => {
@@ -58,6 +60,10 @@ export const PostFeedItemHomeComponent = ({ post }: { post: PostWithMemberWithPr
     setUpvotes(post.upvotes.length);
     setVotingStatus();
   }, []);
+
+  useEffect(() => {
+    setFormattedUpvotes(formatter.format(upvotes));
+  }, [upvotes, formatter]);
 
   if (!isConnected) return;
 
@@ -82,9 +88,9 @@ export const PostFeedItemHomeComponent = ({ post }: { post: PostWithMemberWithPr
   });
 
   const votePost = async (e: MouseEvent, type: "upvote" | "downvote") => {
-    if (isVoting) return;
-
     e.stopPropagation();
+
+    if (isVoting) return;
     setIsVoting(true);
 
     try {
@@ -104,13 +110,13 @@ export const PostFeedItemHomeComponent = ({ post }: { post: PostWithMemberWithPr
         <div className="w-[2.5rem] xs:w-[4rem] bg-gray-100 dark:bg-[#151516] p-1 xs:p-2 flex flex-col items-center rounded-l-md">
           <IconButton
             Icon={ArrowUpCircle}
-            className={cn("rounded-sm w-max", hasUpvoted && "text-orange-500 font-bold")}
+            className={cn("rounded-sm w-max text-zinc-600", hasUpvoted && "text-orange-500 font-bold")}
             onClick={(e: MouseEvent) => votePost(e, "upvote")}
           />
-          <p className="text-sm font-bold">{upvotes}</p>
+          <p className="text-sm font-bold">{formattedUpvotes}</p>
           <IconButton
             Icon={ArrowDownCircle}
-            className={cn("rounded-sm w-max", hasDownvoted && "text-orange-500 font-bold")}
+            className={cn("rounded-sm w-max text-zinc-600", hasDownvoted && "text-orange-500 font-bold")}
             onClick={(e: MouseEvent) => votePost(e, "downvote")}
           />
         </div>
@@ -141,10 +147,26 @@ export const PostFeedItemHomeComponent = ({ post }: { post: PostWithMemberWithPr
           </div>
 
           <div>
-            <h3 className={cn("text-xl font-bold", isOnlyTitle && "text-2xl mt-4")}>{post.title}</h3>
+            <div className="flex items-center gap-x-2">
+              <h3 className={cn("text-lg font-bold", isOnlyTitle && "text-xl mt-1.5")}>{post.title}</h3>
+              {post.spoiler && <p className="font-bold text-[11px] uppercase bg-gray-200 rounded-md text-zinc-700 px-1 py-0.5">Spoiler</p>}
+            </div>
             <div>
               {post.content && <FroalaEditorView model={post.content} />}
-              {post.imageUrl && <img src={post.imageUrl} alt={post.title} className="max-h-[512px] w-full rounded-md mt-2" />}
+              {post.imageUrl && (
+                <div className="relative overflow-hidden rounded-md">
+                  <img
+                    src={post.imageUrl}
+                    alt={post.title}
+                    className={cn("max-h-[512px] w-full rounded-md mt-1", post.spoiler && "blur-[20px] brightness-75")}
+                  />
+                  {post.spoiler && (
+                    <p className="w-full max-w-[15rem] py-1.5 font-bold text-center text-gray-600 hover:bg-opacity-80 bg-gray-100 bg-opacity-60 rounded-md uppercase absolute bottom-5 inset-x-0 mx-auto">
+                      Click to see spoiler
+                    </p>
+                  )}
+                </div>
+              )}
               {post.link && (
                 <a href={post.link} target="_blank" className="text-blue-500 hover:underline cursor-pointer">
                   {post.link}
@@ -152,6 +174,8 @@ export const PostFeedItemHomeComponent = ({ post }: { post: PostWithMemberWithPr
               )}
             </div>
           </div>
+
+          <div></div>
         </div>
       </div>
     </div>
