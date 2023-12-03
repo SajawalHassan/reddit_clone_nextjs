@@ -9,7 +9,7 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ["ucarecdn.com", "img.clerk.com"],
+    domains: ["ucarecdn.com", "img.clerk.com", "redditstatic.com"],
   },
 };
 

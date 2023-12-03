@@ -1,19 +1,20 @@
 "use client";
 
 import { PostWithMemberWithProfileWithCommunity } from "@/types";
-import { ArrowDownCircle, ArrowUpCircle, Copy, Link, Loader2, MessageSquare, Share } from "lucide-react";
+import { ArrowDownCircle, ArrowUpCircle, Link, Loader2, MessageSquare, Share } from "lucide-react";
 import { IconButton } from "../icon-button";
 import { format } from "date-fns";
-
-import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { MouseEvent, useEffect, useState } from "react";
 import { useSocket } from "../providers/socket-provider";
-import axios from "axios";
-import qs from "query-string";
 import { PostHomeComponentFooterItem } from "./post-home-component-footer-item";
 import { PostHomeComponentFooterItemMenuItem } from "./post-home-component-footer-item-menu-item";
+
+import axios from "axios";
+import qs from "query-string";
+import dynamic from "next/dynamic";
+
 const FroalaEditorView = dynamic(
   async () => {
     const values = await Promise.all([import("react-froala-wysiwyg/FroalaEditorView")]);
@@ -45,7 +46,6 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
   const isOnlyTitle = !post.content && !post.imageUrl && !post.link;
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
   const router = useRouter();
-  const pathname = usePathname();
 
   const pushToUrl = (e: MouseEvent, url: string) => {
     e.stopPropagation();
@@ -173,7 +173,7 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
                 {post.content && (
                   <div className="flex items-center justify-center">
                     {post.spoiler ? (
-                      <p className="w-full max-w-[15rem] py-1.5 font-bold text-center text-gray-600 hover:bg-opacity-80 bg-gray-200 dark:text-gray-800 bg-opacity-60 rounded-md uppercase">
+                      <p className="w-full max-w-[15rem] py-1.5 font-bold mt-2 text-center text-gray-600 hover:bg-opacity-80 bg-gray-200 dark:text-gray-800 bg-opacity-60 rounded-md uppercase">
                         Click to see spoiler
                       </p>
                     ) : (
