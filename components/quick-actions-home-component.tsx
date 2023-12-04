@@ -10,7 +10,7 @@ export const QuickActionsHomeComponent = () => {
 
   const router = useRouter();
   return (
-    <div className="home-component p-0 w-[20rem] hidden lg:block pb-5">
+    <div className="home-component p-0 w-[20rem] pb-5">
       <div className="relative">
         <img src="https://www.redditstatic.com/desktop2x/img/id-cards/home-banner@2x.png" alt="Reddit home banner" className="" />
         <div className="flex">

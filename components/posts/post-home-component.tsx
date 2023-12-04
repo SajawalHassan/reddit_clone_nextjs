@@ -42,6 +42,7 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
   const [hasUpvoted, setHasUpvoted] = useState(false);
   const [hasDownvoted, setHasDownvoted] = useState(false);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [hasViewedPost, setHasViewedPost] = useState(false);
 
   const isOnlyTitle = !post.content && !post.imageUrl && !post.link;
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
@@ -68,6 +69,15 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
   useEffect(() => {
     setFormattedUpvotes(formatter.format(upvotes));
   }, [upvotes, formatter]);
+
+  useEffect(() => {
+    const visitedPosts: any[] = JSON.parse(localStorage.getItem("visitedPosts") || "[]");
+
+    const existingIndex = visitedPosts.findIndex((visitedPost) => visitedPost.id === post.id);
+
+    if (existingIndex === -1) setHasViewedPost(false);
+    else setHasViewedPost(true);
+  }, []);
 
   if (!isConnected) return;
 
@@ -140,7 +150,7 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
 
         <div className="w-full pt-2 px-2">
           <div className="overflow-hidden">
-            <div className="flex items-center gap-x-1 text-[10px] xs:text-xs">
+            <div className="flex items-center gap-x-1 text-[10px] sm:text-xs">
               <img
                 src={post.community.imageUrl}
                 alt={post.community.name}
@@ -166,7 +176,7 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
 
             <div>
               <div className="flex items-center gap-x-2">
-                <h3 className={cn("text-lg font-bold", isOnlyTitle && "text-xl mt-1.5")}>{post.title}</h3>
+                <h3 className={cn("text-lg font-semibold", isOnlyTitle && "text-xl mt-1.5", hasViewedPost && "text-gray-500")}>{post.title}</h3>
                 {post.spoiler && <p className="font-bold text-[11px] uppercase bg-gray-200 rounded-md text-zinc-700 px-1 py-0.5">Spoiler</p>}
               </div>
               <div>
