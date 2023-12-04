@@ -32,8 +32,8 @@ export const CreatePostHomeComponent = () => {
     <div className="px-2 home-component-container">
       <div className="flex items-center gap-x-2 home-component">
         <ProfilePicture src={profile?.imageUrl} profileId={profile?.id as string} />
-        <Input placeholder="Create post" onClick={() => router.push("/main/create/post?plain=true")} />
-        <IconButton Icon={Image} onClick={() => router.push("/main/create/post?media=true")} />
+        <Input placeholder="Create post" onClick={() => router.push("/main/create/post?plain=true")} className="rounded-sm" />
+        <IconButton Icon={Image} onClick={() => router.push("/main/create/post?media=true")} className="text-zinc-500" />
         <IconButton Icon={Link} onClick={() => router.push("/main/create/post?link=true")} />
       </div>
     </div>

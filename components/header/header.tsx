@@ -13,7 +13,7 @@ export const Header = () => {
   const router = useRouter();
 
   return (
-    <div className="bg-white dark:bg-[#1A1A1B] px-3 md:px-5 lg:px-10 flex items-center gap-x-2 md:gap-x-4 flex-initial fixed top-0 left-0 z-50 w-full">
+    <div className="bg-white dark:bg-[#1A1A1B] px-3 md:px-5 lg:px-10 flex items-center gap-x-2 md:gap-x-4 flex-initial fixed top-0 left-0 z-50 w-full h-[3rem]">
       <HeaderMobileToggle />
       <RedditLogo onClick={() => router.push("/main")} className="cursor-pointer" />
       <HeaderCommunities />

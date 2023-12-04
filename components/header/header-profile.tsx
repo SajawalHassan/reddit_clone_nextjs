@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useClerk } from "@clerk/nextjs";
 import { useModal } from "@/hooks/use-modal-store";
+import { ProfilePicture } from "../profile-picture";
 
 export const HeaderProfile = () => {
   const [profile, setProfile] = useState<Profile>();
@@ -44,13 +45,16 @@ export const HeaderProfile = () => {
       <div
         onClick={() => setMenuIsOpen(true)}
         className={cn(
-          "flex items-center justify-between gap-x-5 border border-transparent hover:border-gray-200 dark:hover:border-zinc-800 py-1.5 px-2 cursor-pointer",
+          "flex items-center justify-between gap-x-5 border border-transparent hover:border-gray-200 dark:hover:border-zinc-800 py-1.5 px-2 cursor-pointer lg:w-[13rem]",
           menuIsOpen && "border-gray-200 dark:border-zinc-800"
         )}>
         {formattedKarma.toLowerCase() !== "nan" && (
-          <div className="hidden lg:block">
-            <p className="font-semibold text-sm">{profile?.displayName}</p>
-            <p className="font-semibold text-zinc-500 text-sm">{formattedKarma} karma</p>
+          <div className="hidden lg:flex gap-x-1">
+            <ProfilePicture src={profile?.imageUrl} profileId={profile?.id as string} className="h-8 w-8" />
+            <div>
+              <p className="font-bold text-xs">{profile?.displayName}</p>
+              <p className="font-bold text-zinc-500 text-xs">{formattedKarma} karma</p>
+            </div>
           </div>
         )}
         <ArrowDownCircle className="w-6 h-6 text-black dark:text-white lg:text-zinc-700 lg:dark:text-zinc-700" />

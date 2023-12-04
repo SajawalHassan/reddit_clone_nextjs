@@ -12,7 +12,7 @@ export const QuickActionsHomeComponent = () => {
   return (
     <div className="home-component p-0 w-[20rem] pb-5">
       <div className="relative">
-        <img src="https://www.redditstatic.com/desktop2x/img/id-cards/home-banner@2x.png" alt="Reddit home banner" className="" />
+        <img src="https://www.redditstatic.com/desktop2x/img/id-cards/home-banner@2x.png" alt="Reddit home banner" />
         <div className="flex">
           <img src="https://www.redditstatic.com/desktop2x/img/id-cards/snoo-home@2x.png" alt="Snoo Home" className="absolute left-5 top-3 h-20" />
           <p className="font-semibold ml-[5rem] mt-4">Home</p>
