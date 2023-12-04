@@ -78,7 +78,7 @@ export const CreatePostForm = () => {
       const data = response.data;
 
       form.reset();
-      router.push(`/main/communities/${data.community.id}/posts/${data.post.id}`);
+      router.push(`/main/communities/${data.community.id}/post/${data.post.id}`);
     } catch (error) {
       console.log(error);
     }
@@ -127,18 +127,19 @@ export const CreatePostForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <FroalaEditor model={field.value} onModelChange={field.onChange} />
+                      <FroalaEditor
+                        model={field.value}
+                        onModelChange={field.onChange}
+                        config={{
+                          toolbarButtons: {
+                            moreText: {
+                              buttons: ["bold", "italic", "underline", "strikeThrough", "subscript", "superscript"],
+                              moreParagraph: { buttons: ["alignLeft", "alignCenter", "alignRight", "quote"] },
+                            },
+                          },
+                        }}
+                      />
                     </FormControl>
-                    {/* {resolvedTheme === "light" && (
-                      <FormControl>
-                        <FroalaEditor model={field.value} onModelChange={field.onChange} config={{ theme: "gray" }} />
-                      </FormControl>
-                    )}
-                    {resolvedTheme === "dark" && (
-                      <FormControl>
-                        <FroalaEditor model={field.value} onModelChange={field.onChange} config={{ theme: "dark" }} />
-                      </FormControl>
-                    )} */}
                   </FormItem>
                 )}
               />

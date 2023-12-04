@@ -181,11 +181,13 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
               </div>
               <div>
                 {post.content && (
-                  <div className="flex items-center justify-center">
+                  <div className={hasViewedPost && "text-gray-500"}>
                     {post.spoiler ? (
-                      <p className="w-full max-w-[15rem] py-1.5 font-bold mt-2 text-center text-gray-600 hover:bg-opacity-80 bg-gray-200 dark:text-gray-800 bg-opacity-60 rounded-md uppercase">
-                        Click to see spoiler
-                      </p>
+                      <div className="flex items-center justify-center">
+                        <p className="w-full max-w-[15rem] py-1.5 font-bold mt-2 text-center text-gray-600 hover:bg-opacity-80 bg-gray-200 dark:text-gray-800 bg-opacity-60 rounded-md uppercase">
+                          Click to see spoiler
+                        </p>
+                      </div>
                     ) : (
                       <FroalaEditorView model={post.content} />
                     )}

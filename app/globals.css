@@ -131,27 +131,12 @@ body,
   z-index: 40;
   border-radius: 1000px;
 }
-/* 
-.fr-top[class="dark-theme"] {
-  border-color: #3c3c3d !important;
+
+.fr-second-toolbar {
+  display: none !important;
 }
 
-.fr-wrapper[class="dark-theme"] {
-  border-color: #3c3c3d !important;
+.fr-wrapper {
+  border-radius: 0px 0px 10px 10px;
+  border-bottom: 1px solid #cccccc;
 }
-
-.fr-toolbar[class="dark-theme"] {
-  background-color: #272729 !important;
-  color: #ffff !important;
-}
-
-.fr-wrapper[class="dark-theme"] {
-  background-color: #272729 !important;
-  color: #fff !important;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-
-.fr-element[class="dark-theme"] {
-  color: #fff !important;
-} */
