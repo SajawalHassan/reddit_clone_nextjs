@@ -5,7 +5,6 @@ import { Loader2 } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { PostHomeComponent } from "@/components/posts/post-home-component";
 import { PostWithMemberWithProfileWithCommunity } from "@/types";
-import { useEffect } from "react";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 
 export const HomeFeed = () => {
