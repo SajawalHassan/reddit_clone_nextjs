@@ -6,10 +6,13 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { PostHomeComponent } from "@/components/posts/post-home-component";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { useLoading } from "@/hooks/use-loading";
+import { useEffect } from "react";
 
 export const CommunityFeed = ({ communityId }: { communityId: string }) => {
   const query = "feed:home";
 
+  const { communityShouldLoad, setCommunityShouldLoad } = useLoading();
   const { data, fetchNextPage, hasNextPage, status, isFetching } = useFeedQuery({
     query,
     apiUrl: "/api/communities/feed",
@@ -21,7 +24,11 @@ export const CommunityFeed = ({ communityId }: { communityId: string }) => {
     return [...prev, ...current.feedItems];
   }, []);
 
-  if (status === "loading" || isFetching) {
+  useEffect(() => {
+    if (!isFetching) setCommunityShouldLoad(false);
+  }, [isFetching]);
+
+  if (status === "loading" || communityShouldLoad) {
     return (
       <div className="home-component-container px-2">
         <LoadingSkeleton />
