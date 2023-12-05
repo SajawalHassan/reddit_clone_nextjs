@@ -7,7 +7,7 @@ export type CommunityWithMembers = Community & {
   members: Member[];
 };
 
-export type PostWithMemberWithProfileWithCommunity = Post & {
+export type PostWithMemberWithProfileWithCommunityWithVotes = Post & {
   member: Member & {
     profile: Profile;
   };

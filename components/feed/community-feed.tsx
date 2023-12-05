@@ -7,16 +7,21 @@ import { PostHomeComponent } from "@/components/posts/post-home-component";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 
-export const HomeFeed = () => {
+export const CommunityFeed = ({ communityId }: { communityId: string }) => {
   const query = "feed:home";
 
-  const { data, fetchNextPage, hasNextPage, status } = useFeedQuery({ query, apiUrl: "/api/posts" });
+  const { data, fetchNextPage, hasNextPage, status, isFetching } = useFeedQuery({
+    query,
+    apiUrl: "/api/communities/feed",
+    communityId,
+    feedType: "hot",
+  });
 
   let posts = data?.pages?.reduce((prev: any, current: any) => {
     return [...prev, ...current.feedItems];
   }, []);
 
-  if (status === "loading") {
+  if (status === "loading" || isFetching) {
     return (
       <div className="home-component-container px-2">
         <LoadingSkeleton />

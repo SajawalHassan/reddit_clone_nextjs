@@ -4,15 +4,19 @@ import qs from "query-string";
 interface Props {
   query: string;
   apiUrl: string;
+  communityId?: string;
+  feedType?: "new" | "hot";
 }
 
-export const useFeedQuery = ({ query, apiUrl }: Props) => {
+export const useFeedQuery = ({ query, apiUrl, communityId, feedType }: Props) => {
   const fetchCommunities = async ({ pageParam = undefined }) => {
     const url = qs.stringifyUrl(
       {
         url: apiUrl,
         query: {
           cursor: pageParam,
+          communityId,
+          feedType,
         },
       },
       { skipNull: true }
@@ -22,7 +26,7 @@ export const useFeedQuery = ({ query, apiUrl }: Props) => {
     return res.json();
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, status, isFetching } = useInfiniteQuery({
     queryKey: [query],
     queryFn: fetchCommunities,
     getNextPageParam: (lastPage) => lastPage?.nextCursor,
@@ -32,7 +36,7 @@ export const useFeedQuery = ({ query, apiUrl }: Props) => {
     data,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage,
     status,
+    isFetching,
   };
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { PostWithMemberWithProfileWithCommunity } from "@/types";
+import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { ArrowDownCircle, ArrowUpCircle, Link, Loader2, MessageSquare, Share } from "lucide-react";
 import { IconButton } from "../icon-button";
 import { format } from "date-fns";
@@ -33,7 +33,7 @@ const FroalaEditorView = dynamic(
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
 const SHORT_DATE_FORMAT = "d MMM yyyy";
 
-export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWithCommunity }) => {
+export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWithCommunityWithVotes }) => {
   const { socket, isConnected } = useSocket();
 
   const [upvotes, setUpvotes] = useState(0);
