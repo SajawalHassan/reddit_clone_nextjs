@@ -17,11 +17,6 @@ export const HomeFeed = () => {
     return [...prev, ...current.feedItems];
   }, []);
 
-  useEffect(() => {
-    // Remove duplicates just in case
-    posts = posts?.filter((post: any, index: number) => posts?.indexOf(post) === index);
-  }, [posts]);
-
   if (status === "loading") {
     return (
       <div className="home-component-container px-2">
@@ -41,7 +36,7 @@ export const HomeFeed = () => {
             <Loader2 className="h-8 w-8 animate-spin" />
           </div>
         }
-        className="overflow-auto mt-2 space-y-2">
+        className="mt-2 space-y-2 pb-10">
         {posts?.map((post: PostWithMemberWithProfileWithCommunity) => (
           <PostHomeComponent post={post} key={post.id} />
         ))}
