@@ -65,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
         if (hasUpvotedPost) {
           res?.socket?.server?.io?.emit(downvoteKey, { num: 2, setDownvoteActive: true, setUpvoteActive: false });
         } else {
-          res?.socket?.server?.io?.emit(downvoteKey, { num: 2, setDownvoteActive: true, setUpvoteActive: false });
+          res?.socket?.server?.io?.emit(downvoteKey, { num: 1, setDownvoteActive: true, setUpvoteActive: false });
         }
       }
     }

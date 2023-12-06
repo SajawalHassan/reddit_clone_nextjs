@@ -135,7 +135,7 @@ model PostProfileUpvotes {
   postId String @unique
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  profileId String  @unique
+  profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@index([postId])
@@ -148,7 +148,7 @@ model PostProfileDownvotes {
   postId String @unique
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  profileId String  @unique
+  profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   @@index([postId])

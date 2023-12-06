@@ -62,7 +62,7 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
       setHasDownvoted(response.data.hasDownvotedPost);
     };
 
-    setUpvotes(post.upvotes.length);
+    setUpvotes(post.upvotes.length - post.downvotes.length);
     setVotingStatus();
   }, [post]);
 
