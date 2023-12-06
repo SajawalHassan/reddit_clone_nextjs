@@ -70,6 +70,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ community, post });
   } catch (error) {
     console.log("POST_CREATE", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
 
@@ -126,5 +127,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ items: posts, feedItems: posts, nextCursor });
   } catch (error) {
     console.log("POST_GET", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

@@ -41,6 +41,7 @@ export async function POST(req: Request) {
     return NextResponse.json(newCommunity);
   } catch (error) {
     console.log("[MESSAGES_POST]", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
 
@@ -62,5 +63,6 @@ export async function GET(req: Request) {
     return NextResponse.json(communities);
   } catch (error) {
     console.log("[MESSAGES_GET]", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

@@ -131,5 +131,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
     return NextResponse.json({ items: posts, feedItems: posts, nextCursor });
   } catch (error) {
     console.log("COMMUNITIES_FEED_GET", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

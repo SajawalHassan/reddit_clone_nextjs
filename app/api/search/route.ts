@@ -29,5 +29,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ communities, profiles });
   } catch (error) {
     console.log("[COMMUNITIES_SEARCH_GET]", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

@@ -1,6 +1,6 @@
-import { useLoading } from "@/hooks/use-loading";
 import { ModalTypes, useModal } from "@/hooks/use-modal-store";
 import { cn } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import { LucideIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
@@ -18,7 +18,7 @@ interface Props {
 
 export const CommunitySelectionOption = ({ Icon, text, type, modalType, communityId, imageUrl, setMenuIsOpen, customOnClick }: Props) => {
   const { openModal } = useModal();
-  const { setCommunityShouldLoad } = useLoading();
+  const queryClient = useQueryClient();
 
   const router = useRouter();
 
@@ -29,7 +29,7 @@ export const CommunitySelectionOption = ({ Icon, text, type, modalType, communit
       return;
     }
 
-    setCommunityShouldLoad(true);
+    queryClient.setQueryData([`feed:community:${communityId}`], []);
     router.push(`/main/communities/${communityId}`);
 
     setMenuIsOpen && setMenuIsOpen(false);

@@ -9,5 +9,6 @@ export async function GET() {
     return NextResponse.json(profile);
   } catch (error) {
     console.log("[PROFILE_GET]", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
