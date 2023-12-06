@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Image, Link, Loader2, Menu, Trash } from "lucide-react";
+import { Image, Link, Loader2, Menu, Plus, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 import dynamic from "next/dynamic";
@@ -22,6 +22,7 @@ import { CommunitySelecter } from "./community-selecter";
 import { PostTagItem } from "./post-tag-item";
 import { linkFormSchema, mediaFormSchema, plainFormSchema } from "@/schemas/post-schema";
 import { useTheme } from "next-themes";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 const FroalaEditor = dynamic(
   async () => {
@@ -49,6 +50,7 @@ export const CreatePostForm = () => {
 
   const router = useRouter();
   const { resolvedTheme } = useTheme();
+  const { setHeaderActivePlace } = useGlobalInfo();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -59,6 +61,8 @@ export const CreatePostForm = () => {
 
   useEffect(() => {
     setIsMounted(true);
+
+    setHeaderActivePlace({ text: "Create Post", Icon: Plus });
   }, []);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -75,10 +79,11 @@ export const CreatePostForm = () => {
 
     try {
       const response = await axios.post("/api/posts", { ...values, type: isPlain ? "plain" : isMedia ? "media" : "link" });
-      const data = response.data;
+      const post = response.data;
 
       form.reset();
-      router.push(`/main/communities/${data.community.id}/post/${data.post.id}`);
+      setHeaderActivePlace({ text: post.community.uniqueName, imageUrl: post.community.imageUrl });
+      router.push(`/main/communities/${post.community.id}/post/${post.post.id}`);
     } catch (error) {
       console.log(error);
     }

@@ -1,15 +1,17 @@
 "use client";
 
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useFeedQuery } from "@/hooks/use-feed-query";
 import { Loader2 } from "lucide-react";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { PostHomeComponent } from "@/components/posts/post-home-component";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 export const CommunityFeed = ({ communityId }: { communityId: string }) => {
   const query = `feed:community:${communityId}`;
 
+  const { setHeaderActivePlace } = useGlobalInfo();
   const { data, fetchNextPage, hasNextPage, status } = useFeedQuery({
     query,
     apiUrl: "/api/communities/feed",

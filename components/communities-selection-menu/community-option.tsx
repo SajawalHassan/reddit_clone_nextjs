@@ -1,3 +1,4 @@
+import { useGlobalInfo } from "@/hooks/use-global-info";
 import { ModalTypes, useModal } from "@/hooks/use-modal-store";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
@@ -18,6 +19,7 @@ interface Props {
 
 export const CommunitySelectionOption = ({ Icon, text, type, modalType, communityId, imageUrl, setMenuIsOpen, customOnClick }: Props) => {
   const { openModal } = useModal();
+  const { setHeaderActivePlace } = useGlobalInfo();
   const queryClient = useQueryClient();
 
   const router = useRouter();
@@ -30,6 +32,7 @@ export const CommunitySelectionOption = ({ Icon, text, type, modalType, communit
     }
 
     queryClient.setQueryData([`feed:community:${communityId}`], []);
+    setHeaderActivePlace({ text, imageUrl });
     router.push(`/main/communities/${communityId}`);
 
     setMenuIsOpen && setMenuIsOpen(false);

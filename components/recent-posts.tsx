@@ -1,17 +1,18 @@
 "use client";
 
-import { PostWithComments } from "@/types";
+import { PostWithCommentsWithCommunity } from "@/types";
 import { format } from "date-fns";
 import { MenuSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/seperator";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 const DATE_FORMAT = "d MMM";
 
 export const RecentPosts = () => {
-  const [visitedPosts, setVisitedPosts] = useState<PostWithComments[]>([]);
+  const [visitedPosts, setVisitedPosts] = useState<PostWithCommentsWithCommunity[]>([]);
 
   useEffect(() => {
     const visitedPostsLS: any[] = JSON.parse(localStorage.getItem("visitedPosts") || "[]");
@@ -21,18 +22,27 @@ export const RecentPosts = () => {
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
   const router = useRouter();
 
+  const { setHeaderActivePlace } = useGlobalInfo();
+
   const clearPostHistory = () => {
     localStorage.setItem("visitedPosts", "[]");
     setVisitedPosts([]);
+  };
+
+  const pushToUrl = (url: string, post: PostWithCommentsWithCommunity) => {
+    setHeaderActivePlace({ text: post.community.uniqueName, imageUrl: post.community.imageUrl });
+    router.push(url);
   };
 
   return (
     <div className={cn(visitedPosts.length === 0 ? "hidden" : "home-component w-[20rem]")}>
       <p className="uppercase text-xs font-bold mb-2">Recent Posts</p>
       <div className="space-y-2">
-        {visitedPosts.slice(0, 5).map((post: PostWithComments) => (
+        {visitedPosts.slice(0, 5).map((post: PostWithCommentsWithCommunity) => (
           <div key={post.id}>
-            <div className="flex gap-x-2 cursor-pointer group" onClick={() => router.push(`/main/communities/${post.communityId}/post/${post.id}`)}>
+            <div
+              className="flex gap-x-2 cursor-pointer group"
+              onClick={() => pushToUrl(`/main/communities/${post.communityId}/post/${post.id}`, post)}>
               <div className="min-h-[4rem] min-w-[6rem] max-h-[4rem] max-w-[6rem]">
                 {post.imageUrl ? (
                   <div className="overflow-hidden rounded-md h-full w-full">

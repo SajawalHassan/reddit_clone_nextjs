@@ -1,19 +1,26 @@
 "use client";
 
 import { useFeedQuery } from "@/hooks/use-feed-query";
-import { Loader2 } from "lucide-react";
+import { Home, Loader2 } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { PostHomeComponent } from "@/components/posts/post-home-component";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { useGlobalInfo } from "@/hooks/use-global-info";
+import { useEffect } from "react";
 
 export const HomeFeed = () => {
   const query = "feed:home";
 
   const { data, fetchNextPage, hasNextPage, status } = useFeedQuery({ query, apiUrl: "/api/posts" });
+  const { setHeaderActivePlace } = useGlobalInfo();
 
   let posts = data?.pages?.reduce((prev: any, current: any) => {
     return [...prev, ...current.feedItems];
+  }, []);
+
+  useEffect(() => {
+    setHeaderActivePlace({ text: "Home", Icon: Home });
   }, []);
 
   if (status === "loading") {

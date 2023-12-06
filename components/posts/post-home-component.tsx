@@ -15,6 +15,7 @@ import axios from "axios";
 import qs from "query-string";
 import dynamic from "next/dynamic";
 import { PostProfileDownvotes, PostProfileUpvotes } from "@prisma/client";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 const FroalaEditorView = dynamic(
   async () => {
@@ -36,6 +37,7 @@ const SHORT_DATE_FORMAT = "d MMM yyyy";
 
 export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWithCommunityWithVotes }) => {
   const { socket, isConnected } = useSocket();
+  const { setHeaderActivePlace } = useGlobalInfo();
 
   const [upvotes, setUpvotes] = useState(0);
   const [formattedUpvotes, setFormattedUpvotes] = useState("");
@@ -49,8 +51,13 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
   const router = useRouter();
 
-  const pushToUrl = (e: MouseEvent, url: string) => {
+  const pushToUrl = (e: MouseEvent, url: string, type: "community" | "user") => {
     e.stopPropagation();
+    if (type === "community") {
+      setHeaderActivePlace({ text: post.community.uniqueName, imageUrl: post.community.imageUrl });
+    } else {
+      setHeaderActivePlace({ text: post.member.profile.displayName, imageUrl: post.member.profile.imageUrl });
+    }
     router.push(url);
   };
 
@@ -131,7 +138,7 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
           "home-component flex p-0 hover:border-black hover:dark:border-[#818384] cursor-pointer",
           menuIsOpen && "border-transparent hover:border-transparent dark:border-transparent dark:hover:border-transparent"
         )}
-        onClick={() => router.push(`/main/communities/${post.communityId}/post/${post.id}`)}>
+        onClick={(e: MouseEvent) => pushToUrl(e, `/main/communities/${post.communityId}/post/${post.id}`, "community")}>
         <div className="w-[2.5rem] xs:w-[4rem] bg-gray-100 dark:bg-[#151516] p-1 xs:p-2 flex flex-col items-center rounded-l-md">
           <IconButton
             Icon={ArrowUpCircle}
@@ -153,17 +160,19 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
                 src={post.community.imageUrl}
                 alt={post.community.name}
                 className="h-6 w-6 rounded-full cursor-pointer hover:ring-2 ring-gray-200"
-                onClick={(e: MouseEvent) => pushToUrl(e, `/main/communities/${post.communityId}`)}
+                onClick={(e: MouseEvent) => pushToUrl(e, `/main/communities/${post.communityId}`, "community")}
               />
               <p
                 className="font-bold cursor-pointer hover:underline"
-                onClick={(e: MouseEvent) => pushToUrl(e, `/main/communities/${post.communityId}`)}>
+                onClick={(e: MouseEvent) => pushToUrl(e, `/main/communities/${post.communityId}`, "community")}>
                 r/{post.community.uniqueName}
               </p>{" "}
               ·{" "}
               <p className="text-gray-500 flex gap-x-1">
                 <span className="hidden xs:block">Posted by</span>{" "}
-                <span className="hover:underline cursor-pointer" onClick={(e: MouseEvent) => pushToUrl(e, `/main/users/${post.member.profileId}`)}>
+                <span
+                  className="hover:underline cursor-pointer"
+                  onClick={(e: MouseEvent) => pushToUrl(e, `/main/users/${post.member.profileId}`, "user")}>
                   u/{post.member.profile.displayName}
                 </span>{" "}
                 on

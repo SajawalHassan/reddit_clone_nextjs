@@ -14,6 +14,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       },
       include: {
         comments: true,
+        community: true,
       },
     });
 

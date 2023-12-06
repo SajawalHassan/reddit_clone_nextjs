@@ -1,13 +1,13 @@
 "use client";
 
-import { PostWithComments } from "@/types";
+import { PostWithCommentsWithCommunity } from "@/types";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import qs from "query-string";
 import { useEffect, useState } from "react";
 
 export default function PostIdPage() {
-  const [post, setPost] = useState<PostWithComments>();
+  const [post, setPost] = useState<PostWithCommentsWithCommunity>();
 
   const params = useParams();
 

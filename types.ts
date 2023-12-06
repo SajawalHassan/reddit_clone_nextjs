@@ -17,8 +17,9 @@ export type PostWithMemberWithProfileWithCommunityWithVotes = Post & {
   comments: Comment[];
 };
 
-export type PostWithComments = Post & {
+export type PostWithCommentsWithCommunity = Post & {
   comments: Comment[];
+  community: Community;
 };
 
 export type NextApiResponseSocket = NextApiResponse & {
