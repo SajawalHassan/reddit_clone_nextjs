@@ -1,25 +1,16 @@
-import { getCurrentProfile } from "@/lib/current-profile";
 import { getCurrentProfileSocket } from "@/lib/current-profile-socket";
 import { db } from "@/lib/db";
 import { NextApiResponseSocket } from "@/types";
 import { NextApiRequest } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponseSocket) {
-  if (req.method !== "PATCH" && req.method !== "GET") return res.status(405).json({ message: "Method not allowed" });
+  if (req.method !== "PATCH") return res.status(405).json({ message: "Method not allowed" });
 
   try {
-    let postId = "";
-    const { type } = req.body;
-    if (req.method === "PATCH") {
-      postId = req.body.postId;
-    } else if (req.method === "GET") {
-      postId = req.query.postId as string;
-    }
+    const { type, postId } = req.body;
 
     if (!postId) return res.status(404).json({ message: "Post id not found" });
-    if (req.method === "PATCH") {
-      if (type !== "upvote" && type !== "downvote") return res.status(400).json({ message: "Type incorrect" });
-    }
+    if (type !== "upvote" && type !== "downvote") return res.status(400).json({ message: "Type incorrect" });
 
     const post = await db.post.findUnique({
       where: {
@@ -38,10 +29,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
 
     const hasUpvotedPost = post.upvotes.some((upvote) => upvote.postId === postId);
     const hasDownvotedPost = post.downvotes.some((downvote) => downvote.postId === postId);
-
-    if (req.method === "GET") {
-      return res.status(200).json({ hasUpvotedPost, hasDownvotedPost });
-    }
 
     const upvoteKey = `post:${postId}:vote:up`;
     const downvoteKey = `post:${postId}:vote:down`;

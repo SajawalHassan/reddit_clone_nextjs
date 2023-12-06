@@ -14,6 +14,7 @@ import { PostHomeComponentFooterItemMenuItem } from "./post-home-component-foote
 import axios from "axios";
 import qs from "query-string";
 import dynamic from "next/dynamic";
+import { PostProfileDownvotes, PostProfileUpvotes } from "@prisma/client";
 
 const FroalaEditorView = dynamic(
   async () => {
@@ -55,11 +56,8 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
 
   useEffect(() => {
     const setVotingStatus = async () => {
-      const url = qs.stringifyUrl({ url: "/api/socket/posts/vote", query: { postId: post.id } });
-
-      const response = await axios.get(url);
-      setHasUpvoted(response.data.hasUpvotedPost);
-      setHasDownvoted(response.data.hasDownvotedPost);
+      setHasUpvoted(post.upvotes.some((upvote: PostProfileUpvotes) => upvote.postId === post.id));
+      setHasDownvoted(post.downvotes.some((downvote: PostProfileDownvotes) => downvote.postId === post.id));
     };
 
     setUpvotes(post.upvotes.length - post.downvotes.length);

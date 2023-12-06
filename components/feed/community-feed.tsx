@@ -6,7 +6,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { PostHomeComponent } from "@/components/posts/post-home-component";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
-import { useEffect } from "react";
 
 export const CommunityFeed = ({ communityId }: { communityId: string }) => {
   const query = `feed:community:${communityId}`;
@@ -21,8 +20,6 @@ export const CommunityFeed = ({ communityId }: { communityId: string }) => {
   let posts = data?.pages?.reduce((prev: any, current: any) => {
     return [...prev, ...current.feedItems];
   }, []);
-
-  console.log(posts?.length);
 
   if (status === "loading" || !posts) {
     return (
