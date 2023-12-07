@@ -74,9 +74,11 @@ export const CreateCommunityModal = () => {
                     control={form.control}
                     name="imageUrl"
                     render={({ field }) => (
-                      <FormControl>
-                        <FileUploader isLoading={isLoading} value={field.value} onChange={field.onChange} text="Upload community image" />
-                      </FormControl>
+                      <FormItem>
+                        <FormControl>
+                          <FileUploader isLoading={isLoading} value={field.value} onChange={field.onChange} text="Upload community image" />
+                        </FormControl>
+                      </FormItem>
                     )}
                   />
                 </div>
@@ -99,11 +101,16 @@ export const CreateCommunityModal = () => {
                     name="uniqueName"
                     render={({ field }) => (
                       <FormItem>
-                        <div className={cn("border border-input rounded-md mt-2 py-0 px-2", isLoading && "opacity-50")}>
-                          <div className="flex items-center">
+                        <div className={cn("mt-2", isLoading && "opacity-50")}>
+                          <div className="flex items-center rounded-md border border-input bg-white dark:bg-[#272729] focus-within:dark:bg-[#1A1A1B] focus-within:dark:border-white hover:bg-white hover:border-blue-500 focus-within:bg-white focus-within:border-blue-500 hover:dark:bg-[#1A1A1B] hover:dark:border-white border-gray-200 dark:border-[#3c3c3d] text-sm ring-offset-background px-3">
                             <p className="text-zinc-500">r/</p>
                             <FormControl>
-                              <Input className="bg-transparent h-full border-none px-1" {...field} autoComplete="off" disabled={isLoading} />
+                              <Input
+                                className="bg-transparent dark:bg-transparent dark:hover:bg-transparent h-full border-none px-1"
+                                {...field}
+                                autoComplete="off"
+                                disabled={isLoading}
+                              />
                             </FormControl>
                           </div>
                         </div>
