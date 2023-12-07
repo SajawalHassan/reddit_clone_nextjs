@@ -16,7 +16,7 @@ const buttonVariants = cva(
           "rounded-full py-1 ring-1 ring-blue-500 text-blue-500 hover:bg-blue-50 font-bold dark:text-[#1A1A1B] dark:hover:bg-zinc-800 dark:text-gray-100 dark:ring-gray-100",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        primary: "rounded-full py-1 bg-blue-500 text-white font-bold hover:bg-blue-400 dark:bg-gray-100 dark:text-[#1A1A1B] dark:hover:bg-gray-200",
+        primary: "rounded-full py-1 bg-blue-500 text-white font-bold hover:bg-blue-400 dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90",
       },
       size: {
         default: "h-8 px-4 py-2",

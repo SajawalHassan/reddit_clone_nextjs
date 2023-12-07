@@ -11,9 +11,10 @@ import { cn } from "@/lib/utils";
 interface Props {
   value: any;
   setValue: (newVal: any) => void;
+  preSelectedCommunityId?: string;
 }
 
-export const CommunitySelecter = ({ value, setValue }: Props) => {
+export const CommunitySelecter = ({ value, setValue, preSelectedCommunityId }: Props) => {
   const [activeCommunity, setActiveCommunity] = useState<Community>();
   const [filteredCommunities, setFilteredCommunities] = useState<Community[]>();
   const [allCommunities, setAllCommunities] = useState<Community[]>();
@@ -28,6 +29,15 @@ export const CommunitySelecter = ({ value, setValue }: Props) => {
   useEffect(() => {
     getCommunities();
   }, []);
+
+  useEffect(() => {
+    if (preSelectedCommunityId) {
+      const preSelectedCommunity = allCommunities?.filter((community: Community) => community.id === preSelectedCommunityId)[0];
+
+      setActiveCommunity(preSelectedCommunity);
+      setValue(preSelectedCommunity);
+    }
+  }, [allCommunities]);
 
   const handleOpenMenu = () => {
     setMenuIsOpen(true);

@@ -2,7 +2,7 @@ import { getCurrentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { createCommunityFormSchema } from "@/schemas/community-schema";
 import { MemberRole } from "@prisma/client";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { fromZodError } from "zod-validation-error";
 
 export async function POST(req: Request) {
@@ -64,5 +64,37 @@ export async function GET(req: Request) {
   } catch (error) {
     console.log("[MESSAGES_GET]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
+
+export async function PATCH(req: NextRequest, res: NextResponse) {
+  try {
+    const profile = await getCurrentProfile();
+    if (!profile) return new NextResponse("Unauthorized", { status: 401 });
+
+    const values = await req.json();
+    const { communityId, data } = values;
+
+    const member = await db.member.findFirst({
+      where: {
+        profileId: profile.id,
+        communityId,
+      },
+    });
+
+    if (!member) return new NextResponse("Member not found", { status: 404 });
+
+    if (member.role !== MemberRole.ADMIN && member.role !== MemberRole.MODERATOR) return new NextResponse("Action not allowed", { status: 403 });
+
+    const community = await db.community.update({
+      where: {
+        id: communityId,
+      },
+      data,
+    });
+
+    return NextResponse.json(community);
+  } catch (error) {
+    console.log("COMMUNITIES_PATCH", error);
   }
 }

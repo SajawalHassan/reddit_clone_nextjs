@@ -46,6 +46,7 @@ export const CreatePostForm = () => {
   const isMedia = searchParams?.get("media") ? true : false;
   const isLink = searchParams?.get("link") ? true : false;
   const isPlain = searchParams?.get("plain") ? true : false;
+  const preSelectedCommunityId = searchParams?.get("preselected") ? (searchParams?.get("preselected") as string) : "";
   const formSchema = isMedia ? mediaFormSchema : isLink ? linkFormSchema : plainFormSchema;
 
   const router = useRouter();
@@ -100,7 +101,7 @@ export const CreatePostForm = () => {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <CommunitySelecter value={field.value} setValue={field.onChange} />
+                <CommunitySelecter value={field.value} setValue={field.onChange} preSelectedCommunityId={preSelectedCommunityId} />
               </FormControl>
               <FormMessage />
             </FormItem>
