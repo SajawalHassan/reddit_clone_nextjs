@@ -1,10 +1,11 @@
 import { LucideIcon } from "lucide-react";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 type headerActivePlaceType = {
   text: string;
   imageUrl?: string;
-  Icon?: LucideIcon;
+  icon?: string;
 };
 
 interface useGlobalInfoStore {
@@ -12,7 +13,12 @@ interface useGlobalInfoStore {
   setHeaderActivePlace: (newHeaderActivePlace: headerActivePlaceType) => void;
 }
 
-export const useGlobalInfo = create<useGlobalInfoStore>((set) => ({
-  headerActivePlace: { text: "" },
-  setHeaderActivePlace: (newHeaderActivePlace) => set({ headerActivePlace: newHeaderActivePlace }),
-}));
+export const useGlobalInfo = create<useGlobalInfoStore>()(
+  persist(
+    (set) => ({
+      headerActivePlace: { text: "", imageUrl: "", icon: "" },
+      setHeaderActivePlace: (newHeaderActivePlace) => set({ headerActivePlace: newHeaderActivePlace }),
+    }),
+    { name: "globalInfo" }
+  )
+);

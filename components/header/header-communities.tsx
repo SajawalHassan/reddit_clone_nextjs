@@ -1,15 +1,21 @@
 import { Community } from "@prisma/client";
-import { ArrowDownCircle } from "lucide-react";
+import { ArrowDownCircle, Home, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { cn } from "@/lib/utils";
 import { HeaderCommunitiesMenu } from "./header-communities-menu";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 
+const icon_map = {
+  Home: <Home />,
+  Plus: <Plus />,
+};
+
 export const HeaderCommunities = () => {
   const [communities, setCommunities] = useState<Community[]>();
   const [allCommunities, setAllCommunities] = useState<Community[]>();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   const { headerActivePlace } = useGlobalInfo();
 
@@ -20,6 +26,8 @@ export const HeaderCommunities = () => {
   };
 
   useEffect(() => {
+    setIsMounted(true);
+
     getCommunities();
   }, []);
 
@@ -28,6 +36,8 @@ export const HeaderCommunities = () => {
 
     getCommunities();
   };
+
+  if (!isMounted) return;
 
   return (
     <div className="relative lg:flex-grow max-w-[20rem] w-max hidden md:flex md:flex-col">
@@ -38,7 +48,11 @@ export const HeaderCommunities = () => {
           menuIsOpen && "border-zinc-200 dark:border-zinc-800 border-b-0"
         )}>
         <div className="flex items-center gap-x-2">
-          {headerActivePlace.Icon ? <headerActivePlace.Icon /> : <img src={headerActivePlace.imageUrl} alt="" className="rounded-full h-6 w-6" />}
+          {headerActivePlace.icon ? (
+            icon_map[headerActivePlace.icon as keyof typeof icon_map]
+          ) : (
+            <img src={headerActivePlace.imageUrl} alt="" className="rounded-full h-6 w-6" />
+          )}
           <p className="hidden lg:flex text-sm font-bold">{headerActivePlace.text}</p>
         </div>
         <ArrowDownCircle className="h-5 w-5" />

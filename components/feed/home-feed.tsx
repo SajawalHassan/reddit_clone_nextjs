@@ -20,7 +20,7 @@ export const HomeFeed = () => {
   }, []);
 
   useEffect(() => {
-    setHeaderActivePlace({ text: "Home", Icon: Home });
+    setHeaderActivePlace({ text: "Home", icon: "Home" });
   }, []);
 
   if (status === "loading") {

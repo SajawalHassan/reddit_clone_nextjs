@@ -62,7 +62,7 @@ export const CreatePostForm = () => {
   useEffect(() => {
     setIsMounted(true);
 
-    setHeaderActivePlace({ text: "Create Post", Icon: Plus });
+    setHeaderActivePlace({ text: "Create Post", icon: "Plus" });
   }, []);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
