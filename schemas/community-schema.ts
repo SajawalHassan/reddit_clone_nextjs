@@ -10,6 +10,6 @@ export const createCommunityFormSchema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, {
       message: "Unique name can only contain alphabets and numbers, the only special character allowed is _",
     }),
-  imageUrl: z.string(),
+  imageUrl: z.string().min(1, "Please select an image for the community"),
   type: z.nativeEnum(CommunityType),
 });

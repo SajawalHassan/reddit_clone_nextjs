@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { AboutCommunitySkeleton } from "@/components/skeletons/about-community-skeleton";
 
 const DATE_FORMAT = "MMM d, yyyy";
+const MAX_DESCRIPTION_LEN = 500;
 
 export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: string }) => {
   const [community, setCommunity] = useState<CommunityWithMembers>();
@@ -53,7 +54,7 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
     getCommunity();
   }, []);
 
-  const handleEditDescription = async () => {
+  const submitDescription = async () => {
     setIsSubmittingDescription(true);
 
     try {
@@ -89,29 +90,31 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
                 {isSubmittingDescription && <Loader2 className="animate-spin h-6 w-6" />}
               </div>
             ) : wantsToEditDescription ? (
-              <div className="bg-gray-50 border border-blue-500 rounded-sm p-2">
+              <div className="bg-gray-50 dark:bg-[#272729] border border-blue-500 dark:border-white rounded-sm p-2">
                 <TextareaAutosize
                   className="bg-transparent w-full resize-none outline-none"
                   value={editingDescription || ""}
-                  onChange={(e) => setEditingDescription(e.target.value)}
-                  onBlur={() => {
-                    setEditingDescription(description);
-                    setWantsToEditDescription(false);
+                  onChange={(e) => {
+                    if (e.target.value.length > MAX_DESCRIPTION_LEN) return;
+                    setEditingDescription(e.target.value);
                   }}
                   autoFocus={true}
                 />
-                <div className="flex items-center justify-end gap-x-2 cursor-default">
-                  <p
-                    onClick={() => {
-                      setEditingDescription(description);
-                      setWantsToEditDescription(false);
-                    }}
-                    className="text-xs font-bold cursor-pointer text-red-500">
-                    Cancel
-                  </p>
-                  <p className="text-xs font-bold cursor-pointer text-blue-500" onClick={handleEditDescription}>
-                    Save
-                  </p>
+                <div className="flex items-center justify-between cursor-default">
+                  <p className="text-[11px] text-gray-400">{MAX_DESCRIPTION_LEN - editingDescription.length} characters remaining</p>
+                  <div className="flex items-center gap-x-2">
+                    <p
+                      onClick={() => {
+                        setEditingDescription(description);
+                        setWantsToEditDescription(false);
+                      }}
+                      className="text-xs font-bold cursor-pointer text-red-500">
+                      Cancel
+                    </p>
+                    <p className="text-xs font-bold cursor-pointer text-blue-500" onClick={submitDescription}>
+                      Save
+                    </p>
+                  </div>
                 </div>
               </div>
             ) : (
