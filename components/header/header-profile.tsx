@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useClerk } from "@clerk/nextjs";
 import { useModal } from "@/hooks/use-modal-store";
-import { ProfilePicture } from "../profile-picture";
+import { ProfilePicture } from "@/components/profile-picture";
 
 export const HeaderProfile = () => {
   const [profile, setProfile] = useState<Profile>();

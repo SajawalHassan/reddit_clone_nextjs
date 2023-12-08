@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CreateCommunityModal } from "../modals/create-community-modal";
+import { CreateCommunityModal } from "@/components/modals/create-community-modal";
 
 export const ModalsProvider = () => {
   const [isMounted, setIsMounted] = useState(false);

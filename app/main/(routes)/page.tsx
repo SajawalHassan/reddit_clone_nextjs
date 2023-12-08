@@ -1,5 +1,5 @@
 import { HomeFeed } from "@/components/feed/home-feed";
-import { CreatePostHomeComponent } from "@/components/posts/create-post-home-component";
+import { CreatePostHomeComponent } from "@/components/home-components/create-post-home-component";
 import { QuickActionsHomeComponent } from "@/components/quick-actions-home-component";
 import { RecentPosts } from "@/components/recent-posts";
 

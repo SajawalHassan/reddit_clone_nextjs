@@ -19,7 +19,7 @@ import { Eye, Lock, User2 } from "lucide-react";
 import { CommunityType } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { FileUploader } from "../file-uploader";
+import { FileUploader } from "@/components/file-uploader";
 
 export const CreateCommunityModal = () => {
   const { isOpen, type, closeModal } = useModal();

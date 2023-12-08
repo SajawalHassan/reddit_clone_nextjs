@@ -43,7 +43,7 @@ model Community {
 
   name        String
   uniqueName  String        @unique
-  description String?
+  description String?       @db.LongText
   imageUrl    String        @db.Text
   bannerUrl   String?       @db.Text
   rule1       String?

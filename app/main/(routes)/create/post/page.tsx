@@ -1,4 +1,4 @@
-import { CreatePostForm } from "@/components/posts/create-post-form";
+import { CreatePostForm } from "@/components/forms/post/create-post-form";
 import { Separator } from "@/components/ui/seperator";
 
 export default function CreatePostPage() {

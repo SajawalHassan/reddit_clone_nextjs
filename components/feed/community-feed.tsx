@@ -3,7 +3,7 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useFeedQuery } from "@/hooks/use-feed-query";
 import { Loader2 } from "lucide-react";
-import { PostHomeComponent } from "@/components/posts/post-home-component";
+import { PostHomeComponent } from "@/components/home-components/post/post-home-component";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { FeedLoadingSkeleton } from "@/components/skeletons/feed-loading-skeleton";
 import { useGlobalInfo } from "@/hooks/use-global-info";

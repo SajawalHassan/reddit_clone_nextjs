@@ -1,6 +1,6 @@
-import { AboutCommunitiyHomeComponent } from "@/components/community/about-community-home-component";
+import { AboutCommunitiyHomeComponent } from "@/components/home-components/about-community-home-component";
 import { CommunityFeed } from "@/components/feed/community-feed";
-import { CreatePostHomeComponent } from "@/components/posts/create-post-home-component";
+import { CreatePostHomeComponent } from "@/components/home-components/create-post-home-component";
 
 export default function CommunityIdPage({ params: { communityId } }: { params: { communityId: string } }) {
   return (

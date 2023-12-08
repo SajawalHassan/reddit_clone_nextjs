@@ -1,7 +1,7 @@
 "use client";
 
-import { CommunitiesSelectionSearch } from "@/components/communities-selection-menu/communities-search";
-import { CommunitySelectionOption } from "@/components/communities-selection-menu/community-option";
+import { CommunitiesSelectionSearch } from "@/components/community/communities-search";
+import { CommunitySelectionOption } from "@/components/community/community-selection-option";
 import { Community } from "@prisma/client";
 import { Plus } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";

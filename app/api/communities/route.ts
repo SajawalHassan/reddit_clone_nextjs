@@ -96,5 +96,6 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
     return NextResponse.json(community);
   } catch (error) {
     console.log("COMMUNITIES_PATCH", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

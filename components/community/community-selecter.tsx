@@ -3,8 +3,8 @@
 import { Community } from "@prisma/client";
 import { ArrowDownCircle, CircleDashed, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import { CommunitiesSelectionSearch } from "@/components/communities-selection-menu/communities-search";
-import { CommunitySelectionOption } from "@/components/communities-selection-menu/community-option";
+import { CommunitiesSelectionSearch } from "@/components/community/communities-search";
+import { CommunitySelectionOption } from "./community-selection-option";
 import axios from "axios";
 import { cn } from "@/lib/utils";
 

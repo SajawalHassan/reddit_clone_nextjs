@@ -43,7 +43,7 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
         setCommunity(response.data.community);
         setCurrentMember(response.data.currentMember[0]);
         setDescription(response.data.community.description);
-        setEditingDescription(response.data.community.description);
+        setEditingDescription(response.data.community.description || "");
       } catch (error) {
         console.log(error);
       } finally {
@@ -79,15 +79,17 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
         <div>
           {isAdmin || isModerator ? (
             description && !wantsToEditDescription ? (
-              <div className="flex items-center gap-x-2">
-                <p className="text-sm">{description}</p>
-                <IconButton
-                  Icon={Pencil}
-                  IconClassName={cn("h-5 w-5", isSubmittingDescription && "text-gray-400")}
-                  className={cn(isSubmittingDescription && "hover:bg-transparent cursor-not-allowed")}
-                  onClick={() => setWantsToEditDescription(true)}
-                />
-                {isSubmittingDescription && <Loader2 className="animate-spin h-6 w-6" />}
+              <div className={cn(editingDescription.length < 45 ? "flex items-center gap-x-2" : "")}>
+                <p className="text-sm flex items-center">{description}</p>
+                <div className="flex items-center gap-x-2 whitespace-nowrap">
+                  <IconButton
+                    Icon={Pencil}
+                    IconClassName={cn("h-5 w-5", isSubmittingDescription && "text-gray-400")}
+                    className={cn(isSubmittingDescription && "hover:bg-transparent cursor-not-allowed")}
+                    onClick={() => setWantsToEditDescription(true)}
+                  />
+                  {isSubmittingDescription && <Loader2 className="animate-spin h-6 w-6" />}
+                </div>
               </div>
             ) : wantsToEditDescription ? (
               <div className="bg-gray-50 dark:bg-[#272729] border border-blue-500 dark:border-white rounded-sm p-2">
@@ -101,7 +103,7 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
                   autoFocus={true}
                 />
                 <div className="flex items-center justify-between cursor-default">
-                  <p className="text-[11px] text-gray-400">{MAX_DESCRIPTION_LEN - editingDescription.length} characters remaining</p>
+                  <p className="text-[11px] text-gray-400">{MAX_DESCRIPTION_LEN - editingDescription?.length} characters remaining</p>
                   <div className="flex items-center gap-x-2">
                     <p
                       onClick={() => {

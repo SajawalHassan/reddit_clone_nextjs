@@ -2,12 +2,12 @@
 
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { ArrowDownCircle, ArrowUpCircle, Link, Loader2, MessageSquare, Share } from "lucide-react";
-import { IconButton } from "../icon-button";
+import { IconButton } from "@/components/icon-button";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { MouseEvent, useEffect, useState } from "react";
-import { useSocket } from "../providers/socket-provider";
+import { useSocket } from "@/components/providers/socket-provider";
 import { PostHomeComponentFooterItem } from "./post-home-component-footer-item";
 import { PostHomeComponentFooterItemMenuItem } from "./post-home-component-footer-item-menu-item";
 

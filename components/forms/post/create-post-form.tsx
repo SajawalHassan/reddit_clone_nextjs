@@ -18,7 +18,7 @@ import { PostTypeItem } from "./post-type-item";
 import { FileUploader } from "@/components/file-uploader";
 import { IconButton } from "@/components/icon-button";
 import { Button } from "@/components/ui/button";
-import { CommunitySelecter } from "./community-selecter";
+import { CommunitySelecter } from "@/components/community/community-selecter";
 import { PostTagItem } from "./post-tag-item";
 import { linkFormSchema, mediaFormSchema, plainFormSchema } from "@/schemas/post-schema";
 import { useTheme } from "next-themes";

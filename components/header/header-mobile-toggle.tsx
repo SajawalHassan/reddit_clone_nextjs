@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { HeaderCommunitiesMenu } from "./header-communities-menu";
 import { useEffect, useState } from "react";
 import axios from "axios";
