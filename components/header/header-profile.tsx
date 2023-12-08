@@ -15,7 +15,6 @@ import { ProfilePicture } from "@/components/profile-picture";
 export const HeaderProfile = () => {
   const [profile, setProfile] = useState<Profile>();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [onlineStatus, setOnlineStatus] = useState(true);
 
   const router = useRouter();
 
@@ -64,13 +63,6 @@ export const HeaderProfile = () => {
         <div className="absolute right-0 w-[15rem] bg-white dark:bg-[#1A1A1B] dark:text-white border border-zinc-200 dark:border-zinc-800 py-5 z-30 space-y-2">
           <HeaderProfileMenuHeading Icon={UserCircle} text="My Stuff" />
           <div>
-            <HeaderProfileMenuItem
-              setMenuIsOpen={setMenuIsOpen}
-              text="Online Status"
-              useSwitch={true}
-              switchValue={onlineStatus}
-              switchFunction={() => setOnlineStatus(!onlineStatus)}
-            />
             <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} text="Profile" onClick={() => router.push(`/main/users/${profile?.id}`)} />
             <HeaderProfileMenuItem
               setMenuIsOpen={setMenuIsOpen}
