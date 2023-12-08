@@ -122,7 +122,7 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
             ) : (
               <p
                 onClick={() => setWantsToEditDescription(true)}
-                className="w-full px-2 py-1.5 text-blue-500 font-bold text-xs cursor-pointer bg-gray-50 border border-input rounded-sm hover:border-blue-500 transition">
+                className="w-full px-2 py-1.5 text-blue-500 dark:text-white font-bold text-xs cursor-pointer bg-gray-50 dark:bg-zinc-800 border border-input rounded-sm hover:border-blue-500 hover:dark:border-white transition">
                 Add description
               </p>
             )
