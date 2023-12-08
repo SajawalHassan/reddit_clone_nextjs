@@ -14,7 +14,7 @@ import { PostHomeComponentFooterItemMenuItem } from "./post-home-component-foote
 import axios from "axios";
 import qs from "query-string";
 import dynamic from "next/dynamic";
-import { PostProfileDownvotes, PostProfileUpvotes } from "@prisma/client";
+import { PostProfileDownvotes, PostProfileUpvotes, Profile } from "@prisma/client";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 
 const FroalaEditorView = dynamic(
@@ -46,6 +46,7 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
   const [hasDownvoted, setHasDownvoted] = useState(false);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [hasViewedPost, setHasViewedPost] = useState(false);
+  const [profile, setProfile] = useState<Profile>();
 
   const isOnlyTitle = !post.content && !post.imageUrl && !post.link;
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
@@ -62,14 +63,23 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
   };
 
   useEffect(() => {
+    const getProfile = async () => {
+      const response = await axios.get("/api/profile");
+      setProfile(response.data);
+    };
+    getProfile();
+  }, []);
+
+  useEffect(() => {
     const setVotingStatus = async () => {
-      setHasUpvoted(post.upvotes.some((upvote: PostProfileUpvotes) => upvote.postId === post.id));
-      setHasDownvoted(post.downvotes.some((downvote: PostProfileDownvotes) => downvote.postId === post.id));
+      if (!profile) return;
+      setHasUpvoted(post.upvotes.some((upvote: PostProfileUpvotes) => upvote.profileId === profile.id));
+      setHasDownvoted(post.downvotes.some((downvote: PostProfileDownvotes) => downvote.profileId === profile.id));
     };
 
     setUpvotes(post.upvotes.length - post.downvotes.length);
     setVotingStatus();
-  }, [post]);
+  }, [post, profile]);
 
   useEffect(() => {
     setFormattedUpvotes(formatter.format(upvotes));

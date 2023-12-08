@@ -5,7 +5,7 @@ import { RecentPosts } from "@/components/recent-posts";
 
 export default function Home() {
   return (
-    <div className="flex w-full flex-grow justify-center mt-[5rem] px-0.5 sm:px-10 gap-x-4">
+    <div className="flex w-full flex-grow justify-center mt-[5rem] px-0 sm:px-10 gap-x-4">
       <div className="space-y-4 home-component-container">
         <CreatePostHomeComponent />
         <HomeFeed />

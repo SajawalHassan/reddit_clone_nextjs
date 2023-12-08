@@ -5,7 +5,7 @@ import { Home, Loader2 } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { PostHomeComponent } from "@/components/posts/post-home-component";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { FeedLoadingSkeleton } from "@/components/skeletons/feed-loading-skeleton";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import { useEffect } from "react";
 
@@ -26,7 +26,7 @@ export const HomeFeed = () => {
   if (status === "loading") {
     return (
       <div className="home-component-container px-2">
-        <LoadingSkeleton />
+        <FeedLoadingSkeleton />
       </div>
     );
   }

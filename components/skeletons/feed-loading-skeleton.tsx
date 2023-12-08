@@ -1,7 +1,7 @@
 import { ArrowDownCircle, ArrowUpCircle } from "lucide-react";
-import { IconButton } from "./icon-button";
+import { IconButton } from "../icon-button";
 
-export const LoadingSkeleton = () => {
+export const FeedLoadingSkeleton = () => {
   // Add more numbers for more post skeletons
   const skeletons = [1, 2, 3];
 

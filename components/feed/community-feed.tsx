@@ -5,7 +5,7 @@ import { useFeedQuery } from "@/hooks/use-feed-query";
 import { Loader2 } from "lucide-react";
 import { PostHomeComponent } from "@/components/posts/post-home-component";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { FeedLoadingSkeleton } from "@/components/skeletons/feed-loading-skeleton";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 
 export const CommunityFeed = ({ communityId }: { communityId: string }) => {
@@ -26,7 +26,7 @@ export const CommunityFeed = ({ communityId }: { communityId: string }) => {
   if (status === "loading" || !posts) {
     return (
       <div className="home-component-container px-2">
-        <LoadingSkeleton />
+        <FeedLoadingSkeleton />
       </div>
     );
   }

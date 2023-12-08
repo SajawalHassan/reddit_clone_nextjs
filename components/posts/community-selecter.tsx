@@ -35,7 +35,7 @@ export const CommunitySelecter = ({ value, setValue, preSelectedCommunityId }: P
       const preSelectedCommunity = allCommunities?.filter((community: Community) => community.id === preSelectedCommunityId)[0];
 
       setActiveCommunity(preSelectedCommunity);
-      setValue(preSelectedCommunity);
+      setValue(preSelectedCommunity?.id);
     }
   }, [allCommunities]);
 

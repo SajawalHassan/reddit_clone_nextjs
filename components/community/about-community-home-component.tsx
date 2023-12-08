@@ -13,6 +13,8 @@ import { CommunityWithMembers } from "@/types";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { IconButton } from "@/components/icon-button";
+import { cn } from "@/lib/utils";
+import { AboutCommunitySkeleton } from "@/components/skeletons/about-community-skeleton";
 
 const DATE_FORMAT = "MMM d, yyyy";
 
@@ -23,10 +25,11 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
   const [editingDescription, setEditingDescription] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [wantsToEditDescription, setWantsToEditDescription] = useState(false);
-  const [isSubmittingDescription, setIsSettingDescription] = useState(false);
+  const [isSubmittingDescription, setIsSubmittingDescription] = useState(false);
 
   const router = useRouter();
   const isAdmin = currentMember?.role === MemberRole.ADMIN;
+  const isModerator = currentMember?.role === MemberRole.MODERATOR;
 
   useEffect(() => {
     const getCommunity = async () => {
@@ -51,7 +54,7 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
   }, []);
 
   const handleEditDescription = async () => {
-    setIsSettingDescription(true);
+    setIsSubmittingDescription(true);
 
     try {
       setDescription(editingDescription);
@@ -60,32 +63,42 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
     } catch (error) {
       console.log(error);
     } finally {
-      setIsSettingDescription(false);
+      setIsSubmittingDescription(false);
     }
   };
 
-  if (isLoading) return;
+  if (isLoading) return <AboutCommunitySkeleton />;
 
   return (
     <div className="home-component p-0 w-[20rem]">
-      <div className="py-3 px-2 bg-blue-500">
-        <p className="font-bold text-sm text-white">About community</p>
+      <div className="py-3 px-2 bg-blue-500 dark:bg-transparent">
+        <p className="font-bold text-sm text-white dark:text-zinc-500">About community</p>
       </div>
-      <div className="px-3 py-5">
+      <div className="px-3 pb-5 pt-2">
         <div>
-          {isAdmin ? (
+          {isAdmin || isModerator ? (
             description && !wantsToEditDescription ? (
               <div className="flex items-center gap-x-2">
                 <p className="text-sm">{description}</p>
-                <IconButton Icon={Pencil} IconClassName="h-5 w-5" onClick={() => setWantsToEditDescription(true)} />
+                <IconButton
+                  Icon={Pencil}
+                  IconClassName={cn("h-5 w-5", isSubmittingDescription && "text-gray-400")}
+                  className={cn(isSubmittingDescription && "hover:bg-transparent cursor-not-allowed")}
+                  onClick={() => setWantsToEditDescription(true)}
+                />
                 {isSubmittingDescription && <Loader2 className="animate-spin h-6 w-6" />}
               </div>
             ) : wantsToEditDescription ? (
               <div className="bg-gray-50 border border-blue-500 rounded-sm p-2">
                 <TextareaAutosize
                   className="bg-transparent w-full resize-none outline-none"
-                  value={editingDescription}
+                  value={editingDescription || ""}
                   onChange={(e) => setEditingDescription(e.target.value)}
+                  onBlur={() => {
+                    setEditingDescription(description);
+                    setWantsToEditDescription(false);
+                  }}
+                  autoFocus={true}
                 />
                 <div className="flex items-center justify-end gap-x-2 cursor-default">
                   <p
