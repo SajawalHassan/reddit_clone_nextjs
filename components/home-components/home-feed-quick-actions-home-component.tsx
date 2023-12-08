@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 
-export const QuickActionsHomeComponent = () => {
+export const HomeFeedQuickActionsHomeComponent = () => {
   const { openModal } = useModal();
 
   const router = useRouter();

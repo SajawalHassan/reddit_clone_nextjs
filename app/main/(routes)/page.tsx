@@ -1,6 +1,6 @@
 import { HomeFeed } from "@/components/feed/home-feed";
 import { CreatePostHomeComponent } from "@/components/home-components/create-post-home-component";
-import { QuickActionsHomeComponent } from "@/components/quick-actions-home-component";
+import { HomeFeedQuickActionsHomeComponent } from "@/components/home-components/home-feed-quick-actions-home-component";
 import { RecentPosts } from "@/components/recent-posts";
 
 export default function Home() {
@@ -11,7 +11,7 @@ export default function Home() {
         <HomeFeed />
       </div>
       <div className="hidden lg:block space-y-4">
-        <QuickActionsHomeComponent />
+        <HomeFeedQuickActionsHomeComponent />
         <RecentPosts />
       </div>
     </div>

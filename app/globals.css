@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --banner: "----";
+}
+
 html,
 body,
 :root {
@@ -97,7 +101,7 @@ body,
     @apply bg-white border border-zinc-300 rounded-sm w-full p-2 dark:bg-[#1a1a1a] dark:border-[#3c3c3d];
   }
   .home-component-container {
-    @apply w-full max-w-[42rem];
+    @apply w-full lg:max-w-[41rem];
   }
 }
 

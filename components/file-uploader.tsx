@@ -92,7 +92,7 @@ export const FileUploader = ({ onChange, value, isLoading: isSubmitting, text, c
         </button>
       </div>
 
-      <input type="file" ref={uploadRef} onChange={(e) => uploadFile(e)} className="hidden" />
+      <input type="file" ref={uploadRef} onChange={(e) => uploadFile(e)} className="hidden" accept="image/*" />
     </div>
   );
 };

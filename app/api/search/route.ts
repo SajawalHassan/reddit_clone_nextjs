@@ -9,7 +9,7 @@ export async function GET(req: Request) {
 
     const communities = await db.community.findMany({
       where: {
-        uniqueName: {
+        name: {
           contains: searchText,
         },
       },
