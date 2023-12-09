@@ -7,8 +7,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
   if (req.method !== "PATCH") return res.status(405).json({ message: "Method not allowed" });
 
   try {
+    const profile = await getCurrentProfileSocket(req);
+
     const { type, postId } = req.body;
 
+    if (!profile) return res.status(401).json({ message: "Unauthorized" });
     if (!postId) return res.status(404).json({ message: "Post id not found" });
     if (type !== "upvote" && type !== "downvote") return res.status(400).json({ message: "Type incorrect" });
 
@@ -27,8 +30,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     const wantsToUpvote = type === "upvote";
     const wantsToDownvote = type === "downvote";
 
-    const hasUpvotedPost = post.upvotes.some((upvote) => upvote.postId === postId);
-    const hasDownvotedPost = post.downvotes.some((downvote) => downvote.postId === postId);
+    const hasUpvotedPost = post.upvotes.some((upvote) => upvote.profileId === profile.id);
+    const hasDownvotedPost = post.downvotes.some((downvote) => downvote.profileId === profile.id);
 
     const upvoteKey = `post:${postId}:vote:up`;
     const downvoteKey = `post:${postId}:vote:down`;
@@ -56,9 +59,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
         }
       }
     }
-
-    const profile = await getCurrentProfileSocket(req);
-    if (!profile) return res.status(401).json({ message: "Unauthorized" });
 
     if (wantsToUpvote) {
       if (hasUpvotedPost) {

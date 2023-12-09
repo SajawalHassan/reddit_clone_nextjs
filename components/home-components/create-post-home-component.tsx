@@ -28,13 +28,17 @@ export const CreatePostHomeComponent = () => {
     getProfile();
   }, []);
 
+  const createPost = (url: string) => {
+    router.push(url);
+  };
+
   return (
     <div className="px-2 home-component-container">
       <div className="flex items-center gap-x-2 home-component">
         <ProfilePicture src={profile?.imageUrl} profileId={profile?.id as string} />
-        <Input placeholder="Create post" onClick={() => router.push("/main/create/post?plain=true")} className="rounded-sm" />
-        <IconButton Icon={Image} onClick={() => router.push("/main/create/post?media=true")} className="text-zinc-500" />
-        <IconButton Icon={Link} onClick={() => router.push("/main/create/post?link=true")} />
+        <Input placeholder="Create post" onClick={() => createPost("/main/create/post?plain=true")} className="rounded-sm" />
+        <IconButton Icon={Image} onClick={() => createPost("/main/create/post?media=true")} className="text-zinc-500" />
+        <IconButton Icon={Link} onClick={() => createPost("/main/create/post?link=true")} />
       </div>
     </div>
   );

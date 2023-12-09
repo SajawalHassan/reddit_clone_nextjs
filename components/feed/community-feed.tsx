@@ -6,12 +6,10 @@ import { Loader2 } from "lucide-react";
 import { PostHomeComponent } from "@/components/home-components/post/post-home-component";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { FeedLoadingSkeleton } from "@/components/skeletons/feed-loading-skeleton";
-import { useGlobalInfo } from "@/hooks/use-global-info";
 
 export const CommunityFeed = ({ communityId }: { communityId: string }) => {
   const query = `feed:community:${communityId}`;
 
-  const { setHeaderActivePlace } = useGlobalInfo();
   const { data, fetchNextPage, hasNextPage, status } = useFeedQuery({
     query,
     apiUrl: "/api/communities/feed",

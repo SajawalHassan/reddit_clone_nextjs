@@ -145,7 +145,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
           {community && (
             <div className="lg:max-w-[984px] w-full pl-2 sm:pl-10 lg:pl-0 relative flex gap-x-2 mt-1.5">
               <div className="relative -top-5">
-                <img src={image} alt={community.uniqueName} className="h-[5rem] rounded-full border-4 border-white" />
+                <img src={image} alt={community.uniqueName} className="h-[5rem] w-[5rem] rounded-full border-4 border-white" />
                 {isAdmin && (
                   <IconButton
                     Icon={Camera}
