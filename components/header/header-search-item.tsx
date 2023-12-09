@@ -1,3 +1,4 @@
+import { useGlobalInfo } from "@/hooks/use-global-info";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 
@@ -18,8 +19,11 @@ export const HeaderSearchItem = ({ type, name, imageUrl, members, karma, communi
   const formattedKarmaCount = formatter.format(karma as number);
 
   const router = useRouter();
+  const { setHeaderActivePlace } = useGlobalInfo();
 
   const handleOnClick = () => {
+    setHeaderActivePlace({ text: name, imageUrl });
+
     if (type === "community") router.push(`/main/communities/${communityId}`);
     if (type === "user") router.push(`/main/users/${profileId}`);
 
