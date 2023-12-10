@@ -61,6 +61,16 @@ export const CreatePostForm = () => {
   const isLoading = form.formState.isSubmitting;
 
   useEffect(() => {
+    if (resolvedTheme === "light") {
+      document.documentElement.style.setProperty(`--froala-editor-bg`, `#fff`);
+      document.documentElement.style.setProperty(`--froala-editor-text-color`, `#000`);
+    } else {
+      document.documentElement.style.setProperty(`--froala-editor-bg`, `#272729`);
+      document.documentElement.style.setProperty(`--froala-editor-text-color`, `#fff`);
+    }
+  }, [resolvedTheme]);
+
+  useEffect(() => {
     setIsMounted(true);
 
     setHeaderActivePlace({ text: "Create Post", icon: "Plus" });

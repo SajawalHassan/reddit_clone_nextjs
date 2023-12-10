@@ -5,7 +5,8 @@
 @tailwind utilities;
 
 :root {
-  --banner: "----";
+  --froala-editor-bg: #fff;
+  --froala-editor-text-color: #000;
 }
 
 html,
@@ -142,5 +143,13 @@ body,
 
 .fr-wrapper {
   border-radius: 0px 0px 10px 10px;
-  border-bottom: 1px solid #cccccc;
+  background-color: var(--froala-editor-bg) !important;
+}
+
+.fr-toolbar {
+  background-color: var(--froala-editor-bg) !important;
+}
+
+.fr-element {
+  color: var(--froala-editor-text-color) !important;
 }
