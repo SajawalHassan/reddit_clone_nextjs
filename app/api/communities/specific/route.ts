@@ -28,5 +28,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
     return NextResponse.json({ community, currentMember });
   } catch (error) {
     console.log("COMMUNITY_SPECIFIC_GET", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

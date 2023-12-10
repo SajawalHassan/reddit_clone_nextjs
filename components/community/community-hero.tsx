@@ -9,6 +9,8 @@ import { IconButton } from "../icon-button";
 import { UploadClient } from "@uploadcare/upload-client";
 import { Camera, X } from "lucide-react";
 import { ActionLoading } from "@/components/action-loading";
+import { useModal } from "@/hooks/use-modal-store";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 const client = new UploadClient({ publicKey: process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY as string });
 
@@ -25,23 +27,32 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
   const imageUploadRef = useRef<any>(null);
   const isAdmin = currentMember?.role === MemberRole.ADMIN;
 
+  const { openModal } = useModal();
+  const { refetchCommunityHero, setRefetchCommunityHero } = useGlobalInfo();
+
+  const getCommunity = async () => {
+    try {
+      const url = qs.stringifyUrl({ url: "/api/communities/specific", query: { communityId } });
+
+      const response = await axios.get(url);
+      setCommunity(response.data.community);
+      setCurrentMember(response.data.currentMember[0]);
+      setBanner(response.data.community.bannerUrl || "");
+      setImage(response.data.community.imageUrl || "");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
-    const getCommunity = async () => {
-      try {
-        const url = qs.stringifyUrl({ url: "/api/communities/specific", query: { communityId } });
-
-        const response = await axios.get(url);
-        setCommunity(response.data.community);
-        setCurrentMember(response.data.currentMember[0]);
-        setBanner(response.data.community.bannerUrl || "");
-        setImage(response.data.community.imageUrl || "");
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
     getCommunity();
   }, []);
+
+  useEffect(() => {
+    if (refetchCommunityHero) {
+      getCommunity();
+      setRefetchCommunityHero(false);
+    }
+  }, [refetchCommunityHero]);
 
   useEffect(() => {
     setHasJoinedCommunity(currentMember ? true : false);
@@ -61,6 +72,8 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
 
       if (type === "banner") await axios.patch("/api/communities", { communityId, data: { bannerUrl: uploadCareFile.cdnUrl } });
       else await axios.patch("/api/communities", { communityId, data: { imageUrl: uploadCareFile.cdnUrl } });
+
+      setRefetchCommunityHero(true);
     } catch (error) {
       console.log(error);
     } finally {
@@ -118,7 +131,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
     <div>
       <div>
         {banner ? (
-          <div className="max-h-[192px] overflow-hidden w-full relative">
+          <div className="min-h-[5rem] max-h-[192px] overflow-hidden w-full relative">
             <img src={banner} className="w-full" />
             {isAdmin && (
               <IconButton
@@ -172,7 +185,11 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
                       </div>
                     )
                   ) : (
-                    <button className="px-5 py-1 text-sm rounded-full border border-black hover:bg-gray-100 cursor-pointer">Edit community</button>
+                    <button
+                      className="px-5 py-1 text-sm rounded-full border border-black hover:bg-gray-100 cursor-pointer"
+                      onClick={() => openModal("editCommunity", { community })}>
+                      Edit community
+                    </button>
                   )}
                 </div>
                 <p className="font-semibold text-sm text-[#818181] mt-1">r/{community.uniqueName}</p>

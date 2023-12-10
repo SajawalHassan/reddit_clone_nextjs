@@ -84,7 +84,7 @@ export const HeaderProfile = () => {
             setMenuIsOpen={setMenuIsOpen}
             Icon={PlusCircle}
             text="Create Community"
-            onClick={() => openModal("createCommunity")}
+            onClick={() => openModal("createCommunity", {})}
           />
           <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} Icon={LogOut} text="Logout" onClick={() => signOut()} />
         </div>

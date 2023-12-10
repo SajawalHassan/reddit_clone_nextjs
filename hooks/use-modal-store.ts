@@ -1,17 +1,24 @@
+import { CommunityWithMembers } from "@/types";
 import { create } from "zustand";
 
-export type ModalTypes = "createCommunity";
+export type ModalTypes = "createCommunity" | "editCommunity";
+
+interface ModalData {
+  community?: CommunityWithMembers;
+}
 
 interface ModalStores {
   type: ModalTypes | null;
+  data: ModalData;
   isOpen: Boolean;
-  openModal: (type: ModalTypes) => void;
+  openModal: (type: ModalTypes, data?: ModalData) => void;
   closeModal: () => void;
 }
 
 export const useModal = create<ModalStores>((set) => ({
   type: null,
   isOpen: false,
-  openModal: (type) => set({ type, isOpen: true }),
+  data: {},
+  openModal: (type, data?: ModalData) => set({ type, isOpen: true, data }),
   closeModal: () => set({ isOpen: false, type: null }),
 }));

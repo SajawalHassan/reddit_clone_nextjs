@@ -16,3 +16,12 @@ export const createCommunityFormSchema = z.object({
   imageUrl: z.string().min(1, "Please select an image for the community"),
   type: z.nativeEnum(CommunityType),
 });
+
+export const editCommunityFormSchema = z.object({
+  name: z
+    .string()
+    .min(3, { message: "Name must be between 3 and 150 characters" })
+    .max(150, { message: "Name must be between 3 and 150 characters" }),
+  imageUrl: z.string().min(1, "Please select an image for the community"),
+  type: z.nativeEnum(CommunityType),
+});

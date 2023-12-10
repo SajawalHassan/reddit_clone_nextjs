@@ -25,7 +25,7 @@ export const HomeFeedQuickActionsHomeComponent = () => {
           <Button onClick={() => router.push("/main/create/post?plain=true")} variant="primary">
             Create Post
           </Button>
-          <Button onClick={() => openModal("createCommunity")} variant="secondary">
+          <Button onClick={() => openModal("createCommunity", {})} variant="secondary">
             Create Community
           </Button>
         </div>

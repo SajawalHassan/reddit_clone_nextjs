@@ -26,7 +26,7 @@ export const CommunitySelectionOption = ({ Icon, text, type, modalType, communit
 
   const handleOnClick = () => {
     if (type === "modalOpener") {
-      openModal(modalType as ModalTypes);
+      openModal(modalType as ModalTypes, {});
       setMenuIsOpen && setMenuIsOpen(false);
       return;
     }
