@@ -153,7 +153,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
             )}
           </div>
         )}
-        <div className="bg-white flex justify-center h-[5rem]">
+        <div className="bg-white dark:bg-[#1A1A1B] flex justify-center h-[5rem]">
           {community && (
             <div className="lg:max-w-[984px] w-full pl-2 sm:pl-10 lg:pl-0 relative flex gap-x-2 mt-1.5">
               <div className="relative -top-5">
@@ -173,14 +173,14 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
                   {!isAdmin ? (
                     hasJoinedCommunity ? (
                       <div
-                        className="hidden md:block px-7 py-1 rounded-full border border-black hover:bg-gray-100 group cursor-pointer"
+                        className="hidden md:block px-7 py-1 rounded-full border border-black dark:border-white hover:bg-gray-100 dark:bg-[#1a1a1a] dark:hover:bg-[#292929] group cursor-pointer"
                         onClick={() => LeaveCommunity()}>
                         <p className="group-hover:hidden">Joined</p>
                         <p className="hidden group-hover:block">Leave</p>
                       </div>
                     ) : (
                       <div
-                        className="hidden md:block px-7 py-1 rounded-full bg-black text-white hover:bg-zinc-800 cursor-pointer"
+                        className="hidden md:block px-7 py-1 rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer"
                         onClick={() => joinCommunity()}>
                         <p className="font-bold">Join</p>
                       </div>
@@ -198,14 +198,14 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
                   {!isAdmin ? (
                     hasJoinedCommunity ? (
                       <div
-                        className="md:hidden px-3 py-0.5 text-[11px] rounded-full border border-black hover:bg-gray-100 group cursor-pointer"
+                        className="md:hidden px-3 py-0.5 text-[11px] rounded-full border border-black dark:border-white hover:bg-gray-100 dark:bg-[#1a1a1a] dark:hover:bg-[#292929] group cursor-pointer"
                         onClick={() => LeaveCommunity()}>
                         <p className="group-hover:hidden">Joined</p>
                         <p className="hidden group-hover:block">Leave</p>
                       </div>
                     ) : (
                       <div
-                        className="md:hidden px-3 py-0.5 text-[11px] rounded-full bg-black text-white hover:bg-zinc-800 cursor-pointer"
+                        className="md:hidden px-3 py-0.5 text-[11px] rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer"
                         onClick={() => joinCommunity()}>
                         <p className="font-bold">Join</p>
                       </div>

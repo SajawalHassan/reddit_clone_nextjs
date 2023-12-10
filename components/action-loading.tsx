@@ -7,7 +7,7 @@ export const ActionLoading = ({ isLoading }: { isLoading: boolean }) => {
       <div
         className="fixed top-14 inset-x-0 mx-auto p-4 w-max rounded-md bg-white shadow-xl shadow-black data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:duration-500 z-50"
         data-state={isLoading ? "open" : "closed"}>
-        <Loader2 className="animate-spin" />
+        <Loader2 className="animate-spin dark:text-black" />
       </div>
     </div>
   );
