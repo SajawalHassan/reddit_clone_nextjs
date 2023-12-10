@@ -1,5 +1,10 @@
 import { CreatePostForm } from "@/components/forms/post/create-post-form";
 import { Separator } from "@/components/ui/seperator";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Submit to Reddit",
+};
 
 export default function CreatePostPage() {
   return (

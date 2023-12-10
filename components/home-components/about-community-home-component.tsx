@@ -57,6 +57,12 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
   }, []);
 
   useEffect(() => {
+    if (community && document.title !== community.name) {
+      document.title = community.name;
+    }
+  }, [community]);
+
+  useEffect(() => {
     if (refetchCommunityHero) {
       getCommunity(false);
       setRefetchCommunityHero(false);
