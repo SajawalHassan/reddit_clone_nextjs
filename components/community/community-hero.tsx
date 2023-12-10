@@ -187,7 +187,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
                     )
                   ) : (
                     <button
-                      className="hidden md:block px-5 py-1 text-sm rounded-full border border-black hover:bg-gray-100 cursor-pointer"
+                      className="hidden md:block px-5 py-1 text-sm rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer"
                       onClick={() => openModal("editCommunity", { community })}>
                       Edit community
                     </button>
@@ -212,7 +212,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
                     )
                   ) : (
                     <button
-                      className="md:hidden px-2 py-0.5 text-[11px] rounded-full border border-black hover:bg-gray-100 cursor-pointer"
+                      className="md:hidden px-2 py-0.5 text-[11px] rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer"
                       onClick={() => openModal("editCommunity", { community })}>
                       Edit community
                     </button>
