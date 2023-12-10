@@ -130,8 +130,8 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
     <div>
       <div>
         {banner ? (
-          <div className="min-h-[5rem] max-h-[192px] overflow-hidden w-full relative">
-            <img src={banner} className="w-full" />
+          <div className="min-h-[3rem] max-h-[192px] overflow-hidden w-full relative">
+            <img src={banner} className="w-full h-full" />
             {isAdmin && (
               <IconButton
                 Icon={X}
@@ -153,7 +153,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
             )}
           </div>
         )}
-        <div className="bg-white dark:bg-[#1A1A1B] flex justify-center h-[5rem]">
+        <div className="bg-white dark:bg-[#1A1A1B] flex justify-center min-h-[5rem] pb-2">
           {community && (
             <div className="lg:max-w-[984px] w-full pl-2 sm:pl-10 lg:pl-0 relative flex gap-x-2 mt-1.5">
               <div className="relative -top-5">
@@ -187,7 +187,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
                     )
                   ) : (
                     <button
-                      className="hidden md:block px-5 py-1 text-sm rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer"
+                      className="hidden md:block px-5 py-1 text-sm rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer font-bold"
                       onClick={() => openModal("editCommunity", { community })}>
                       Edit community
                     </button>
@@ -212,7 +212,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
                     )
                   ) : (
                     <button
-                      className="md:hidden px-2 py-0.5 text-[11px] rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer"
+                      className="md:hidden px-2 py-0.5 text-[11px] rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer font-bold"
                       onClick={() => openModal("editCommunity", { community })}>
                       Edit community
                     </button>
