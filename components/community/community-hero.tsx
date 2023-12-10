@@ -54,10 +54,6 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
     }
   }, [refetchCommunityHero]);
 
-  useEffect(() => {
-    setHasJoinedCommunity(currentMember ? true : false);
-  }, [currentMember]);
-
   const uploadFile = async (e: ChangeEvent, type: "banner" | "image") => {
     const file = (e.target as HTMLInputElement).files![0];
     if (!file) return;
@@ -103,7 +99,9 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
 
       await axios.patch("/api/communities/leave", { memberId: currentMember?.id, communityId });
 
+      setCurrentMember(undefined);
       setHasJoinedCommunity(false);
+      setRefetchCommunityHero(true);
     } catch (error) {
       console.log(error);
     } finally {
@@ -117,9 +115,10 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
 
       const response = await axios.patch("/api/communities/join", { communityId });
       const { currentMember: member } = response.data;
-      setCurrentMember(member);
 
+      setCurrentMember(member);
       setHasJoinedCommunity(true);
+      setRefetchCommunityHero(true);
     } catch (error) {
       console.log(error);
     } finally {
@@ -169,30 +168,56 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
                 )}
               </div>
               <div>
-                <div className="flex items-center gap-x-2 h-max">
+                <div className="md:flex items-center gap-x-2 h-max">
                   <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">{community.name}</p>
                   {!isAdmin ? (
                     hasJoinedCommunity ? (
                       <div
-                        className="px-7 py-1 rounded-full border border-black hover:bg-gray-100 group cursor-pointer"
+                        className="hidden md:block px-7 py-1 rounded-full border border-black hover:bg-gray-100 group cursor-pointer"
                         onClick={() => LeaveCommunity()}>
                         <p className="group-hover:hidden">Joined</p>
                         <p className="hidden group-hover:block">Leave</p>
                       </div>
                     ) : (
-                      <div className="px-7 py-1 rounded-full bg-black text-white hover:bg-zinc-800 cursor-pointer" onClick={() => joinCommunity()}>
+                      <div
+                        className="hidden md:block px-7 py-1 rounded-full bg-black text-white hover:bg-zinc-800 cursor-pointer"
+                        onClick={() => joinCommunity()}>
                         <p className="font-bold">Join</p>
                       </div>
                     )
                   ) : (
                     <button
-                      className="px-5 py-1 text-sm rounded-full border border-black hover:bg-gray-100 cursor-pointer"
+                      className="hidden md:block px-5 py-1 text-sm rounded-full border border-black hover:bg-gray-100 cursor-pointer"
                       onClick={() => openModal("editCommunity", { community })}>
                       Edit community
                     </button>
                   )}
                 </div>
-                <p className="font-semibold text-sm text-[#818181] mt-1">r/{community.uniqueName}</p>
+                <div className="flex items-center gap-x-2 mt-1">
+                  <p className="font-semibold text-sm text-[#818181]">r/{community.uniqueName}</p>
+                  {!isAdmin ? (
+                    hasJoinedCommunity ? (
+                      <div
+                        className="md:hidden px-3 py-0.5 text-[11px] rounded-full border border-black hover:bg-gray-100 group cursor-pointer"
+                        onClick={() => LeaveCommunity()}>
+                        <p className="group-hover:hidden">Joined</p>
+                        <p className="hidden group-hover:block">Leave</p>
+                      </div>
+                    ) : (
+                      <div
+                        className="md:hidden px-3 py-0.5 text-[11px] rounded-full bg-black text-white hover:bg-zinc-800 cursor-pointer"
+                        onClick={() => joinCommunity()}>
+                        <p className="font-bold">Join</p>
+                      </div>
+                    )
+                  ) : (
+                    <button
+                      className="md:hidden px-2 py-0.5 text-[11px] rounded-full border border-black hover:bg-gray-100 cursor-pointer"
+                      onClick={() => openModal("editCommunity", { community })}>
+                      Edit community
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           )}

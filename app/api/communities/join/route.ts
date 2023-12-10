@@ -19,11 +19,16 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
           create: [{ id: memberId, profileId: profile.id }],
         },
       },
+      include: {
+        members: true,
+      },
     });
 
     if (!community) return new NextResponse("Community not found", { status: 404 });
 
-    return NextResponse.json("Left community");
+    const currentMember = community.members.filter((member) => member.profileId === profile.id);
+
+    return NextResponse.json({ community, currentMember: currentMember[0] });
   } catch (error) {
     console.log("COMMUNITY_LEAVE_PATCH", error);
     return new NextResponse("Internal Server Error", { status: 500 });

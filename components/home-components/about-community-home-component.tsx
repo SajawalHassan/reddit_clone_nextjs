@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { IconButton } from "@/components/icon-button";
 import { cn } from "@/lib/utils";
 import { AboutCommunitySkeleton } from "@/components/skeletons/about-community-skeleton";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 const DATE_FORMAT = "MMM d, yyyy";
 const MAX_DESCRIPTION_LEN = 500;
@@ -32,27 +33,35 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
   const isAdmin = currentMember?.role === MemberRole.ADMIN;
   const isModerator = currentMember?.role === MemberRole.MODERATOR;
 
+  const { refetchCommunityHero, setRefetchCommunityHero } = useGlobalInfo();
+
+  const getCommunity = async (setLoadingStates: boolean) => {
+    if (setLoadingStates) setIsLoading(true);
+
+    try {
+      const url = qs.stringifyUrl({ url: "/api/communities/specific", query: { communityId } });
+
+      const response = await axios.get(url);
+      setCommunity(response.data.community);
+      setCurrentMember(response.data.currentMember[0]);
+      setDescription(response.data.community.description);
+      setEditingDescription(response.data.community.description || "");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (setLoadingStates) setIsLoading(false);
+    }
+  };
   useEffect(() => {
-    const getCommunity = async () => {
-      setIsLoading(true);
-
-      try {
-        const url = qs.stringifyUrl({ url: "/api/communities/specific", query: { communityId } });
-
-        const response = await axios.get(url);
-        setCommunity(response.data.community);
-        setCurrentMember(response.data.currentMember[0]);
-        setDescription(response.data.community.description);
-        setEditingDescription(response.data.community.description || "");
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getCommunity();
+    getCommunity(true);
   }, []);
+
+  useEffect(() => {
+    if (refetchCommunityHero) {
+      getCommunity(false);
+      setRefetchCommunityHero(false);
+    }
+  }, [refetchCommunityHero]);
 
   const submitDescription = async () => {
     setIsSubmittingDescription(true);
