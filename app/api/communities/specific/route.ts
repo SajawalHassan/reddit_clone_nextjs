@@ -18,6 +18,11 @@ export async function GET(req: NextRequest, res: NextResponse) {
       },
       include: {
         members: true,
+        rules: {
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
       },
     });
 

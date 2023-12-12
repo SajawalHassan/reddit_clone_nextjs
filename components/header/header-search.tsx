@@ -6,14 +6,14 @@ import qs from "query-string";
 import { Profile } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import { HeaderSearchItem } from "./header-search-item";
-import { CommunityWithMembers } from "@/types";
+import { CommunityWithMembersWithRules } from "@/types";
 
 interface Props {
   className?: string;
 }
 
 export const HeaderSearch = ({ className }: Props) => {
-  const [filteredCommunities, setFilteredCommunities] = useState<CommunityWithMembers[]>();
+  const [filteredCommunities, setFilteredCommunities] = useState<CommunityWithMembersWithRules[]>();
   const [filteredProfiles, setFilteredProfiles] = useState<Profile[]>();
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -77,7 +77,7 @@ export const HeaderSearch = ({ className }: Props) => {
           {filteredCommunities?.length! > 0 && <p className="mx-5 mb-1 text-sm font-bold">Communities</p>}
 
           {!isLoading &&
-            filteredCommunities?.map((community: CommunityWithMembers) => (
+            filteredCommunities?.map((community: CommunityWithMembersWithRules) => (
               <HeaderSearchItem
                 setInputIsFocused={setInputIsFocused}
                 key={community.id}

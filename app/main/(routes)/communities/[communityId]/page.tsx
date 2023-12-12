@@ -2,6 +2,7 @@ import { AboutCommunitiyHomeComponent } from "@/components/home-components/about
 import { CommunityFeed } from "@/components/feed/community-feed";
 import { CreatePostHomeComponent } from "@/components/home-components/create-post-home-component";
 import { CommunityHero } from "@/components/community/community-hero";
+import { CommunityRules } from "@/components/community/community-rules";
 
 export default function CommunityIdPage({ params: { communityId } }: { params: { communityId: string } }) {
   return (
@@ -14,6 +15,7 @@ export default function CommunityIdPage({ params: { communityId } }: { params: {
         </div>
         <div className="hidden lg:block space-y-4">
           <AboutCommunitiyHomeComponent communityId={communityId} />
+          <CommunityRules communityId={communityId} />
         </div>
       </div>
     </div>

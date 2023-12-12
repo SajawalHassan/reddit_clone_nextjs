@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import { Cake, Loader2, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/seperator";
-import { CommunityWithMembers } from "@/types";
+import { CommunityWithMembersWithRules } from "@/types";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { IconButton } from "@/components/icon-button";
@@ -21,7 +21,7 @@ const DATE_FORMAT = "MMM d, yyyy";
 const MAX_DESCRIPTION_LEN = 500;
 
 export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: string }) => {
-  const [community, setCommunity] = useState<CommunityWithMembers>();
+  const [community, setCommunity] = useState<CommunityWithMembersWithRules>();
   const [currentMember, setCurrentMember] = useState<Member>();
   const [description, setDescription] = useState("");
   const [editingDescription, setEditingDescription] = useState("");
@@ -44,7 +44,7 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
       const response = await axios.get(url);
       setCommunity(response.data.community);
       setCurrentMember(response.data.currentMember[0]);
-      setDescription(response.data.community.description);
+      setDescription(response.data.community.description || "");
       setEditingDescription(response.data.community.description || "");
     } catch (error) {
       console.log(error);
@@ -146,7 +146,7 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
           ) : (
             <p className="text-sm">Welcome to r/{community?.uniqueName}</p>
           )}
-          <div className="flex items-center gap-x-2 mt-4">
+          <div className={cn("flex items-center gap-x-2", editingDescription.length < 45 ? "mt-4" : "mt-1")}>
             <Cake className="text-gray-500" />
             <p className="text-sm text-gray-500">Created on {format(new Date(community?.createdAt!), DATE_FORMAT)}</p>
           </div>

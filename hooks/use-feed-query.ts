@@ -26,10 +26,11 @@ export const useFeedQuery = ({ query, apiUrl, communityId, feedType }: Props) =>
     return res.json();
   };
 
-  const { data, fetchNextPage, hasNextPage, status, isFetching } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, status, isFetching, refetch } = useInfiniteQuery({
     queryKey: [query],
     queryFn: fetchCommunities,
     getNextPageParam: (lastPage) => lastPage?.nextCursor,
+    staleTime: Infinity,
   });
 
   return {
@@ -38,5 +39,6 @@ export const useFeedQuery = ({ query, apiUrl, communityId, feedType }: Props) =>
     hasNextPage,
     status,
     isFetching,
+    refetch,
   };
 };

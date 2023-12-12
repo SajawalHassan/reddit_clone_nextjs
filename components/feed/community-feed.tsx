@@ -6,16 +6,21 @@ import { Loader2 } from "lucide-react";
 import { PostHomeComponent } from "@/components/home-components/post/post-home-component";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { FeedLoadingSkeleton } from "@/components/skeletons/feed-loading-skeleton";
+import { useEffect } from "react";
 
 export const CommunityFeed = ({ communityId }: { communityId: string }) => {
   const query = `feed:community:${communityId}`;
 
-  const { data, fetchNextPage, hasNextPage, status } = useFeedQuery({
+  const { data, fetchNextPage, hasNextPage, status, refetch } = useFeedQuery({
     query,
     apiUrl: "/api/communities/feed",
     communityId,
     feedType: "hot",
   });
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   let posts = data?.pages?.reduce((prev: any, current: any) => {
     return [...prev, ...current.feedItems];

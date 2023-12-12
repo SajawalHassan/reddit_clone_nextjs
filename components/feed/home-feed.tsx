@@ -12,7 +12,7 @@ import { useEffect } from "react";
 export const HomeFeed = () => {
   const query = "feed:home";
 
-  const { data, fetchNextPage, hasNextPage, status } = useFeedQuery({ query, apiUrl: "/api/posts" });
+  const { data, fetchNextPage, hasNextPage, status, refetch } = useFeedQuery({ query, apiUrl: "/api/posts" });
   const { setHeaderActivePlace } = useGlobalInfo();
 
   let posts = data?.pages?.reduce((prev: any, current: any) => {
@@ -21,6 +21,7 @@ export const HomeFeed = () => {
 
   useEffect(() => {
     setHeaderActivePlace({ text: "Home", icon: "Home" });
+    refetch();
   }, []);
 
   if (status === "loading") {

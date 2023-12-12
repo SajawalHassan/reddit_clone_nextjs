@@ -46,18 +46,9 @@ model Community {
   description String?       @db.LongText
   imageUrl    String        @db.Text
   bannerUrl   String?       @db.Text
-  rule1       String?
-  rule2       String?
-  rule3       String?
-  rule4       String?
-  rule5       String?
-  rule6       String?
-  rule7       String?
-  rule8       String?
-  rule9       String?
-  rule10      String?
   type        CommunityType @default(PUBLIC)
 
+  rules   CommunityRule[]
   members Member[]
   posts   Post[]
 
@@ -68,6 +59,19 @@ model Community {
   updatedAt DateTime @updatedAt
 
   @@index([profileId])
+}
+
+model CommunityRule {
+  id   String @id @default(uuid())
+  rule String
+
+  communityId String
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([communityId])
 }
 
 enum MemberRole {

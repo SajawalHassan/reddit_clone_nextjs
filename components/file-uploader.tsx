@@ -13,7 +13,7 @@ interface PropTypes {
   text: string;
   className?: string;
   imageAvailableContent?: JSX.Element;
-  loadingContent?: JSX.Element;
+  loadingContent?: JSX.Element | null;
   canBeNull?: boolean;
 }
 
@@ -27,7 +27,7 @@ export const FileUploader = ({
   className,
   imageAvailableContent,
   canBeNull = true,
-  loadingContent,
+  loadingContent = null,
 }: PropTypes) => {
   const [uploadIsFinished, setUploadIsFinished] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

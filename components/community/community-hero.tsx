@@ -1,6 +1,6 @@
 "use client";
 
-import { CommunityWithMembers } from "@/types";
+import { CommunityWithMembersWithRules } from "@/types";
 import { Member, MemberRole } from "@prisma/client";
 import axios from "axios";
 import qs from "query-string";
@@ -15,7 +15,7 @@ import { useGlobalInfo } from "@/hooks/use-global-info";
 const client = new UploadClient({ publicKey: process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY as string });
 
 export const CommunityHero = ({ communityId }: { communityId: string }) => {
-  const [community, setCommunity] = useState<CommunityWithMembers>();
+  const [community, setCommunity] = useState<CommunityWithMembersWithRules>();
   const [currentMember, setCurrentMember] = useState<Member>();
   const [banner, setBanner] = useState("");
   const [image, setImage] = useState("");
@@ -153,7 +153,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
             )}
           </div>
         )}
-        <div className="bg-white dark:bg-[#1A1A1B] flex justify-center min-h-[5rem] pb-2">
+        <div className="bg-white dark:bg-[#1A1A1B] flex justify-center min-h-[5rem]">
           {community && (
             <div className="lg:max-w-[984px] w-full pl-2 sm:pl-10 lg:pl-0 relative flex gap-x-2 mt-1.5">
               <div className="relative -top-5">
