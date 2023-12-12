@@ -7,6 +7,7 @@ import { PostHomeComponent } from "@/components/home-components/post/post-home-c
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { FeedLoadingSkeleton } from "@/components/skeletons/feed-loading-skeleton";
 import { useEffect } from "react";
+import { NoPostsCommunity } from "@/components/community/no-posts-community";
 
 export const CommunityFeed = ({ communityId }: { communityId: string }) => {
   const query = `feed:community:${communityId}`;
@@ -36,20 +37,24 @@ export const CommunityFeed = ({ communityId }: { communityId: string }) => {
 
   return (
     <div className="home-component-container">
-      <InfiniteScroll
-        dataLength={posts ? posts.length : 0}
-        next={() => fetchNextPage()}
-        hasMore={hasNextPage ? true : false}
-        loader={
-          <div className="w-full flex items-center justify-center p-10">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        }
-        className="mt-2 space-y-2 pb-10">
-        {posts?.map((post: PostWithMemberWithProfileWithCommunityWithVotes) => (
-          <PostHomeComponent post={post} key={post.id} />
-        ))}
-      </InfiniteScroll>
+      {posts.length !== 0 ? (
+        <InfiniteScroll
+          dataLength={posts ? posts.length : 0}
+          next={() => fetchNextPage()}
+          hasMore={hasNextPage ? true : false}
+          loader={
+            <div className="w-full flex items-center justify-center p-10">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          }
+          className="mt-2 space-y-2 pb-10">
+          {posts?.map((post: PostWithMemberWithProfileWithCommunityWithVotes) => (
+            <PostHomeComponent post={post} key={post.id} />
+          ))}
+        </InfiniteScroll>
+      ) : (
+        <NoPostsCommunity communityId={communityId} />
+      )}
     </div>
   );
 };
