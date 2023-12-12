@@ -1,7 +1,4 @@
 import { Comment, Community, CommunityRule, Member, Post, PostProfileDownvotes, PostProfileUpvotes, Profile } from "@prisma/client";
-import { Socket, Server as NetServer } from "net";
-import { NextApiResponse } from "next";
-import { Server as SocketIOServer } from "socket.io";
 
 export type CommunityWithMembersWithRules = Community & {
   members: Member[];
@@ -21,12 +18,4 @@ export type PostWithMemberWithProfileWithCommunityWithVotes = Post & {
 export type PostWithCommentsWithCommunity = Post & {
   comments: Comment[];
   community: Community;
-};
-
-export type NextApiResponseSocket = NextApiResponse & {
-  socket: Socket & {
-    server: NetServer & {
-      io: SocketIOServer;
-    };
-  };
 };

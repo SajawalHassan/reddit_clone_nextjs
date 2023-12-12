@@ -7,15 +7,16 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { MouseEvent, useEffect, useState } from "react";
-import { useSocket } from "@/components/providers/socket-provider";
 import { PostHomeComponentFooterItem } from "./post-home-component-footer-item";
 import { PostHomeComponentFooterItemMenuItem } from "./post-home-component-footer-item-menu-item";
 
 import axios from "axios";
-import qs from "query-string";
 import dynamic from "next/dynamic";
-import { PostProfileDownvotes, PostProfileUpvotes, Profile } from "@prisma/client";
+import { Profile } from "@prisma/client";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+import { usePostVotes } from "@/hooks/use-post-votes";
+import { usePostVotesChange } from "@/hooks/use-post-votes-change";
+import { usePostVotesStatus } from "@/hooks/use-post-votes-status";
 
 const FroalaEditorView = dynamic(
   async () => {
@@ -36,14 +37,14 @@ const DATE_FORMAT = "d MMM yyyy, HH:mm";
 const SHORT_DATE_FORMAT = "d MMM yyyy";
 
 export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWithCommunityWithVotes }) => {
-  const { socket, isConnected } = useSocket();
   const { setHeaderActivePlace } = useGlobalInfo();
 
   const [upvotes, setUpvotes] = useState(0);
   const [formattedUpvotes, setFormattedUpvotes] = useState("");
+  const [hasUpvotedPost, setHasUpvotedPost] = useState(false);
+  const [hasDownvotedPost, setHasDownvotedPost] = useState(false);
+  const [hasChangedVotingStatus, setHasChangedVotingStatus] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
-  const [hasUpvoted, setHasUpvoted] = useState(false);
-  const [hasDownvoted, setHasDownvoted] = useState(false);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [hasViewedPost, setHasViewedPost] = useState(false);
   const [profile, setProfile] = useState<Profile>();
@@ -51,6 +52,10 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
   const isOnlyTitle = !post.content && !post.imageUrl && !post.link;
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
   const router = useRouter();
+
+  usePostVotes({ profile, post, setUpvotes, upvotes, formatter, setFormattedUpvotes });
+  usePostVotesChange({ post, hasUpvotedPost, hasDownvotedPost, hasChangedVotingStatus });
+  usePostVotesStatus({ profile, post, setUpvotes, setHasDownvotedPost, setHasUpvotedPost });
 
   const pushToUrl = (e: MouseEvent, url: string, type: "community" | "user") => {
     e.stopPropagation();
@@ -71,21 +76,6 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
   }, []);
 
   useEffect(() => {
-    const setVotingStatus = async () => {
-      if (!profile) return;
-      setHasUpvoted(post.upvotes.some((upvote: PostProfileUpvotes) => upvote.profileId === profile.id));
-      setHasDownvoted(post.downvotes.some((downvote: PostProfileDownvotes) => downvote.profileId === profile.id));
-    };
-
-    setUpvotes(post.upvotes.length - post.downvotes.length);
-    setVotingStatus();
-  }, [post, profile]);
-
-  useEffect(() => {
-    setFormattedUpvotes(formatter.format(upvotes));
-  }, [upvotes, formatter]);
-
-  useEffect(() => {
     const visitedPosts: any[] = JSON.parse(localStorage.getItem("visitedPosts") || "[]");
 
     const existingIndex = visitedPosts.findIndex((visitedPost) => visitedPost.id === post.id);
@@ -94,36 +84,58 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
     else setHasViewedPost(true);
   }, []);
 
-  if (!isConnected) return;
-
-  socket.on(`post:${post.id}:vote:up`, (data: any) => {
-    if (isVoting) return;
-
-    const { num, setDownvoteActive, setUpvoteActive } = data;
-
-    setUpvotes(upvotes + num);
-    setHasDownvoted(setDownvoteActive);
-    setHasUpvoted(setUpvoteActive);
-  });
-
-  socket.on(`post:${post.id}:vote:down`, (data: any) => {
-    if (isVoting) return;
-
-    const { num, setDownvoteActive, setUpvoteActive } = data;
-
-    setUpvotes(upvotes - num);
-    setHasDownvoted(setDownvoteActive);
-    setHasUpvoted(setUpvoteActive);
-  });
-
   const votePost = async (e: MouseEvent, type: "upvote" | "downvote") => {
     e.stopPropagation();
 
-    if (isVoting) return;
+    if (isVoting) {
+      return;
+    }
+
     setIsVoting(true);
 
+    const wantsToUpvote = type === "upvote";
+    const wantsToDownvote = type === "downvote";
+
+    if (wantsToUpvote) {
+      if (hasUpvotedPost) {
+        setUpvotes(upvotes - 1);
+        setHasUpvotedPost(false);
+        setHasDownvotedPost(false);
+      } else {
+        if (hasDownvotedPost) {
+          setUpvotes(upvotes + 2);
+          setHasUpvotedPost(true);
+          setHasDownvotedPost(false);
+        } else {
+          setUpvotes(upvotes + 1);
+          setHasDownvotedPost(false);
+          setHasUpvotedPost(true);
+        }
+      }
+    }
+
+    if (wantsToDownvote) {
+      if (hasDownvotedPost) {
+        setUpvotes(upvotes + 1);
+        setHasUpvotedPost(false);
+        setHasDownvotedPost(false);
+      } else {
+        if (hasUpvotedPost) {
+          setUpvotes(upvotes - 2);
+          setHasUpvotedPost(false);
+          setHasDownvotedPost(true);
+        } else {
+          setUpvotes(upvotes - 1);
+          setHasUpvotedPost(false);
+          setHasDownvotedPost(true);
+        }
+      }
+    }
+
+    setHasChangedVotingStatus(!hasChangedVotingStatus);
+
     try {
-      await axios.patch("/api/socket/posts/vote", { type, postId: post.id });
+      await axios.patch("/api/posts/vote", { type, postId: post.id });
     } catch (error) {
       console.log(error);
     } finally {
@@ -152,13 +164,13 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
         <div className="w-[2.5rem] xs:w-[4rem] bg-gray-100 dark:bg-[#151516] p-1 xs:p-2 flex flex-col items-center rounded-l-md">
           <IconButton
             Icon={ArrowUpCircle}
-            className={cn("rounded-sm w-max text-zinc-600", hasUpvoted && "text-orange-500 font-bold")}
+            className={cn("rounded-sm w-max text-zinc-600", hasUpvotedPost && "text-orange-500 font-bold")}
             onClick={(e: MouseEvent) => votePost(e, "upvote")}
           />
           <p className="text-sm font-bold">{formattedUpvotes}</p>
           <IconButton
             Icon={ArrowDownCircle}
-            className={cn("rounded-sm w-max text-zinc-600", hasDownvoted && "text-orange-500 font-bold")}
+            className={cn("rounded-sm w-max text-zinc-600", hasDownvotedPost && "text-orange-500 font-bold")}
             onClick={(e: MouseEvent) => votePost(e, "downvote")}
           />
         </div>

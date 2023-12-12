@@ -1,19 +1,17 @@
-import { getCurrentProfileSocket } from "@/lib/current-profile-socket";
+import { getCurrentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { NextApiResponseSocket } from "@/types";
-import { NextApiRequest } from "next";
+import { NextRequest, NextResponse } from "next/server";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponseSocket) {
-  if (req.method !== "PATCH") return res.status(405).json({ message: "Method not allowed" });
-
+export async function PATCH(req: NextRequest, res: NextResponse) {
   try {
-    const profile = await getCurrentProfileSocket(req);
+    const profile = await getCurrentProfile();
 
-    const { type, postId } = req.body;
+    const values = await req.json();
+    const { type, postId } = values;
 
-    if (!profile) return res.status(401).json({ message: "Unauthorized" });
-    if (!postId) return res.status(404).json({ message: "Post id not found" });
-    if (type !== "upvote" && type !== "downvote") return res.status(400).json({ message: "Type incorrect" });
+    if (!profile) return new NextResponse("Unauthorized", { status: 401 });
+    if (!postId) return new NextResponse("Post id not found", { status: 404 });
+    if (type !== "upvote" && type !== "downvote") return new NextResponse("Type incorrect", { status: 400 });
 
     const post = await db.post.findUnique({
       where: {
@@ -25,40 +23,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
       },
     });
 
-    if (!post) return res.status(404).json({ message: "Post not found" });
+    if (!post) return new NextResponse("Post not found", { status: 404 });
 
     const wantsToUpvote = type === "upvote";
     const wantsToDownvote = type === "downvote";
 
     const hasUpvotedPost = post.upvotes.some((upvote) => upvote.profileId === profile.id);
     const hasDownvotedPost = post.downvotes.some((downvote) => downvote.profileId === profile.id);
-
-    const upvoteKey = `post:${postId}:vote:up`;
-    const downvoteKey = `post:${postId}:vote:down`;
-
-    if (wantsToUpvote) {
-      if (hasUpvotedPost) {
-        res?.socket?.server?.io?.emit(downvoteKey, { num: 1, setDownvoteActive: false, setUpvoteActive: false });
-      } else {
-        if (hasDownvotedPost) {
-          res?.socket?.server?.io?.emit(upvoteKey, { num: 2, setDownvoteActive: false, setUpvoteActive: true });
-        } else {
-          res?.socket?.server?.io?.emit(upvoteKey, { num: 1, setDownvoteActive: false, setUpvoteActive: true });
-        }
-      }
-    }
-
-    if (wantsToDownvote) {
-      if (hasDownvotedPost) {
-        res?.socket?.server?.io?.emit(upvoteKey, { num: 1, setDownvoteActive: false, setUpvoteActive: false });
-      } else {
-        if (hasUpvotedPost) {
-          res?.socket?.server?.io?.emit(downvoteKey, { num: 2, setDownvoteActive: true, setUpvoteActive: false });
-        } else {
-          res?.socket?.server?.io?.emit(downvoteKey, { num: 1, setDownvoteActive: true, setUpvoteActive: false });
-        }
-      }
-    }
 
     if (wantsToUpvote) {
       if (hasUpvotedPost) {
@@ -144,9 +115,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
       }
     }
 
-    return res.status(200).json({ message: "Vote added" });
+    return NextResponse.json("Vote added");
   } catch (error) {
-    console.log("POST_SOCKET_VOTE_PATCH", error);
-    return res.status(500).json({ message: "Internal Error" });
+    console.log("POST_VOTE_PATCH", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
