@@ -1,7 +1,7 @@
 import { CommunityWithMembersWithRules } from "@/types";
 import { create } from "zustand";
 
-export type ModalTypes = "createCommunity" | "editCommunity";
+export type ModalTypes = "createCommunity" | "editCommunity" | "deleteCommunity";
 
 interface ModalData {
   community?: CommunityWithMembersWithRules;

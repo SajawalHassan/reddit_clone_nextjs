@@ -7,7 +7,7 @@ import qs from "query-string";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { IconButton } from "../icon-button";
 import { UploadClient } from "@uploadcare/upload-client";
-import { Camera, X } from "lucide-react";
+import { Camera, Pencil, Trash, X } from "lucide-react";
 import { ActionLoading } from "@/components/action-loading";
 import { useModal } from "@/hooks/use-modal-store";
 import { useGlobalInfo } from "@/hooks/use-global-info";
@@ -131,7 +131,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
       <div>
         {banner ? (
           <div className="min-h-[3rem] max-h-[192px] overflow-hidden w-full relative">
-            <img src={banner} className="w-full h-full" />
+            <img src={banner} className="w-screen min-h-full" />
             {isAdmin && (
               <IconButton
                 Icon={X}
@@ -186,11 +186,18 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
                       </div>
                     )
                   ) : (
-                    <button
-                      className="hidden md:block px-5 py-1 text-sm rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer font-bold"
-                      onClick={() => openModal("editCommunity", { community })}>
-                      Edit community
-                    </button>
+                    <div className="flex items-center gap-x-2">
+                      <button
+                        className="hidden lg:block px-5 py-1 text-sm rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer font-bold"
+                        onClick={() => openModal("editCommunity", { community })}>
+                        Edit community
+                      </button>
+                      <button
+                        className="hidden lg:block px-5 py-1 text-sm rounded-full bg-red-500 text-white hover:bg-red-400 cursor-pointer font-bold"
+                        onClick={() => openModal("deleteCommunity", { community })}>
+                        Delete community
+                      </button>
+                    </div>
                   )}
                 </div>
                 <div className="flex items-center gap-x-2 mt-1">
@@ -211,11 +218,18 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
                       </div>
                     )
                   ) : (
-                    <button
-                      className="md:hidden px-2 py-0.5 text-[11px] rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer font-bold"
-                      onClick={() => openModal("editCommunity", { community })}>
-                      Edit community
-                    </button>
+                    <div className="flex items-center gap-x-2">
+                      <button
+                        className="lg:hidden p-1 sm:p-1.5 text-[11px] rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer font-bold"
+                        onClick={() => openModal("editCommunity", { community })}>
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
+                        className="lg:hidden p-1 sm:p-1.5 text-[11px] rounded-full bg-red-500 text-white hover:bg-red-400 cursor-pointer font-bold"
+                        onClick={() => openModal("editCommunity", { community })}>
+                        <Trash className="h-4 w-4" />
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>

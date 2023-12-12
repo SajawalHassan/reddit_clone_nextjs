@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Member, MemberRole } from "@prisma/client";
 import axios from "axios";
 import qs from "query-string";
+import { FeedLoadingSkeleton } from "../skeletons/feed-loading-skeleton";
 
 export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
   const [currentMember, setCurrentMember] = useState<Member>();
@@ -31,7 +32,7 @@ export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
     setMember();
   }, []);
 
-  if (isLoading) return;
+  if (isLoading) return <FeedLoadingSkeleton />;
 
   return (
     <div className="mx-2">
@@ -56,7 +57,7 @@ export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
         </div>
       ) : (
         <div className="relative">
-          <div className="space-y-2">
+          <div className="space-y-0.5">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
               <div className="home-component bg-gray-200/50 h-[6rem] p-2 rounded-l-md space-y-2">
                 <IconButton Icon={ArrowUpCircle} className="rounded-sm w-max hover:bg-transparent cursor-default" IconClassName="text-gray-400" />
@@ -64,7 +65,7 @@ export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
               </div>
             ))}
           </div>
-          <div className="absolute inset-x-0 mx-auto top-[84px] text-center w-max space-y-1">
+          <div className="absolute inset-x-0 mx-auto top-[60px] text-center w-max space-y-2">
             <div className="space-y-1">
               <p className="text-lg font-semibold">There are no posts in this subreddit</p>
               <p className="text-xs font-bold">Be the first to fill this fertile land</p>

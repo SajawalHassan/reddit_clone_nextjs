@@ -99,3 +99,29 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest, res: NextResponse) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const communityId = searchParams.get("communityId");
+    const currentMemberId = searchParams.get("currentMemberId");
+
+    if (!communityId) return new NextResponse("Community id missing", { status: 400 });
+    if (!currentMemberId) return new NextResponse("Current Member id missing", { status: 400 });
+
+    const member = await db.member.findUnique({ where: { id: currentMemberId } });
+    if (!member) return new NextResponse("Member not found!", { status: 404 });
+    if (member.role !== MemberRole.ADMIN) return new NextResponse("Action not allowed", { status: 403 });
+
+    await db.community.delete({
+      where: {
+        id: communityId,
+      },
+    });
+
+    return NextResponse.json("Community deleted");
+  } catch (error) {
+    console.log("COMMUNITIES_DELETE", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}

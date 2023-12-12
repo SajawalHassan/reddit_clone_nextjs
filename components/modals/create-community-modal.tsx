@@ -20,9 +20,11 @@ import { CommunityType } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { FileUploader } from "@/components/file-uploader";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 export const CreateCommunityModal = () => {
   const { isOpen, type, closeModal } = useModal();
+  const { setHeaderActivePlace } = useGlobalInfo();
 
   const modalIsOpen = isOpen && type === "createCommunity";
   const router = useRouter();
@@ -42,10 +44,11 @@ export const CreateCommunityModal = () => {
 
   const handleOnSubmit = async (values: z.infer<typeof createCommunityFormSchema>) => {
     try {
-      await axios.post("/api/communities", values);
+      const res = await axios.post("/api/communities", values);
 
       handleModalClose();
-      router.refresh();
+      setHeaderActivePlace({ text: res.data.uniqueName, imageUrl: res.data.imageUrl });
+      router.push(`/main/communities/${res.data.id}`);
     } catch (error) {
       console.log(error);
     }

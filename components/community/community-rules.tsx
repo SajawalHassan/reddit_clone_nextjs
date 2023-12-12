@@ -45,6 +45,8 @@ export const CommunityRules = ({ communityId }: { communityId: string }) => {
 
   const handleAddRule = async () => {
     try {
+      if (newRule === "") return setWantsToAddRule(false);
+
       setNewRule("");
       setWantsToAddRule(false);
       setIsSubmittingRule(true);
