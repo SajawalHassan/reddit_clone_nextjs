@@ -60,7 +60,7 @@ export const DeleteCommunityModal = () => {
       <DialogContent className="dark:bg-[#161718]">
         <DialogHeader>
           <p className="font-semibold text-lg text-center">Delete r/{community?.uniqueName}?</p>
-          <p className="text-xs text-gray-600 text-center">This action is permanent and irreversable!</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 text-center">This action is permanent and irreversable!</p>
         </DialogHeader>
         <div className="flex items-center gap-x-2 justify-end">
           <Button onClick={deleteModal} variant="destructive" disabled={isLoading}>

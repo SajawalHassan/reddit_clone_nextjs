@@ -70,7 +70,7 @@ export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
         <div className="relative">
           <div className="space-y-0.5">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-              <div className="home-component bg-gray-200/50 dark:bg-[#1a1a1a] h-[6rem] p-2 rounded-l-md space-y-2" key={i}>
+              <div className="home-component bg-gray-200/50 dark:bg-[#1a1a1a] opacity-70 h-[6rem] p-2 rounded-l-md space-y-2" key={i}>
                 <IconButton Icon={ArrowUpCircle} className="rounded-sm w-max hover:bg-transparent cursor-default" IconClassName="text-gray-400" />
                 <IconButton Icon={ArrowDownCircle} className="rounded-sm w-max hover:bg-transparent cursor-default" IconClassName="text-gray-400" />
               </div>

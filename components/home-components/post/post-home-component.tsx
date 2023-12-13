@@ -181,7 +181,7 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
               <img
                 src={post.community.imageUrl}
                 alt={post.community.name}
-                className="h-6 w-6 rounded-full cursor-pointer hover:ring-2 ring-gray-200"
+                className="h-6 w-6 rounded-full cursor-pointer hover:ring-2 ring-gray-200 dark:ring-zinc-700"
                 onClick={(e: MouseEvent) => pushToUrl(e, `/main/communities/${post.communityId}`, "community")}
               />
               <p

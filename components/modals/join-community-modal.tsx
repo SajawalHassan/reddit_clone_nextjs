@@ -42,7 +42,9 @@ export const JoinCommunityModal = () => {
       <DialogContent className="dark:bg-[#161718]">
         <DialogHeader>
           <p className="font-semibold text-lg text-center">Join r/{community?.uniqueName}?</p>
-          <p className="text-xs text-gray-600 text-center">In order to create a post in r/{community?.uniqueName} you must be a member.</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
+            In order to create a post in r/{community?.uniqueName} you must be a member.
+          </p>
         </DialogHeader>
         <div className="flex items-center gap-x-2 justify-end">
           <Button onClick={joinCommunity} variant="primary" disabled={isLoading}>

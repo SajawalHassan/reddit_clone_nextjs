@@ -78,12 +78,12 @@ export const FileUploader = ({
           <div>
             <button
               type="button"
-              className="absolute top-0 right-0 bg-rose-500 rounded-full p-1 hover:bg-rose-400 shadow-sm disabled:bg-rose-300 z-50"
+              className="absolute top-0 right-0 bg-rose-500 rounded-full p-1 hover:bg-rose-400 shadow-sm disabled:bg-rose-300 z-50 dark:bg-zinc-700 dark:hover:bg-zinc-600 dark:disabled:bg-zinc-800 group"
               onClick={() => {
                 uploadRef?.current?.click();
               }}
               disabled={isSubmitting}>
-              <Camera className="h-4 w-4" />
+              <Camera className="h-4 w-4 dark:group-disabled:text-zinc-500" />
             </button>
             <input type="file" ref={uploadRef} onChange={(e) => uploadFile(e)} className="hidden" accept="image/*" />
           </div>
