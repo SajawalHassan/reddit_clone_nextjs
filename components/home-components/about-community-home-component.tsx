@@ -16,24 +16,25 @@ import { IconButton } from "@/components/icon-button";
 import { cn } from "@/lib/utils";
 import { AboutCommunitySkeleton } from "@/components/skeletons/about-community-skeleton";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+import { useModal } from "@/hooks/use-modal-store";
 
 const DATE_FORMAT = "MMM d, yyyy";
 const MAX_DESCRIPTION_LEN = 500;
 
 export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: string }) => {
   const [community, setCommunity] = useState<CommunityWithMembersWithRules>();
-  const [currentMember, setCurrentMember] = useState<Member>();
   const [description, setDescription] = useState("");
   const [editingDescription, setEditingDescription] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [wantsToEditDescription, setWantsToEditDescription] = useState(false);
   const [isSubmittingDescription, setIsSubmittingDescription] = useState(false);
 
+  const { refetchCommunityHero, setRefetchCommunityHero, currentMember, setCurrentMember } = useGlobalInfo();
+  const { openModal } = useModal();
+
   const router = useRouter();
   const isAdmin = currentMember?.role === MemberRole.ADMIN;
   const isModerator = currentMember?.role === MemberRole.MODERATOR;
-
-  const { refetchCommunityHero, setRefetchCommunityHero } = useGlobalInfo();
 
   const getCommunity = async (setLoadingStates: boolean) => {
     if (setLoadingStates) setIsLoading(true);
@@ -81,6 +82,11 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
     } finally {
       setIsSubmittingDescription(false);
     }
+  };
+
+  const createPost = () => {
+    if (!currentMember) return openModal("joinCommunity", { community });
+    router.push(`/main/create/post?plain=true&preselected=${communityId}`);
   };
 
   if (isLoading) return <AboutCommunitySkeleton />;
@@ -159,7 +165,7 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
           </div>
         </div>
         <Separator className="my-4" />
-        <Button variant="primary" className="w-full" onClick={() => router.push(`/main/create/post?plain=true&preselected=${community?.id}`)}>
+        <Button variant="primary" className="w-full" onClick={createPost}>
           Create Post
         </Button>
       </div>

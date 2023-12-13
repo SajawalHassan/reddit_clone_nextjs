@@ -9,10 +9,15 @@ import { Member, MemberRole } from "@prisma/client";
 import axios from "axios";
 import qs from "query-string";
 import { FeedLoadingSkeleton } from "../skeletons/feed-loading-skeleton";
+import { useModal } from "@/hooks/use-modal-store";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
-  const [currentMember, setCurrentMember] = useState<Member>();
-  const [isLoading, setIsLoading] = useState(false);
+  const [community, setCommunity] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { openModal } = useModal();
+  const { currentMember, setCurrentMember } = useGlobalInfo();
 
   const router = useRouter();
 
@@ -27,12 +32,18 @@ export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
 
       const response = await axios.get(url);
       setCurrentMember(response.data.currentMember[0]);
+      setCommunity(response.data.community);
       setIsLoading(false);
     };
     setMember();
   }, []);
 
   if (isLoading) return <FeedLoadingSkeleton />;
+
+  const createPost = () => {
+    if (!currentMember) return openModal("joinCommunity", { community });
+    router.push(`/main/create/post?plain=true&preselected=${communityId}`);
+  };
 
   return (
     <div className="mx-2">
@@ -44,12 +55,12 @@ export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
               Icon={Plus}
               className="p-1 bg-[#7193FF] hover:bg-[#84a0fc] w-max h-max"
               IconClassName="h-10 w-10 text-white font-light"
-              onClick={() => router.push(`/main/create/post?plain=true&preselected=${communityId}`)}
+              onClick={createPost}
             />
             <div className="space-y-2">
               <p className="text-xl font-semibold">Time to make your first post!</p>
               <p className="text-sm text-gray-500">Now that you've created your community, start things off right by making your first post.</p>
-              <Button variant="primary" onClick={() => router.push(`/main/create/post?plain=true&preselected=${communityId}`)}>
+              <Button variant="primary" onClick={createPost}>
                 Make your first post
               </Button>
             </div>
@@ -59,7 +70,7 @@ export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
         <div className="relative">
           <div className="space-y-0.5">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-              <div className="home-component bg-gray-200/50 h-[6rem] p-2 rounded-l-md space-y-2">
+              <div className="home-component bg-gray-200/50 dark:bg-[#1a1a1a] h-[6rem] p-2 rounded-l-md space-y-2" key={i}>
                 <IconButton Icon={ArrowUpCircle} className="rounded-sm w-max hover:bg-transparent cursor-default" IconClassName="text-gray-400" />
                 <IconButton Icon={ArrowDownCircle} className="rounded-sm w-max hover:bg-transparent cursor-default" IconClassName="text-gray-400" />
               </div>
@@ -70,7 +81,7 @@ export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
               <p className="text-lg font-semibold">There are no posts in this subreddit</p>
               <p className="text-xs font-bold">Be the first to fill this fertile land</p>
             </div>
-            <Button variant="primary" onClick={() => router.push(`/main/create/post?plain=true&preselected=${communityId}`)}>
+            <Button variant="primary" onClick={createPost}>
               Add a post
             </Button>
           </div>

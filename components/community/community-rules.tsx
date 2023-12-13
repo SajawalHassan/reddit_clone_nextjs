@@ -9,15 +9,17 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CommunityRuleItem } from "./community-rule-item";
 import { RuleInput } from "./rule-input";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 export const CommunityRules = ({ communityId }: { communityId: string }) => {
   const [community, setCommunity] = useState<CommunityWithMembersWithRules>();
-  const [currentMember, setCurrentMember] = useState<Member>();
   const [rules, setRules] = useState<CommunityRule[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [wantsToAddRule, setWantsToAddRule] = useState(false);
   const [isSubmittingRule, setIsSubmittingRule] = useState(false);
   const [newRule, setNewRule] = useState("");
+
+  const { currentMember, setCurrentMember } = useGlobalInfo();
 
   const isAdmin = currentMember?.role === MemberRole.ADMIN;
   const isModerator = currentMember?.role === MemberRole.MODERATOR;

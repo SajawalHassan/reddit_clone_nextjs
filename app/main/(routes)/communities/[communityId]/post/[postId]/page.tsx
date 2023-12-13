@@ -1,15 +1,20 @@
 "use client";
 
+import { usePostVisitation } from "@/hooks/use-post-visitation";
 import { PostWithCommentsWithCommunity } from "@/types";
-import axios from "axios";
-import { useParams } from "next/navigation";
-import qs from "query-string";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import qs from "query-string";
+import { useParams } from "next/navigation";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 export default function PostIdPage() {
   const [post, setPost] = useState<PostWithCommentsWithCommunity>();
 
+  const { setHeaderActivePlace } = useGlobalInfo();
+
   const params = useParams();
+  usePostVisitation({ post, setPost });
 
   useEffect(() => {
     const getPost = async (postId: string) => {
@@ -25,20 +30,9 @@ export default function PostIdPage() {
   }, []);
 
   useEffect(() => {
-    if (!post) return;
-
-    const visitedPosts: any[] = JSON.parse(localStorage.getItem("visitedPosts") || "[]");
-
-    const existingIndex = visitedPosts.findIndex((visitedPost) => visitedPost.id === post.id);
-
-    if (existingIndex !== -1) {
-      visitedPosts.splice(existingIndex, 1); // Remove the element
-      visitedPosts.unshift(post); // Add it as the first element of the list
-    } else {
-      visitedPosts.unshift(post);
+    if (post) {
+      setHeaderActivePlace({ text: post.community.uniqueName, imageUrl: post.community.imageUrl });
     }
-
-    localStorage.setItem("visitedPosts", JSON.stringify(visitedPosts));
   }, [post]);
 
   return (

@@ -8,7 +8,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
     if (!profile) return new NextResponse("Unauthorized", { status: 401 });
 
     const values = await req.json();
-    const { memberId, communityId } = values;
+    const { communityId } = values;
 
     const community = await db.community.update({
       where: {
@@ -16,7 +16,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
       },
       data: {
         members: {
-          create: [{ id: memberId, profileId: profile.id }],
+          create: [{ profileId: profile.id }],
         },
       },
       include: {

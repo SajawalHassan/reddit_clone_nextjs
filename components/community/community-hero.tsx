@@ -1,7 +1,7 @@
 "use client";
 
 import { CommunityWithMembersWithRules } from "@/types";
-import { Member, MemberRole } from "@prisma/client";
+import { Community, Member, MemberRole } from "@prisma/client";
 import axios from "axios";
 import qs from "query-string";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
@@ -16,29 +16,32 @@ const client = new UploadClient({ publicKey: process.env.NEXT_PUBLIC_UPLOADCARE_
 
 export const CommunityHero = ({ communityId }: { communityId: string }) => {
   const [community, setCommunity] = useState<CommunityWithMembersWithRules>();
-  const [currentMember, setCurrentMember] = useState<Member>();
   const [banner, setBanner] = useState("");
   const [image, setImage] = useState("");
   const [isSubmittingFile, setIsSubmittingFile] = useState(false);
   const [hasJoinedCommunity, setHasJoinedCommunity] = useState(false);
   const [isJoiningOrLeavingCommunity, setIsJoiningOrLeavingCommunity] = useState(false);
 
+  const { openModal } = useModal();
+  const { refetchCommunityHero, setRefetchCommunityHero, currentMember, setCurrentMember, setHeaderActivePlace } = useGlobalInfo();
+
   const bannerUploadRef = useRef<any>(null);
   const imageUploadRef = useRef<any>(null);
   const isAdmin = currentMember?.role === MemberRole.ADMIN;
-
-  const { openModal } = useModal();
-  const { refetchCommunityHero, setRefetchCommunityHero } = useGlobalInfo();
 
   const getCommunity = async () => {
     try {
       const url = qs.stringifyUrl({ url: "/api/communities/specific", query: { communityId } });
 
       const response = await axios.get(url);
-      setCommunity(response.data.community);
-      setCurrentMember(response.data.currentMember[0]);
-      setBanner(response.data.community.bannerUrl || "");
-      setImage(response.data.community.imageUrl || "");
+      const data: { community: CommunityWithMembersWithRules; currentMember: Member[] } = response.data;
+
+      setCommunity(data.community);
+      setCurrentMember(data.currentMember[0]);
+      setBanner(data.community.bannerUrl || "");
+      setImage(data.community.imageUrl || "");
+
+      if (data.currentMember.length > 0) setHasJoinedCommunity(true);
     } catch (error) {
       console.log(error);
     }
@@ -46,6 +49,12 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
   useEffect(() => {
     getCommunity();
   }, []);
+
+  useEffect(() => {
+    if (community) {
+      setHeaderActivePlace({ text: community.uniqueName, imageUrl: community.imageUrl });
+    }
+  }, [community]);
 
   useEffect(() => {
     if (refetchCommunityHero) {
@@ -99,7 +108,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
 
       await axios.patch("/api/communities/leave", { memberId: currentMember?.id, communityId });
 
-      setCurrentMember(undefined);
+      setCurrentMember(null);
       setHasJoinedCommunity(false);
       setRefetchCommunityHero(true);
     } catch (error) {
