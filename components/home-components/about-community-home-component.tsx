@@ -21,7 +21,7 @@ import { useModal } from "@/hooks/use-modal-store";
 const DATE_FORMAT = "MMM d, yyyy";
 const MAX_DESCRIPTION_LEN = 500;
 
-export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: string }) => {
+export const AboutCommunitiyHomeComponent = ({ communityId, showMoreInfo = false }: { communityId: string; showMoreInfo?: boolean }) => {
   const [community, setCommunity] = useState<CommunityWithMembersWithRules>();
   const [description, setDescription] = useState("");
   const [editingDescription, setEditingDescription] = useState("");
@@ -93,11 +93,23 @@ export const AboutCommunitiyHomeComponent = ({ communityId }: { communityId: str
 
   return (
     <div className="home-component p-0 w-[20rem]">
-      <div className="py-3 px-2 bg-blue-500 dark:bg-transparent">
-        <p className="font-bold text-sm text-white dark:text-zinc-500">About community</p>
-      </div>
+      {showMoreInfo && community?.bannerUrl ? (
+        <div className="overflow-hidden max-h-[2.5rem]">
+          <img src={community.bannerUrl} alt={community?.uniqueName} className="w-full h-full" />
+        </div>
+      ) : (
+        <div className="py-3 px-2 bg-blue-500 dark:bg-transparent">
+          <p className="font-bold text-sm text-white dark:text-zinc-500">About community</p>
+        </div>
+      )}
       <div className="px-3 pb-5 pt-2">
-        <div>
+        <div className="space-y-3">
+          {showMoreInfo && (
+            <div className="flex items-center gap-x-2">
+              <img src={community?.imageUrl} alt={community?.uniqueName} className="h-[3.5rem] w-[3.5rem] rounded-full" />
+              <p className="font-medium text-sm">r/{community?.uniqueName}</p>
+            </div>
+          )}
           {isAdmin || isModerator ? (
             description && !wantsToEditDescription ? (
               <div className={cn(editingDescription.length < 45 ? "flex items-center gap-x-2" : "")}>

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Profile } from "@prisma/client";
 import axios from "axios";
 import { IconButton } from "@/components/icon-button";
-import { Image, Link } from "lucide-react";
+import { Image, Link as LinkIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export const CreatePostHomeComponent = () => {
@@ -28,6 +28,10 @@ export const CreatePostHomeComponent = () => {
     getProfile();
   }, []);
 
+  useEffect(() => {
+    router.prefetch("/main/create/post");
+  }, []);
+
   const createPost = (url: string) => {
     router.push(url);
   };
@@ -38,7 +42,7 @@ export const CreatePostHomeComponent = () => {
         <ProfilePicture src={profile?.imageUrl} profileId={profile?.id as string} />
         <Input placeholder="Create post" onClick={() => createPost("/main/create/post?plain=true")} className="rounded-sm" />
         <IconButton Icon={Image} onClick={() => createPost("/main/create/post?media=true")} className="text-zinc-500" />
-        <IconButton Icon={Link} onClick={() => createPost("/main/create/post?link=true")} />
+        <IconButton Icon={LinkIcon} onClick={() => createPost("/main/create/post?link=true")} />
       </div>
     </div>
   );

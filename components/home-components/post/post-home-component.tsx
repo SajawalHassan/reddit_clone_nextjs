@@ -36,7 +36,13 @@ const FroalaEditorView = dynamic(
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
 const SHORT_DATE_FORMAT = "d MMM yyyy";
 
-export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWithCommunityWithVotes }) => {
+export const PostHomeComponent = ({
+  post,
+  isOnPostPage = false,
+}: {
+  post: PostWithMemberWithProfileWithCommunityWithVotes;
+  isOnPostPage?: boolean;
+}) => {
   const { setHeaderActivePlace } = useGlobalInfo();
 
   const [upvotes, setUpvotes] = useState(0);
@@ -154,14 +160,21 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
   };
 
   return (
-    <div className="px-2 home-component-container">
+    <div className={cn("px-2", isOnPostPage ? "w-full" : "home-component-container")}>
       <div
         className={cn(
-          "home-component flex p-0 hover:border-black hover:dark:border-[#818384] cursor-pointer",
-          menuIsOpen && "border-transparent hover:border-transparent dark:border-transparent dark:hover:border-transparent"
+          "flex p-0 hover:border-black hover:dark:border-[#818384] cursor-pointer",
+          menuIsOpen && "border-transparent hover:border-transparent dark:border-transparent dark:hover:border-transparent",
+          isOnPostPage ? "bg-white cursor-default" : "home-component"
         )}
-        onClick={(e: MouseEvent) => pushToUrl(e, `/main/communities/${post.communityId}/post/${post.id}`, "community")}>
-        <div className="w-[2.5rem] xs:w-[4rem] bg-gray-100 dark:bg-[#151516] p-1 xs:p-2 flex flex-col items-center rounded-l-md">
+        onClick={(e: MouseEvent) => {
+          if (!isOnPostPage) pushToUrl(e, `/main/communities/${post.communityId}/post/${post.id}`, "community");
+        }}>
+        <div
+          className={cn(
+            "w-[2.5rem] xs:w-[4rem] p-1 xs:p-2 flex flex-col items-center rounded-l-md",
+            !isOnPostPage && "bg-gray-100 dark:bg-[#151516]"
+          )}>
           <IconButton
             Icon={ArrowUpCircle}
             className={cn("rounded-sm w-max text-zinc-600", hasUpvotedPost && "text-orange-500 font-bold")}
@@ -241,7 +254,14 @@ export const PostHomeComponent = ({ post }: { post: PostWithMemberWithProfileWit
             </div>
           </div>
           <div className="flex items-center gap-x-2 mt-2 mb-1">
-            <PostHomeComponentFooterItem Icon={MessageSquare} text={`${post.comments.length} comments`} />
+            {isOnPostPage ? (
+              <div className="flex items-center gap-x-2 py-1.5 px-1.5 dark:text-white">
+                <MessageSquare className="font-light h-5 w-5 text-zinc-500 dark:text-zinc-400" />
+                <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 cursor-text">{post.comments.length} comments</p>
+              </div>
+            ) : (
+              <PostHomeComponentFooterItem Icon={MessageSquare} text={`${post.comments.length} comments`} />
+            )}
             <div className="relative">
               <PostHomeComponentFooterItem
                 Icon={Share}

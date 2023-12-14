@@ -34,7 +34,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
       const url = qs.stringifyUrl({ url: "/api/communities/specific", query: { communityId } });
 
       const response = await axios.get(url);
-      const data: { community: CommunityWithMembersWithRules; currentMember: Member[] } = response.data;
+      const data = response.data;
 
       setCommunity(data.community);
       setCurrentMember(data.currentMember[0]);
@@ -136,7 +136,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
   };
 
   return (
-    <div>
+    <div suppressHydrationWarning>
       <div>
         {banner ? (
           <div className="min-h-[3rem] max-h-[192px] overflow-hidden w-full relative">
