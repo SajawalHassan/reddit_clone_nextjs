@@ -29,6 +29,7 @@ export const PostClient = ({ postId }: { postId: string }) => {
   useEffect(() => {
     if (post) {
       setHeaderActivePlace({ text: post.community.uniqueName, imageUrl: post.community.imageUrl });
+      document.title = `${post.title} : ${post.community.uniqueName}`;
     }
   }, [post]);
 

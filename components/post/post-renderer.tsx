@@ -10,6 +10,7 @@ import { PostHomeComponent } from "../home-components/post/post-home-component";
 import { Image, Link, Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PostSkeleton } from "@/components/skeletons/post-skeleton";
+import { PostComments } from "./comments/post-comments";
 
 export const PostRenderer = ({ postId, communityId }: { postId: string; communityId: string }) => {
   const [post, setPost] = useState<PostWithMemberWithProfileWithCommunityWithVotes>();
@@ -39,10 +40,11 @@ export const PostRenderer = ({ postId, communityId }: { postId: string; communit
 
   useEffect(() => {
     router.prefetch(`/main/communities/${communityId}`);
+    router.prefetch(`/main`);
   }, []);
 
   return (
-    <div className="w-full flex flex-grow mt-[3rem] px-0 justify-center bg-[#2E2F2F]" onClick={() => router.push(`/main/communities/${communityId}`)}>
+    <div className="w-full flex flex-grow mt-[3rem] px-0 justify-center bg-[#2E2F2F]" onClick={() => router.back()}>
       <div className="w-full max-w-[80rem] gap-x-4 bg-[#DAE0E6] min-h-screen" onClick={(e) => e.stopPropagation()}>
         {post && (
           <div className="bg-black py-2 px-2 text-white flex justify-center">
@@ -59,7 +61,7 @@ export const PostRenderer = ({ postId, communityId }: { postId: string; communit
                 )}
                 <p className="font-semibold">{post.title}</p>
               </div>
-              <div className="flex items-center gap-x-1 cursor-pointer" onClick={() => router.push(`/main/communities/${communityId}`)}>
+              <div className="flex items-center gap-x-1 cursor-pointer" onClick={() => router.back()}>
                 <X className="h-5 w-5" />
                 <p className="font-semibold text-sm text-gray-200">Close</p>
               </div>
@@ -72,6 +74,7 @@ export const PostRenderer = ({ postId, communityId }: { postId: string; communit
           ) : (
             <div className="min-w-[760px] max-w-[760px] w-[760px]">
               <PostHomeComponent post={post!} isOnPostPage={true} />
+              <PostComments post={post!} />
             </div>
           )}
           <div className="hidden xl:block space-y-4">

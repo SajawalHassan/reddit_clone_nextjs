@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/seperator";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+import Link from "next/link";
 
 const DATE_FORMAT = "d MMM";
 
@@ -39,7 +40,7 @@ export const RecentPosts = () => {
       <p className="uppercase text-xs font-bold mb-2">Recent Posts</p>
       <div className="space-y-2">
         {visitedPosts.slice(0, 5).map((post: PostWithCommentsWithCommunity) => (
-          <div key={post.id}>
+          <Link key={post.id} href={`/main/communities/${post.communityId}/post/${post.id}`}>
             <div
               className="flex gap-x-2 cursor-pointer group"
               onClick={() => pushToUrl(`/main/communities/${post.communityId}/post/${post.id}`, post)}>
@@ -62,7 +63,7 @@ export const RecentPosts = () => {
               </div>
             </div>
             <Separator className="my-2" />
-          </div>
+          </Link>
         ))}
         <div className="text-right">
           <p className="text-gray-600 hover:underline text-sm cursor-pointer dark:text-stone-500" onClick={() => clearPostHistory()}>

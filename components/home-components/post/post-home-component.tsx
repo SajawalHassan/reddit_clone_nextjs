@@ -90,6 +90,10 @@ export const PostHomeComponent = ({
     else setHasViewedPost(true);
   }, []);
 
+  useEffect(() => {
+    router.prefetch(`/main/communities/${post.communityId}/post/${post.id}`);
+  }, []);
+
   const votePost = async (e: MouseEvent, type: "upvote" | "downvote") => {
     e.stopPropagation();
 

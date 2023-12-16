@@ -1,4 +1,15 @@
-import { Comment, Community, CommunityRule, Member, Post, PostProfileDownvotes, PostProfileUpvotes, Profile } from "@prisma/client";
+import {
+  Comment,
+  CommentProfileDownvotes,
+  CommentProfileUpvotes,
+  Community,
+  CommunityRule,
+  Member,
+  Post,
+  PostProfileDownvotes,
+  PostProfileUpvotes,
+  Profile,
+} from "@prisma/client";
 
 export type CommunityWithMembersWithRules = Community & {
   members: Member[];
@@ -18,4 +29,17 @@ export type PostWithMemberWithProfileWithCommunityWithVotes = Post & {
 export type PostWithCommentsWithCommunity = Post & {
   comments: Comment[];
   community: Community;
+};
+
+export type MemberWithProfile = Member & {
+  profile: Profile;
+};
+
+export type CommentWithMemberWithProfileWithVotesWithPost = Comment & {
+  member: Member & {
+    profile: Profile;
+  };
+  upvotes: CommentProfileUpvotes[];
+  downvotes: CommentProfileDownvotes[];
+  post: PostWithMemberWithProfileWithCommunityWithVotes;
 };

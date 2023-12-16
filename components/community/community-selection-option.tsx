@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { LucideIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 interface Props {
   text: string;
@@ -42,6 +42,10 @@ export const CommunitySelectionOption = ({ Icon, text, type, modalType, communit
     customOnClick!();
     setMenuIsOpen!(false);
   };
+
+  useEffect(() => {
+    if (communityId) router.prefetch(`/main/communities/${communityId}`);
+  }, []);
 
   return (
     <div

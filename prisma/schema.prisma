@@ -25,6 +25,8 @@ model Profile {
   pinnedPosts        Post[]
   upvotedPosts       PostProfileUpvotes[]
   downvotedPosts     PostProfileDownvotes[]
+  upvotedComments    CommentProfileUpvotes[]
+  downvotedComments  CommentProfileDownvotes[]
   createdCommunities Community[]
   members            Member[]
 
@@ -85,10 +87,8 @@ model Member {
 
   role MemberRole @default(GUEST)
 
-  posts             Post[]
-  comments          Comment[]
-  repliesToComments ReplyToComment[]
-  repliesToReplies  ReplyToReply[]
+  posts    Post[]
+  comments Comment[]
 
   profileId String
   profile   Profile @relation(fields: [profileId], references: [id])
@@ -165,57 +165,48 @@ model Comment {
   content  String
   imageUrl String?
 
-  replies ReplyToComment[]
-
   memberId String
   member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
   postId String
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
+  parentId  String?
+  parent    Comment?                  @relation("ParentChild", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children  Comment[]                 @relation("ParentChild")
+  upvotes   CommentProfileUpvotes[]
+  downvotes CommentProfileDownvotes[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([memberId])
   @@index([postId])
+  @@index([parentId])
 }
 
-model ReplyToComment {
+model CommentProfileUpvotes {
   id String @id @default(uuid())
 
-  content  String
-  imageUrl String?
-
-  replies ReplyToReply[]
-
-  memberId String
-  member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
-
-  commentId String
+  commentId String  @unique
   comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  @@index([memberId])
   @@index([commentId])
+  @@index([profileId])
 }
 
-model ReplyToReply {
+model CommentProfileDownvotes {
   id String @id @default(uuid())
 
-  content  String
-  imageUrl String?
+  commentId String  @unique
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
-  memberId String
-  member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  replyId String
-  reply   ReplyToComment @relation(fields: [replyId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([memberId])
-  @@index([replyId])
+  @@index([commentId])
+  @@index([profileId])
 }
