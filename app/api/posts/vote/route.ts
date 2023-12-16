@@ -2,6 +2,12 @@ import { getCurrentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
+interface voteInfoInterface {
+  voteType: "upvote" | "downvote";
+  amount: number;
+  activeVote: "upvote" | "downvote" | "none";
+}
+
 export async function PATCH(req: NextRequest, res: NextResponse) {
   try {
     const profile = await getCurrentProfile();
@@ -31,8 +37,14 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
     const hasUpvotedPost = post.upvotes.some((upvote) => upvote.profileId === profile.id);
     const hasDownvotedPost = post.downvotes.some((downvote) => downvote.profileId === profile.id);
 
+    const voteInfo: voteInfoInterface = { voteType: "upvote", amount: 1, activeVote: "upvote" };
+
     if (wantsToUpvote) {
       if (hasUpvotedPost) {
+        voteInfo["amount"] = 1;
+        voteInfo["voteType"] = "downvote";
+        voteInfo["activeVote"] = "none";
+
         await db.post.update({
           where: {
             id: postId,
@@ -45,6 +57,10 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
         });
       } else {
         if (hasDownvotedPost) {
+          voteInfo["amount"] = 2;
+          voteInfo["voteType"] = "upvote";
+          voteInfo["activeVote"] = "upvote";
+
           await db.post.update({
             where: {
               id: postId,
@@ -59,6 +75,10 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
             },
           });
         } else {
+          voteInfo["amount"] = 1;
+          voteInfo["voteType"] = "upvote";
+          voteInfo["activeVote"] = "upvote";
+
           await db.post.update({
             where: {
               id: postId,
@@ -75,6 +95,10 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
 
     if (wantsToDownvote) {
       if (hasDownvotedPost) {
+        voteInfo["amount"] = 1;
+        voteInfo["voteType"] = "upvote";
+        voteInfo["activeVote"] = "none";
+
         await db.post.update({
           where: {
             id: postId,
@@ -87,6 +111,10 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
         });
       } else {
         if (hasUpvotedPost) {
+          voteInfo["amount"] = 2;
+          voteInfo["voteType"] = "downvote";
+          voteInfo["activeVote"] = "downvote";
+
           await db.post.update({
             where: {
               id: postId,
@@ -101,6 +129,10 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
             },
           });
         } else {
+          voteInfo["amount"] = 1;
+          voteInfo["voteType"] = "downvote";
+          voteInfo["activeVote"] = "downvote";
+
           await db.post.update({
             where: {
               id: postId,
@@ -115,7 +147,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
       }
     }
 
-    return NextResponse.json("Vote added");
+    return NextResponse.json(voteInfo);
   } catch (error) {
     console.log("POST_VOTE_PATCH", error);
     return new NextResponse("Internal Server Error", { status: 500 });

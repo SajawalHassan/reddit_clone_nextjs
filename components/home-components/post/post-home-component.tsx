@@ -14,9 +14,6 @@ import axios from "axios";
 import dynamic from "next/dynamic";
 import { Profile } from "@prisma/client";
 import { useGlobalInfo } from "@/hooks/use-global-info";
-import { usePostVotes } from "@/hooks/use-post-votes";
-import { usePostVotesChange } from "@/hooks/use-post-votes-change";
-import { usePostVotesStatus } from "@/hooks/use-post-votes-status";
 
 const FroalaEditorView = dynamic(
   async () => {
@@ -45,41 +42,20 @@ export const PostHomeComponent = ({
 }) => {
   const { setHeaderActivePlace } = useGlobalInfo();
 
-  const [upvotes, setUpvotes] = useState(0);
-  const [formattedUpvotes, setFormattedUpvotes] = useState("");
-  const [hasUpvotedPost, setHasUpvotedPost] = useState(false);
-  const [hasDownvotedPost, setHasDownvotedPost] = useState(false);
-  const [hasChangedVotingStatus, setHasChangedVotingStatus] = useState(false);
-  const [isVoting, setIsVoting] = useState(false);
+  const [upvotes, setUpvotes] = useState(post.upvotes.length - post.downvotes.length);
+  const [activeVote, setActiveVote] = useState<"upvote" | "downvote" | "none">("none");
+  const [isUpvoting, setIsUpvoting] = useState(false);
+  const [isDownvoting, setIsDownvoting] = useState(false);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [hasViewedPost, setHasViewedPost] = useState(false);
-  const [profile, setProfile] = useState<Profile>();
+  const [currentProfile, setCurrentProfile] = useState<Profile>();
 
-  const isOnlyTitle = !post.content && !post.imageUrl && !post.link;
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
   const router = useRouter();
 
-  usePostVotes({ profile, post, setUpvotes, upvotes, formatter, setFormattedUpvotes });
-  usePostVotesChange({ post, hasUpvotedPost, hasDownvotedPost, hasChangedVotingStatus });
-  usePostVotesStatus({ profile, post, setUpvotes, setHasDownvotedPost, setHasUpvotedPost });
-
-  const pushToUrl = (e: MouseEvent, url: string, type: "community" | "user") => {
-    e.stopPropagation();
-    if (type === "community") {
-      setHeaderActivePlace({ text: post.community.uniqueName, imageUrl: post.community.imageUrl });
-    } else {
-      setHeaderActivePlace({ text: post.member.profile.displayName, imageUrl: post.member.profile.imageUrl });
-    }
-    router.push(url);
-  };
-
-  useEffect(() => {
-    const getProfile = async () => {
-      const response = await axios.get("/api/profile");
-      setProfile(response.data);
-    };
-    getProfile();
-  }, []);
+  const isOnlyTitle = !post.content && !post.imageUrl && !post.link;
+  const hasUpvotedPost = activeVote === "upvote";
+  const hasDownvotedPost = activeVote === "downvote";
 
   useEffect(() => {
     const visitedPosts: any[] = JSON.parse(localStorage.getItem("visitedPosts") || "[]");
@@ -94,62 +70,50 @@ export const PostHomeComponent = ({
     router.prefetch(`/main/communities/${post.communityId}/post/${post.id}`);
   }, []);
 
+  useEffect(() => {
+    const getProfile = async () => {
+      const response = await axios.get("/api/profile");
+      setCurrentProfile(response.data);
+    };
+    getProfile();
+  }, []);
+
+  useEffect(() => {
+    if (!currentProfile) return;
+    const hasUpvoted = post.upvotes.some((upvote) => upvote.profileId === currentProfile.id);
+    const hasDownvoted = post.downvotes.some((downvote) => downvote.profileId === currentProfile.id);
+
+    if (hasUpvoted) setActiveVote("upvote");
+    else if (hasDownvoted) setActiveVote("downvote");
+  }, [currentProfile]);
+
   const votePost = async (e: MouseEvent, type: "upvote" | "downvote") => {
     e.stopPropagation();
-
-    if (isVoting) {
-      return;
-    }
-
-    setIsVoting(true);
+    if (isUpvoting || isDownvoting) return;
 
     const wantsToUpvote = type === "upvote";
-    const wantsToDownvote = type === "downvote";
 
-    if (wantsToUpvote) {
-      if (hasUpvotedPost) {
-        setUpvotes(upvotes - 1);
-        setHasUpvotedPost(false);
-        setHasDownvotedPost(false);
-      } else {
-        if (hasDownvotedPost) {
-          setUpvotes(upvotes + 2);
-          setHasUpvotedPost(true);
-          setHasDownvotedPost(false);
-        } else {
-          setUpvotes(upvotes + 1);
-          setHasDownvotedPost(false);
-          setHasUpvotedPost(true);
-        }
-      }
-    }
-
-    if (wantsToDownvote) {
-      if (hasDownvotedPost) {
-        setUpvotes(upvotes + 1);
-        setHasUpvotedPost(false);
-        setHasDownvotedPost(false);
-      } else {
-        if (hasUpvotedPost) {
-          setUpvotes(upvotes - 2);
-          setHasUpvotedPost(false);
-          setHasDownvotedPost(true);
-        } else {
-          setUpvotes(upvotes - 1);
-          setHasUpvotedPost(false);
-          setHasDownvotedPost(true);
-        }
-      }
-    }
-
-    setHasChangedVotingStatus(!hasChangedVotingStatus);
+    if (wantsToUpvote) setIsUpvoting(true);
+    else setIsDownvoting(true);
 
     try {
-      await axios.patch("/api/posts/vote", { type, postId: post.id });
+      const res = await axios.patch("/api/posts/vote", { type, postId: post.id });
+      const voteInfo = res.data;
+
+      if (voteInfo["voteType"] === "upvote") {
+        setUpvotes(upvotes + voteInfo["amount"]);
+        setActiveVote(voteInfo["activeVote"]);
+      }
+
+      if (voteInfo["voteType"] === "downvote") {
+        setUpvotes(upvotes - voteInfo["amount"]);
+        setActiveVote(voteInfo["activeVote"]);
+      }
     } catch (error) {
       console.log(error);
     } finally {
-      setIsVoting(false);
+      if (wantsToUpvote) setIsUpvoting(false);
+      else setIsDownvoting(false);
     }
   };
 
@@ -161,6 +125,16 @@ export const PostHomeComponent = ({
       navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_SITE_URL!}/main/communities/${post.communityId}/post/${post.id}`);
     }
     setMenuIsOpen(false);
+  };
+
+  const pushToUrl = (e: MouseEvent, url: string, type: "community" | "user") => {
+    e.stopPropagation();
+    if (type === "community") {
+      setHeaderActivePlace({ text: post.community.uniqueName, imageUrl: post.community.imageUrl });
+    } else {
+      setHeaderActivePlace({ text: post.member.profile.displayName, imageUrl: post.member.profile.imageUrl });
+    }
+    router.push(url);
   };
 
   return (
@@ -181,13 +155,21 @@ export const PostHomeComponent = ({
           )}>
           <IconButton
             Icon={ArrowUpCircle}
-            className={cn("rounded-sm w-max text-zinc-600", hasUpvotedPost && "text-orange-500 font-bold")}
+            className={cn(
+              "rounded-sm w-max text-zinc-600",
+              hasUpvotedPost && "text-orange-500 font-bold",
+              isUpvoting && "bg-gray-200 dark:bg-stone-800 cursor-not-allowed"
+            )}
             onClick={(e: MouseEvent) => votePost(e, "upvote")}
           />
-          <p className="text-sm font-bold">{formattedUpvotes}</p>
+          <p className="text-sm font-bold">{formatter.format(upvotes)}</p>
           <IconButton
             Icon={ArrowDownCircle}
-            className={cn("rounded-sm w-max text-zinc-600", hasDownvotedPost && "text-orange-500 font-bold")}
+            className={cn(
+              "rounded-sm w-max text-zinc-600",
+              hasDownvotedPost && "text-orange-500 font-bold",
+              isDownvoting && "bg-gray-200 dark:bg-stone-800 cursor-not-allowed"
+            )}
             onClick={(e: MouseEvent) => votePost(e, "downvote")}
           />
         </div>
