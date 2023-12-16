@@ -2,11 +2,12 @@ import { CommentWithMemberWithProfileWithVotesWithPost } from "@/types";
 import { CommentList } from "./comment-list";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { ArrowDown, ArrowDownCircle, ArrowUpCircle, ChevronDown, MessageSquare, ZoomOut } from "lucide-react";
-import { IconButton } from "@/components/icon-button";
-import { MouseEvent, useState } from "react";
+import { ArrowDownCircle, ArrowUpCircle, ChevronDown, MessageSquare, ZoomOut } from "lucide-react";
+import { MouseEvent, useEffect, useState } from "react";
 import { PostHomeComponentFooterItem } from "@/components/home-components/post/post-home-component-footer-item";
 import { PostCommentInput } from "./post-comment-input";
+import axios from "axios";
+import { Profile } from "@prisma/client";
 
 const DATE_FORMAT = "d MMM";
 
@@ -21,14 +22,60 @@ export const Comment = ({
 }) => {
   const [isReplying, setIsReplying] = useState(false);
   const [childrenAreHidden, setChildrenAreHidden] = useState(false);
+  const [isUpvoting, setIsUpvoting] = useState(false);
+  const [isDownvoting, setIsDownvoting] = useState(false);
+  const [upvotes, setUpvotes] = useState(comment.upvotes.length - comment.downvotes.length);
+  const [activeVote, setActiveVote] = useState<"upvote" | "downvote" | "none">("none");
+  const [currentProfile, setCurrentProfile] = useState<Profile>();
 
   const childComments = getReplies(comment.id);
 
   const profile = comment.member.profile;
-  const hasUpvotedPost = true;
-  const hasDownvotedPost = false;
 
-  const votePost = async (e: MouseEvent, type: "upvote" | "downvote") => {};
+  const hasUpvotedComment = activeVote === "upvote";
+  const hasDownvotedComment = activeVote === "downvote";
+
+  useEffect(() => {
+    const getProfile = async () => {
+      const response = await axios.get("/api/profile");
+      setCurrentProfile(response.data);
+    };
+    getProfile();
+  }, []);
+
+  useEffect(() => {
+    if (!currentProfile) return;
+    const hasUpvoted = comment.upvotes.some((upvote) => upvote.profileId === currentProfile.id);
+    const hasDownvoted = comment.downvotes.some((downvote) => downvote.profileId === currentProfile.id);
+
+    if (hasUpvoted) setActiveVote("upvote");
+    else if (hasDownvoted) setActiveVote("downvote");
+  }, [currentProfile]);
+
+  const votePost = async (type: "upvote" | "downvote") => {
+    try {
+      if (type === "upvote") setIsUpvoting(true);
+      else setIsDownvoting(true);
+
+      const res = await axios.patch("/api/posts/comments/vote", { type, commentId: comment.id });
+      const voteInfo = res.data;
+
+      if (voteInfo["voteType"] === "upvote") {
+        setUpvotes(upvotes + voteInfo["amount"]);
+        setActiveVote(voteInfo["activeVote"]);
+      }
+
+      if (voteInfo["voteType"] === "downvote") {
+        setUpvotes(upvotes - voteInfo["amount"]);
+        setActiveVote(voteInfo["activeVote"]);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (type === "upvote") setIsUpvoting(false);
+      else setIsDownvoting(false);
+    }
+  };
 
   return (
     <>
@@ -48,13 +95,24 @@ export const Comment = ({
             <div className="flex items-center gap-x-1.5">
               <ArrowUpCircle
                 className={cn(
-                  "h-5 w-5 text-gray-500 hover:text-black cursor-pointer",
-                  hasUpvotedPost && "text-orange-500 font-bold hover:text-orange-700"
+                  "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black",
+                  hasUpvotedComment && "text-orange-500 font-bold hover:text-orange-700",
+                  isUpvoting && "bg-gray-200 rounded-sm cursor-default"
                 )}
+                onClick={() => {
+                  if (!isUpvoting) votePost("upvote");
+                }}
               />
-              <p className="text-sm font-bold">{comment.upvotes.length}</p>
+              <p className="text-sm font-bold">{upvotes}</p>
               <ArrowDownCircle
-                className={cn("h-5 w-5 text-gray-500 hover:text-black cursor-pointer", hasDownvotedPost && "text-orange-500 font-bold")}
+                className={cn(
+                  "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black",
+                  hasDownvotedComment && "text-orange-500 font-bold hover:text-orange-700",
+                  isDownvoting && "bg-gray-200 rounded-sm cursor-default"
+                )}
+                onClick={() => {
+                  if (!isDownvoting) votePost("downvote");
+                }}
               />
             </div>
 

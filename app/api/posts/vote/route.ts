@@ -39,7 +39,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
           },
           data: {
             upvotes: {
-              delete: { postId },
+              delete: [{ postId, profileId: profile.id }],
             },
           },
         });
@@ -51,7 +51,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
             },
             data: {
               downvotes: {
-                delete: [{ postId }],
+                delete: [{ postId, profileId: profile.id }],
               },
               upvotes: {
                 create: [{ profileId: profile.id }],
@@ -81,7 +81,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
           },
           data: {
             downvotes: {
-              delete: { postId },
+              delete: [{ postId, profileId: profile.id }],
             },
           },
         });
@@ -93,7 +93,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
             },
             data: {
               upvotes: {
-                delete: [{ postId }],
+                delete: [{ postId, profileId: profile.id }],
               },
               downvotes: {
                 create: [{ profileId: profile.id }],
