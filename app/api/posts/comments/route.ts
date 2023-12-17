@@ -64,3 +64,55 @@ export async function POST(req: NextRequest, res: NextResponse) {
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
+
+export async function PATCH(req: NextRequest, res: NextResponse) {
+  try {
+    const values = await req.json();
+    const { content, commentId } = values;
+
+    if (!commentId) return new NextResponse("No comment id", { status: 400 });
+    if (!content) return new NextResponse("No content", { status: 400 });
+
+    const comment = await db.comment.update({
+      where: {
+        id: commentId,
+      },
+      data: {
+        content,
+      },
+    });
+
+    return NextResponse.json(comment);
+  } catch (error) {
+    console.log("POSTS_COMMENTS_PATCH", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest, res: NextResponse) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const commentId = searchParams.get("commentId");
+    const memberId = searchParams.get("memberId");
+
+    if (!commentId) return new NextResponse("No comment id", { status: 400 });
+    if (!memberId) return new NextResponse("No member id", { status: 400 });
+
+    const comment = await db.comment.findUnique({
+      where: {
+        id: commentId,
+      },
+    });
+
+    if (comment?.memberId !== memberId) return new NextResponse("Forbidden", { status: 403 });
+
+    await db.$executeRaw`DELETE FROM Comment WHERE parentId = ${commentId};`;
+
+    await db.$executeRaw`DELETE FROM Comment WHERE id = ${commentId};`;
+
+    return NextResponse.json("Comment deleted");
+  } catch (error) {
+    console.log("POSTS_COMMENTS_DELETE", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}

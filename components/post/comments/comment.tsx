@@ -2,12 +2,16 @@ import { CommentWithMemberWithProfileWithVotesWithPost } from "@/types";
 import { CommentList } from "./comment-list";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { ArrowDownCircle, ArrowUpCircle, ChevronDown, MessageSquare, ZoomOut } from "lucide-react";
-import { MouseEvent, useEffect, useState } from "react";
+import { ArrowDownCircle, ArrowUpCircle, ChevronDown, MessageSquare, MoreVertical, Pencil, Trash, ZoomOut } from "lucide-react";
+import { FormEvent, MouseEvent, useEffect, useState } from "react";
 import { PostHomeComponentFooterItem } from "@/components/home-components/post/post-home-component-footer-item";
 import { PostCommentInput } from "./post-comment-input";
 import axios from "axios";
 import { Profile } from "@prisma/client";
+import { PostHomeComponentFooterItemMenuItem } from "@/components/home-components/post/post-home-component-footer-item-menu-item";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import qs from "query-string";
 
 const DATE_FORMAT = "d MMM";
 
@@ -24,16 +28,24 @@ export const Comment = ({
   const [childrenAreHidden, setChildrenAreHidden] = useState(false);
   const [isUpvoting, setIsUpvoting] = useState(false);
   const [isDownvoting, setIsDownvoting] = useState(false);
+  const [moreMenuIsOpen, setMoreMenuIsOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isSubmittingEdit, setIsSubmittingEdit] = useState(false);
+  const [isDeletingComment, setIsDeletingComment] = useState(false);
   const [upvotes, setUpvotes] = useState(comment.upvotes.length - comment.downvotes.length);
   const [activeVote, setActiveVote] = useState<"upvote" | "downvote" | "none">("none");
   const [currentProfile, setCurrentProfile] = useState<Profile>();
+  const [editedContent, setEditedContent] = useState(comment.content);
+  const [content, setContent] = useState(comment.content);
 
   const childComments = getReplies(comment.id);
 
-  const profile = comment.member.profile;
+  const commentProfile = comment.member.profile;
 
   const hasUpvotedComment = activeVote === "upvote";
   const hasDownvotedComment = activeVote === "downvote";
+
+  const isOwner = currentProfile?.id === commentProfile?.id;
 
   useEffect(() => {
     const getProfile = async () => {
@@ -77,54 +89,151 @@ export const Comment = ({
     }
   };
 
+  const handleEditSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (editedContent === comment.content) return;
+    if (editedContent === "") return;
+
+    try {
+      setIsSubmittingEdit(true);
+      setContent(editedContent);
+
+      await axios.patch("/api/posts/comments", { content: editedContent, commentId: comment.id });
+
+      setIsEditing(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmittingEdit(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      setIsDeletingComment(true);
+
+      const url = qs.stringifyUrl({ url: "/api/posts/comments", query: { commentId: comment.id, memberId: comment.memberId } });
+      await axios.delete(url);
+
+      setComments((comments) => comments.filter((itemComment) => itemComment.id !== comment.id));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsDeletingComment(false);
+    }
+  };
+
   return (
     <>
-      <div className="flex gap-x-1">
+      <div className={cn("flex gap-x-1", isDeletingComment && "cursor-not-allowed")}>
         <div className="flex gap-x-2">
           {childrenAreHidden && (
             <ChevronDown className="h-8 w-8 cursor-pointer text-gray-500 hover:text-black" onClick={() => setChildrenAreHidden(false)} />
           )}
-          <img src={profile.imageUrl} alt={profile.displayName} className="h-8 w-8 rounded-full" />
+          <img src={commentProfile.imageUrl} alt={commentProfile.displayName} className={cn("h-8 w-8 rounded-full")} />
         </div>
         <div className="w-full">
-          <p className="text-sm font-semibold">
-            {profile.displayName} · <span className="font-normal text-gray-500 text-[11px]">{format(new Date(comment.createdAt), DATE_FORMAT)}</span>
+          <p className={cn("text-sm font-semibold", isDeletingComment && "text-gray-500")}>
+            {commentProfile.displayName} ·{" "}
+            <span className="font-normal text-gray-500 text-[11px]">{format(new Date(comment.createdAt), DATE_FORMAT)}</span>
           </p>
-          <p className="text-[14px] leading-[21px]">{comment.content}</p>
-          <div className="flex items-center gap-x-2">
-            <div className="flex items-center gap-x-1.5">
-              <ArrowUpCircle
-                className={cn(
-                  "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black",
-                  hasUpvotedComment && "text-orange-500 font-bold hover:text-orange-700",
-                  isUpvoting && "bg-gray-200 rounded-sm cursor-default"
-                )}
-                onClick={() => {
-                  if (!isUpvoting) votePost("upvote");
-                }}
-              />
-              <p className="text-sm font-bold">{upvotes}</p>
-              <ArrowDownCircle
-                className={cn(
-                  "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black",
-                  hasDownvotedComment && "text-orange-500 font-bold hover:text-orange-700",
-                  isDownvoting && "bg-gray-200 rounded-sm cursor-default"
-                )}
-                onClick={() => {
-                  if (!isDownvoting) votePost("downvote");
-                }}
-              />
-            </div>
+          {isEditing ? (
+            <form className="flex items-center gap-x-2" onSubmit={handleEditSubmit}>
+              <Input value={editedContent} onChange={(e) => setEditedContent(e.target.value)} autoFocus={true} disabled={isSubmittingEdit} />
+              <Button variant="primary" className="rounded-sm h-10" type="submit" disabled={isSubmittingEdit}>
+                Save
+              </Button>
+              <Button variant="secondary" className="rounded-sm h-10" type="button" onClick={() => setIsEditing(false)} disabled={isSubmittingEdit}>
+                Cancel
+              </Button>
+            </form>
+          ) : (
+            <p className={cn("text-[14px] leading-[21px] whitespace-pre-wrap", isDeletingComment && "text-gray-500")}>{content}</p>
+          )}
+          {!isEditing && (
+            <div className="flex items-center gap-x-2">
+              <div className="flex items-center gap-x-1.5">
+                <ArrowUpCircle
+                  className={cn(
+                    "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black",
+                    hasUpvotedComment && "text-orange-500 font-bold hover:text-orange-700",
+                    isUpvoting && "bg-gray-200 rounded-sm cursor-default",
+                    isDeletingComment && "cursor-not-allowed"
+                  )}
+                  onClick={() => {
+                    if (!isUpvoting && !isDeletingComment) votePost("upvote");
+                  }}
+                />
+                <p className="text-sm font-bold">{upvotes}</p>
+                <ArrowDownCircle
+                  className={cn(
+                    "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black",
+                    hasDownvotedComment && "text-orange-500 font-bold hover:text-orange-700",
+                    isDownvoting && "bg-gray-200 rounded-sm cursor-default",
+                    isDeletingComment && "cursor-not-allowed"
+                  )}
+                  onClick={() => {
+                    if (!isDownvoting && !isDeletingComment) votePost("downvote");
+                  }}
+                />
+              </div>
 
-            <PostHomeComponentFooterItem
-              Icon={MessageSquare}
-              className="py-0.5 px-1 rounded-sm"
-              IconClassName="h-5 w-5"
-              textClassName="text-[12px]"
-              text="Reply"
-              onClick={() => setIsReplying(true)}
-            />
-          </div>
+              <div className="flex items-center">
+                <PostHomeComponentFooterItem
+                  Icon={MessageSquare}
+                  className={cn("py-0.5 px-1 rounded-sm", isDeletingComment && "cursor-not-allowed")}
+                  IconClassName="h-5 w-5"
+                  textClassName="text-[12px]"
+                  text="Reply"
+                  onClick={() => setIsReplying(true)}
+                  disabled={isDeletingComment}
+                />
+                {isOwner && (
+                  <div className="relative">
+                    <PostHomeComponentFooterItem
+                      Icon={MoreVertical}
+                      className={cn("py-0.5 px-1 rounded-sm", isDeletingComment && "cursor-not-allowed")}
+                      IconClassName="h-4 w-4"
+                      textClassName="text-[12px]"
+                      onClick={() => setMoreMenuIsOpen(true)}
+                      disabled={isDeletingComment}
+                    />
+
+                    {moreMenuIsOpen && (
+                      <div
+                        className="z-20 fixed inset-0 h-full w-full cursor-default"
+                        onClick={(e: MouseEvent) => {
+                          e.stopPropagation();
+                          setMoreMenuIsOpen(false);
+                        }}
+                      />
+                    )}
+                    {moreMenuIsOpen && (
+                      <div className="absolute shadow-lg py-2 top-8 w-[10rem] bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30">
+                        <PostHomeComponentFooterItemMenuItem
+                          Icon={Pencil}
+                          text="Edit comment"
+                          onClick={() => {
+                            setMoreMenuIsOpen(false);
+                            setIsEditing(true);
+                          }}
+                        />
+                        <PostHomeComponentFooterItemMenuItem
+                          Icon={Trash}
+                          text="Delete comment"
+                          onClick={() => {
+                            setMoreMenuIsOpen(false);
+                            handleDelete();
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
           {isReplying && (
             <PostCommentInput
               setComments={setComments}

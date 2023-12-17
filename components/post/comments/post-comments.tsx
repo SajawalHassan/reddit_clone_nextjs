@@ -6,9 +6,11 @@ import { CommentWithMemberWithProfileWithVotesWithPost, PostWithMemberWithProfil
 import axios from "axios";
 import qs from "query-string";
 import { CommentList } from "./comment-list";
+import { CommentSectionSkeleton } from "@/components/skeletons/comment-section-skeleton";
 
 export const PostComments = ({ post }: { post: PostWithMemberWithProfileWithCommunityWithVotes }) => {
   const [comments, setComments] = useState<CommentWithMemberWithProfileWithVotesWithPost[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const commentsByParentId = useMemo(() => {
     const group: any = {};
@@ -24,9 +26,11 @@ export const PostComments = ({ post }: { post: PostWithMemberWithProfileWithComm
 
   useEffect(() => {
     const getComments = async () => {
+      setIsLoading(true);
       const url = qs.stringifyUrl({ url: "/api/posts/comments", query: { postId: post.id } });
       const res = await axios.get(url);
       setComments(res.data);
+      setIsLoading(false);
     };
 
     getComments();
@@ -34,9 +38,11 @@ export const PostComments = ({ post }: { post: PostWithMemberWithProfileWithComm
 
   const getReplies = (parentId: string) => commentsByParentId[parentId];
 
+  if (isLoading) return <CommentSectionSkeleton />;
+
   return (
     <div className="px-2">
-      <div className="bg-white py-4 px-[3.5rem]">
+      <div className="bg-white py-4 pl-[3.5rem] pr-2">
         <div>
           <p className="mt-2 text-xs mb-2">Comment as {post?.member.profile.displayName}</p>
           <PostCommentInput setComments={setComments} post={post} type="comment" />
