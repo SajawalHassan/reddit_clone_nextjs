@@ -44,8 +44,8 @@ export const PostRenderer = ({ postId, communityId }: { postId: string; communit
   }, []);
 
   return (
-    <div className="w-full flex flex-grow mt-[3rem] px-0 justify-center bg-[#2E2F2F]" onClick={() => router.back()}>
-      <div className="w-full max-w-[80rem] gap-x-4 bg-[#DAE0E6] min-h-screen" onClick={(e) => e.stopPropagation()}>
+    <div className="w-full flex flex-grow mt-[3rem] px-0 justify-center bg-[#2E2F2F] dark:bg-[#252525]" onClick={() => router.back()}>
+      <div className="w-full max-w-[80rem] gap-x-4 bg-[#DAE0E6] dark:bg-[#1A1A1B] min-h-screen" onClick={(e) => e.stopPropagation()}>
         {post && (
           <div className="bg-black py-2 px-2 text-white flex justify-center">
             <div className="w-full max-w-[741px] xl:max-w-[1077px] flex items-center justify-between">

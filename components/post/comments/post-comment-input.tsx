@@ -77,7 +77,7 @@ export const PostCommentInput = ({
 
   return (
     <form onSubmit={handleOnSubmit} className={cn("flex items-center gap-x-1 w-full", className)}>
-      <div className="bg-white dark:bg-[#272729] border dark:border-white rounded-sm pt-2 w-full focus-within:border-black">
+      <div className="bg-white dark:bg-[#1A1A1B] border dark:border-[#3c3c3d] rounded-sm pt-2 w-full focus-within:border-black">
         {isSubmittingImage && (
           <div className="flex items-center justify-center h-[5rem]">
             <Loader2 className="h-6 w-6 animate-spin" />
@@ -103,10 +103,22 @@ export const PostCommentInput = ({
             />
           )
         )}
-        <div className="flex items-center justify-between bg-[#F6F7F8] p-2">
+        <div className="flex items-center justify-between bg-[#F6F7F8] dark:bg-[#272729] p-2">
           <div className="flex items-center gap-x-1.5">
-            <IconButton Icon={Tv} className="p-1" IconClassName="h-5 w-5" content="Gif" onClick={() => gifUploadRef?.current?.click()} />
-            <IconButton Icon={Image} className="p-1" IconClassName="h-5 w-5" content="Image" onClick={() => imageUploadRef?.current?.click()} />
+            <IconButton
+              Icon={Tv}
+              className="p-1 dark:hover:bg-zinc-700 group"
+              IconClassName="h-5 w-5 dark:group-hover:text-zinc-400 dark:text-zinc-500"
+              content="Gif"
+              onClick={() => gifUploadRef?.current?.click()}
+            />
+            <IconButton
+              Icon={Image}
+              className="p-1 dark:hover:bg-zinc-700 group"
+              IconClassName="h-5 w-5 dark:group-hover:text-zinc-400 dark:text-zinc-500"
+              content="Image"
+              onClick={() => imageUploadRef?.current?.click()}
+            />
           </div>
           <div className="flex items-center gap-x-2">
             {type === "reply" && (

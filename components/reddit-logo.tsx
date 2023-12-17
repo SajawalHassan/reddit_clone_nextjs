@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 interface Props {
   className?: string;
@@ -26,10 +27,10 @@ export const RedditLogo = ({ className, onClick }: Props) => {
   if (!isMounted) return;
 
   return (
-    <div className={cn("flex items-center gap-x-2 w-max", className)} onClick={onClick}>
+    <Link href={"/main"} className={cn("flex items-center gap-x-2 w-max", className)} onClick={onClick}>
       <Image src={RedditLogoSvg} alt="Reddit Logo" className="h-[30px] w-[30px]" />
       {resolvedTheme === "dark" && <Image src={RedditLogoTextDark} alt="Reddit Logo Text" className="h-[60px] w-[60px]" />}
       {resolvedTheme === "light" && <Image src={RedditLogoText} alt="Reddit Logo Text" className="h-[60px] w-[60px]" />}
-    </div>
+    </Link>
   );
 };

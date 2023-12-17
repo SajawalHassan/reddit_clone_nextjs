@@ -138,12 +138,12 @@ export const PostHomeComponent = ({
   };
 
   return (
-    <div className={cn("px-2", isOnPostPage ? "w-full" : "home-component-container")}>
+    <div className={cn("px-2", isOnPostPage ? "w-full dark:bg-[#1a1a1a]" : "home-component-container")}>
       <div
         className={cn(
           "flex p-0 hover:border-black hover:dark:border-[#818384] cursor-pointer",
           menuIsOpen && "border-transparent hover:border-transparent dark:border-transparent dark:hover:border-transparent",
-          isOnPostPage ? "bg-white cursor-default" : "home-component"
+          isOnPostPage ? "bg-white dark:bg-[#1a1a1a] cursor-default" : "home-component"
         )}
         onClick={(e: MouseEvent) => {
           if (!isOnPostPage) pushToUrl(e, `/main/communities/${post.communityId}/post/${post.id}`, "community");
@@ -223,7 +223,14 @@ export const PostHomeComponent = ({
                 )}
                 {post.imageUrl && (
                   <div className="relative overflow-hidden flex justify-center w-full">
-                    <img src={post.imageUrl} alt={post.title} className={cn("max-h-[512px] mt-1", post.spoiler && "blur-[20px] brightness-75")} />
+                    <img
+                      src={post.imageUrl}
+                      alt={post.title}
+                      className={cn("max-h-[512px] mt-1", post.spoiler && "blur-[20px] brightness-75", isOnPostPage && "cursor-pointer")}
+                      onClick={() => {
+                        if (isOnPostPage) window.open(post.imageUrl as string, "_blank");
+                      }}
+                    />
                     {post.spoiler && (
                       <p className="w-full max-w-[15rem] py-1.5 font-bold text-center text-gray-600 hover:bg-opacity-80 bg-gray-100 bg-opacity-60 rounded-md uppercase absolute bottom-5 inset-x-0 mx-auto">
                         Click to see spoiler
@@ -268,7 +275,7 @@ export const PostHomeComponent = ({
                 />
               )}
               {menuIsOpen && (
-                <div className="absolute top-8 w-[10rem] bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30">
+                <div className="absolute top-8 w-[10rem] bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30 shadow-lg dark:shadow-black">
                   <PostHomeComponentFooterItemMenuItem Icon={Link} text="Copy Link" onClick={(e: MouseEvent) => copyPostLink(e)} />
                 </div>
               )}

@@ -10,7 +10,7 @@ import { CommentSectionSkeleton } from "@/components/skeletons/comment-section-s
 
 export const PostComments = ({ post }: { post: PostWithMemberWithProfileWithCommunityWithVotes }) => {
   const [comments, setComments] = useState<CommentWithMemberWithProfileWithVotesWithPost[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const commentsByParentId = useMemo(() => {
     const group: any = {};
@@ -42,7 +42,7 @@ export const PostComments = ({ post }: { post: PostWithMemberWithProfileWithComm
 
   return (
     <div className="px-2">
-      <div className="bg-white py-4 pl-[3.5rem] pr-2">
+      <div className="bg-white dark:bg-[#1a1a1a] py-4 pl-[3.5rem] pr-2">
         <div>
           <p className="mt-2 text-xs mb-2">Comment as {post?.member.profile.displayName}</p>
           <PostCommentInput setComments={setComments} post={post} type="comment" />

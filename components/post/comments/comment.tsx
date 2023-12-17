@@ -162,8 +162,8 @@ export const Comment = ({
               <div className="flex items-center gap-x-1.5">
                 <ArrowUpCircle
                   className={cn(
-                    "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black",
-                    hasUpvotedComment && "text-orange-500 font-bold hover:text-orange-700",
+                    "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black dark:hover:text-gray-200",
+                    hasUpvotedComment && "text-orange-500 font-bold hover:text-orange-700 dark:hover:text-orange-300",
                     isUpvoting && "bg-gray-200 rounded-sm cursor-default",
                     isDeletingComment && "cursor-not-allowed"
                   )}
@@ -174,8 +174,8 @@ export const Comment = ({
                 <p className="text-sm font-bold">{upvotes}</p>
                 <ArrowDownCircle
                   className={cn(
-                    "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black",
-                    hasDownvotedComment && "text-orange-500 font-bold hover:text-orange-700",
+                    "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black dark:hover:text-gray-200",
+                    hasDownvotedComment && "text-orange-500 font-bold hover:text-orange-700 dark:hover:text-orange-300",
                     isDownvoting && "bg-gray-200 rounded-sm cursor-default",
                     isDeletingComment && "cursor-not-allowed"
                   )}
@@ -216,7 +216,7 @@ export const Comment = ({
                       />
                     )}
                     {moreMenuIsOpen && (
-                      <div className="absolute shadow-lg py-2 top-8 w-[10rem] bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30">
+                      <div className="absolute shadow-lg dark:shadow-black py-2 top-8 w-[10rem] bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30">
                         <PostHomeComponentFooterItemMenuItem
                           Icon={Pencil}
                           text="Edit comment"
