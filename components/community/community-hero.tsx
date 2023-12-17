@@ -1,18 +1,16 @@
 "use client";
 
 import { CommunityWithMembersWithRules } from "@/types";
-import { Community, Member, MemberRole } from "@prisma/client";
+import { MemberRole } from "@prisma/client";
 import axios from "axios";
 import qs from "query-string";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { IconButton } from "../icon-button";
-import { UploadClient } from "@uploadcare/upload-client";
 import { Camera, Pencil, Trash, X } from "lucide-react";
 import { ActionLoading } from "@/components/action-loading";
 import { useModal } from "@/hooks/use-modal-store";
 import { useGlobalInfo } from "@/hooks/use-global-info";
-
-const client = new UploadClient({ publicKey: process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY as string });
+import { uploadFile } from "@/components/file-uploader";
 
 export const CommunityHero = ({ communityId }: { communityId: string }) => {
   const [community, setCommunity] = useState<CommunityWithMembersWithRules>();
@@ -63,27 +61,18 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
     }
   }, [refetchCommunityHero]);
 
-  const uploadFile = async (e: ChangeEvent, type: "banner" | "image") => {
+  const uploadFileJSX = async (e: ChangeEvent, type: "banner" | "image") => {
     const file = (e.target as HTMLInputElement).files![0];
     if (!file) return;
 
-    try {
-      setIsSubmittingFile(true);
+    uploadFile(file, setIsSubmittingFile, async (url) => {
+      if (type === "banner") setBanner(url);
+      else setImage(url);
 
-      const uploadCareFile = await client.uploadFile(file);
-
-      if (type === "banner") setBanner(uploadCareFile.cdnUrl as string);
-      else setImage(uploadCareFile.cdnUrl as string);
-
-      if (type === "banner") await axios.patch("/api/communities", { communityId, data: { bannerUrl: uploadCareFile.cdnUrl } });
-      else await axios.patch("/api/communities", { communityId, data: { imageUrl: uploadCareFile.cdnUrl } });
-
+      if (type === "banner") await axios.patch("/api/communities", { communityId, data: { bannerUrl: url } });
+      else await axios.patch("/api/communities", { communityId, data: { imageUrl: url } });
       setRefetchCommunityHero(true);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsSubmittingFile(false);
-    }
+    });
   };
 
   const removeFile = async (type: "banner" | "image") => {
@@ -249,8 +238,8 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
 
       {isSubmittingFile && <ActionLoading isLoading={isSubmittingFile} />}
       {isJoiningOrLeavingCommunity && <ActionLoading isLoading={isJoiningOrLeavingCommunity} />}
-      <input type="file" ref={bannerUploadRef} onChange={(e: ChangeEvent) => uploadFile(e, "banner")} className="hidden" accept="image/*" />
-      <input type="file" ref={imageUploadRef} onChange={(e: ChangeEvent) => uploadFile(e, "image")} className="hidden" accept="image/*" />
+      <input type="file" ref={bannerUploadRef} onChange={(e: ChangeEvent) => uploadFileJSX(e, "banner")} className="hidden" accept="image/*" />
+      <input type="file" ref={imageUploadRef} onChange={(e: ChangeEvent) => uploadFileJSX(e, "image")} className="hidden" accept="image/*" />
     </div>
   );
 };

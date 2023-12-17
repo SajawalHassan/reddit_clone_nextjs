@@ -32,6 +32,7 @@ export const Comment = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmittingEdit, setIsSubmittingEdit] = useState(false);
   const [isDeletingComment, setIsDeletingComment] = useState(false);
+  const [hasEditedComment, setHasEditedComment] = useState(false);
   const [upvotes, setUpvotes] = useState(comment.upvotes.length - comment.downvotes.length);
   const [activeVote, setActiveVote] = useState<"upvote" | "downvote" | "none">("none");
   const [currentProfile, setCurrentProfile] = useState<Profile>();
@@ -44,7 +45,6 @@ export const Comment = ({
 
   const hasUpvotedComment = activeVote === "upvote";
   const hasDownvotedComment = activeVote === "downvote";
-
   const isOwner = currentProfile?.id === commentProfile?.id;
 
   useEffect(() => {
@@ -53,6 +53,10 @@ export const Comment = ({
       setCurrentProfile(response.data);
     };
     getProfile();
+  }, []);
+
+  useEffect(() => {
+    setHasEditedComment(comment.createdAt !== comment.updatedAt);
   }, []);
 
   useEffect(() => {
@@ -89,19 +93,20 @@ export const Comment = ({
     }
   };
 
-  const handleEditSubmit = async (e: FormEvent) => {
+  const handleEditSubmit = async (e: FormEvent, newComment: string) => {
     e.preventDefault();
 
-    if (editedContent === comment.content) return;
-    if (editedContent === "") return;
+    if (newComment === comment.content) return;
+    if (newComment === "") return;
 
     try {
       setIsSubmittingEdit(true);
-      setContent(editedContent);
+      setContent(newComment);
 
-      await axios.patch("/api/posts/comments", { content: editedContent, commentId: comment.id });
+      await axios.patch("/api/posts/comments", { content: newComment, commentId: comment.id });
 
       setIsEditing(false);
+      setHasEditedComment(true);
     } catch (error) {
       console.log(error);
     } finally {
@@ -135,19 +140,20 @@ export const Comment = ({
         </div>
         <div className="w-full">
           <p className={cn("text-sm font-semibold", isDeletingComment && "text-gray-500")}>
-            {commentProfile.displayName} ·{" "}
+            {commentProfile.displayName} · {hasEditedComment && <span className="text-xs text-gray-500 italic font-normal">edited</span>}{" "}
             <span className="font-normal text-gray-500 text-[11px]">{format(new Date(comment.createdAt), DATE_FORMAT)}</span>
           </p>
           {isEditing ? (
-            <form className="flex items-center gap-x-2" onSubmit={handleEditSubmit}>
-              <Input value={editedContent} onChange={(e) => setEditedContent(e.target.value)} autoFocus={true} disabled={isSubmittingEdit} />
-              <Button variant="primary" className="rounded-sm h-10" type="submit" disabled={isSubmittingEdit}>
-                Save
-              </Button>
-              <Button variant="secondary" className="rounded-sm h-10" type="button" onClick={() => setIsEditing(false)} disabled={isSubmittingEdit}>
-                Cancel
-              </Button>
-            </form>
+            <PostCommentInput
+              setComments={setComments}
+              post={comment.post}
+              type="custom"
+              closeInput={() => setIsEditing(false)}
+              prePropulatedContent={editedContent}
+              disabled={isSubmittingEdit}
+              onSubmit={handleEditSubmit}
+              setEditedComment={setEditedContent}
+            />
           ) : (
             <p className={cn("text-[14px] leading-[21px] whitespace-pre-wrap", isDeletingComment && "text-gray-500")}>{content}</p>
           )}

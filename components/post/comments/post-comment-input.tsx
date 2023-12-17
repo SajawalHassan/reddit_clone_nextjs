@@ -1,26 +1,51 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import TextareaAutosize from "react-textarea-autosize";
 import { cn } from "@/lib/utils";
 import { CommentWithMemberWithProfileWithVotesWithPost, PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import axios from "axios";
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { IconButton } from "@/components/icon-button";
+import { Image, Loader2, Trash, Tv } from "lucide-react";
+import { uploadFile } from "@/components/file-uploader";
 
 interface Props {
   setComments: React.Dispatch<React.SetStateAction<CommentWithMemberWithProfileWithVotesWithPost[]>>;
   post: PostWithMemberWithProfileWithCommunityWithVotes;
   parentCommentId?: string;
-  type: "comment" | "reply";
+  type: "comment" | "reply" | "custom";
   className?: string;
   closeInput?: () => void;
+  onSubmit?: (e: FormEvent, newComment: string) => void;
+  prePropulatedContent?: string;
+  disabled?: boolean;
+  setEditedComment?: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const PostCommentInput = ({ setComments, post, type, parentCommentId, className, closeInput }: Props) => {
-  const [comment, setComment] = useState("");
+export const PostCommentInput = ({
+  setComments,
+  post,
+  type,
+  parentCommentId,
+  className,
+  closeInput,
+  onSubmit,
+  disabled,
+  setEditedComment,
+  prePropulatedContent = "",
+}: Props) => {
+  const [comment, setComment] = useState(prePropulatedContent);
+  const [image, setImage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmittingImage, setIsSubmittingImage] = useState(false);
+
+  const imageUploadRef = useRef<any>(null);
+  const gifUploadRef = useRef<any>(null);
 
   const handleOnSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!post) return;
+    setEditedComment && setEditedComment(comment);
+
+    if (onSubmit) return onSubmit(e, comment);
 
     try {
       setIsLoading(true);
@@ -41,23 +66,67 @@ export const PostCommentInput = ({ setComments, post, type, parentCommentId, cla
     }
   };
 
+  const uploadFileJSX = (e: ChangeEvent) => {
+    const file = (e.target as HTMLInputElement).files![0];
+    if (!file) return;
+
+    uploadFile(file, setIsSubmittingImage, (url) => {
+      setImage(url);
+    });
+  };
+
   return (
     <form onSubmit={handleOnSubmit} className={cn("flex items-center gap-x-1 w-full", className)}>
-      <Input
-        placeholder={type === "comment" ? "Enter a new comment" : "Enter a reply"}
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        disabled={isLoading}
-        autoFocus={true}
-      />
-      <Button variant="primary" className="rounded-sm h-10 py-0" type="submit" disabled={isLoading}>
-        {type === "comment" ? "Comment" : "Reply"}
-      </Button>
-      {type === "reply" && (
-        <Button variant="secondary" className="rounded-sm h-10 py-0" type="submit" disabled={isLoading} onClick={closeInput!}>
-          Cancel
-        </Button>
-      )}
+      <div className="bg-white dark:bg-[#272729] border dark:border-white rounded-sm pt-2 w-full focus-within:border-black">
+        {isSubmittingImage && (
+          <div className="flex items-center justify-center h-[5rem]">
+            <Loader2 className="h-6 w-6 animate-spin" />
+          </div>
+        )}
+        {image ? (
+          <div className="mx-4">
+            <IconButton Icon={Trash} content="Remove image" className="mb-1" onClick={() => setImage("")} />
+            <img src={image} alt="upload" />
+          </div>
+        ) : (
+          !isSubmittingImage && (
+            <TextareaAutosize
+              className="bg-transparent w-full resize-none outline-none px-2 pt-0.5 disabled:text-gray-500"
+              placeholder={!image ? "What are your thoughts?" : ""}
+              minRows={4}
+              value={comment}
+              onChange={(e) => {
+                setComment(e.target.value);
+              }}
+              autoFocus={true}
+              disabled={isLoading || disabled}
+            />
+          )
+        )}
+        <div className="flex items-center justify-between bg-[#F6F7F8] p-2">
+          <div className="flex items-center gap-x-1.5">
+            <IconButton Icon={Tv} className="p-1" IconClassName="h-5 w-5" content="Gif" onClick={() => gifUploadRef?.current?.click()} />
+            <IconButton Icon={Image} className="p-1" IconClassName="h-5 w-5" content="Image" onClick={() => imageUploadRef?.current?.click()} />
+          </div>
+          <div className="flex items-center gap-x-2">
+            {type === "reply" && (
+              <Button variant="secondary" className="h-7" disabled={isLoading || disabled} type="button" onClick={closeInput!}>
+                Cancel
+              </Button>
+            )}
+            {type === "custom" && (
+              <Button variant="secondary" className="h-7" disabled={isLoading || disabled} type="button" onClick={closeInput!}>
+                Cancel
+              </Button>
+            )}
+            <Button variant="primary" className="disabled:bg-zinc-700 h-7" disabled={comment.length === 0 || isLoading || disabled}>
+              Comment
+            </Button>
+          </div>
+        </div>
+      </div>
+      <input type="file" ref={imageUploadRef} onChange={(e) => uploadFileJSX(e)} className="hidden" accept="image/*" />
+      <input type="file" ref={gifUploadRef} onChange={(e) => uploadFileJSX(e)} className="hidden" accept=".gif,.webp" />
     </form>
   );
 };

@@ -2,7 +2,7 @@
 
 import { X, UploadCloud, Upload, Loader2, Camera } from "lucide-react";
 
-import { ChangeEvent, MutableRefObject, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { UploadClient } from "@uploadcare/upload-client";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +18,19 @@ interface PropTypes {
 }
 
 const client = new UploadClient({ publicKey: process.env.NEXT_PUBLIC_UPLOADCARE_PUBLIC_KEY as string });
+
+export const uploadFile = async (file: File, setIsLoading: React.Dispatch<React.SetStateAction<boolean>>, onDone: (url: string) => void) => {
+  try {
+    setIsLoading(true);
+
+    const uploadCareFile = await client.uploadFile(file);
+    onDone(uploadCareFile.cdnUrl as string);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
 export const FileUploader = ({
   onChange,
@@ -38,23 +51,14 @@ export const FileUploader = ({
     if (value) setUploadIsFinished(true);
   }, [value]);
 
-  const uploadFile = async (e: ChangeEvent<HTMLInputElement>) => {
-    setUploadIsFinished(false);
-
+  const uploadFileJSX = (e: ChangeEvent) => {
     const file = (e.target as HTMLInputElement).files![0];
     if (!file) return;
 
-    try {
-      setIsLoading(true);
-
-      const uploadCareFile = await client.uploadFile(file);
-      onChange(uploadCareFile.cdnUrl as string);
+    uploadFile(file, setIsLoading, (url) => {
+      onChange(url);
       setUploadIsFinished(true);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   if (isLoading && loadingContent !== null) {
@@ -79,13 +83,11 @@ export const FileUploader = ({
             <button
               type="button"
               className="absolute top-0 right-0 bg-rose-500 rounded-full p-1 hover:bg-rose-400 shadow-sm disabled:bg-rose-300 z-50 dark:bg-zinc-700 dark:hover:bg-zinc-600 dark:disabled:bg-zinc-800 group"
-              onClick={() => {
-                uploadRef?.current?.click();
-              }}
+              onClick={() => uploadRef?.current?.click()}
               disabled={isSubmitting}>
               <Camera className="h-4 w-4 dark:group-disabled:text-zinc-500" />
             </button>
-            <input type="file" ref={uploadRef} onChange={(e) => uploadFile(e)} className="hidden" accept="image/*" />
+            <input type="file" ref={uploadRef} onChange={(e) => uploadFileJSX(e)} className="hidden" accept="image/*" />
           </div>
         )}
       </div>
@@ -123,7 +125,7 @@ export const FileUploader = ({
           </button>
         </div>
       </div>
-      <input type="file" ref={uploadRef} onChange={(e) => uploadFile(e)} className="hidden" accept="image/*" />
+      <input type="file" ref={uploadRef} onChange={(e) => uploadFileJSX(e)} className="hidden" accept="image/*" />
     </div>
   );
 };
