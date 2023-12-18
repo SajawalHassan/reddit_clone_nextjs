@@ -10,19 +10,22 @@ import { useEffect, useState } from "react";
 import qs from "query-string";
 import { Profile } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 export const DeleteCommunityModal = () => {
   const { isOpen, type, closeModal, data } = useModal();
   const { community } = data;
+  const { profile, setProfile } = useGlobalInfo();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [profile, setProfile] = useState<Profile>();
 
   const modalIsOpen = isOpen && type === "deleteCommunity";
   const router = useRouter();
 
   useEffect(() => {
     const getProfile = async () => {
+      if (profile !== null) return;
+
       const res = await axios.get("/api/profile");
       setProfile(res.data);
     };

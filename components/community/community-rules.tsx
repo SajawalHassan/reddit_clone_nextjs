@@ -1,7 +1,6 @@
 "use client";
 
-import { CommunityWithMembersWithRules } from "@/types";
-import { CommunityRule, Member, MemberRole } from "@prisma/client";
+import { CommunityRule, MemberRole } from "@prisma/client";
 import axios from "axios";
 import { LandPlot, Loader2 } from "lucide-react";
 import qs from "query-string";
@@ -9,24 +8,31 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CommunityRuleItem } from "./community-rule-item";
 import { RuleInput } from "./rule-input";
-import { useGlobalInfo } from "@/hooks/use-global-info";
+import { useCommunityInfo } from "@/hooks/use-community-info";
 
 export const CommunityRules = ({ communityId }: { communityId: string }) => {
-  const [community, setCommunity] = useState<CommunityWithMembersWithRules>();
-  const [rules, setRules] = useState<CommunityRule[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [wantsToAddRule, setWantsToAddRule] = useState(false);
   const [isSubmittingRule, setIsSubmittingRule] = useState(false);
   const [newRule, setNewRule] = useState("");
+  const [rules, setRules] = useState<CommunityRule[]>([]);
 
-  const { currentMember, setCurrentMember } = useGlobalInfo();
+  const { currentMember, setCurrentMember, community, setCommunity } = useCommunityInfo();
 
   const isAdmin = currentMember?.role === MemberRole.ADMIN;
   const isModerator = currentMember?.role === MemberRole.MODERATOR;
   const hasPrivilages = isAdmin || isModerator;
 
   useEffect(() => {
+    if (community) {
+      setRules(community.rules);
+    }
+  }, [community]);
+
+  useEffect(() => {
     const getCommunity = async () => {
+      if (community !== null) return;
+
       setIsLoading(true);
 
       try {
@@ -54,9 +60,10 @@ export const CommunityRules = ({ communityId }: { communityId: string }) => {
       setIsSubmittingRule(true);
 
       const response = await axios.post("/api/communities/rules", { communityId, newRule });
-      const rule = response.data;
+      const rule: CommunityRule = response.data;
 
-      setRules((prevRules) => [...prevRules, rule]);
+      setRules((rules) => [...rules, rule]);
+      setCommunity({ ...community!, rules: [...rules, rule] });
     } catch (error) {
       console.log((error as any).response.data);
     } finally {
@@ -76,7 +83,7 @@ export const CommunityRules = ({ communityId }: { communityId: string }) => {
           <div className="py-4">
             <div className="mt-1">
               {rules.map((rule, i) => (
-                <CommunityRuleItem i={i} rule={rule} key={rule.id} hasPrivilages={hasPrivilages} setRulesArr={setRules} rulesArr={rules} />
+                <CommunityRuleItem i={i} rule={rule} key={rule.id} hasPrivilages={hasPrivilages} />
               ))}
             </div>
             {wantsToAddRule ? (

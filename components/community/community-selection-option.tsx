@@ -1,3 +1,4 @@
+import { useCommunityInfo } from "@/hooks/use-community-info";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import { ModalTypes, useModal } from "@/hooks/use-modal-store";
 import { cn } from "@/lib/utils";
@@ -20,6 +21,7 @@ interface Props {
 export const CommunitySelectionOption = ({ Icon, text, type, modalType, communityId, imageUrl, setMenuIsOpen, customOnClick }: Props) => {
   const { openModal } = useModal();
   const { setHeaderActivePlace } = useGlobalInfo();
+  const { setCommunity } = useCommunityInfo();
   const queryClient = useQueryClient();
 
   const router = useRouter();
@@ -33,8 +35,9 @@ export const CommunitySelectionOption = ({ Icon, text, type, modalType, communit
 
     queryClient.setQueryData([`feed:community:${communityId}`], []);
     setHeaderActivePlace({ text, imageUrl });
-    router.push(`/main/communities/${communityId}`);
 
+    router.push(`/main/communities/${communityId}`);
+    setCommunity(null);
     setMenuIsOpen && setMenuIsOpen(false);
   };
 

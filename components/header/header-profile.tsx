@@ -11,9 +11,9 @@ import { useTheme } from "next-themes";
 import { useClerk } from "@clerk/nextjs";
 import { useModal } from "@/hooks/use-modal-store";
 import { ProfilePicture } from "@/components/profile-picture";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 export const HeaderProfile = () => {
-  const [profile, setProfile] = useState<Profile>();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
 
   const router = useRouter();
@@ -21,9 +21,12 @@ export const HeaderProfile = () => {
   const { setTheme, resolvedTheme } = useTheme();
   const { signOut } = useClerk();
   const { openModal } = useModal();
+  const { profile, setProfile } = useGlobalInfo();
 
   useEffect(() => {
     const getProfile = async () => {
+      if (profile !== null) return;
+
       try {
         const response = await axios.get("/api/profile");
 

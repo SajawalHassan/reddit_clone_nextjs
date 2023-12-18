@@ -21,109 +21,47 @@ export async function GET(req: NextRequest, res: NextResponse) {
     let posts: PostWithMemberWithProfileWithCommunityWithVotes[] = [];
 
     if (!cursor) {
-      if (feedType === "new") {
-        posts = await db.post.findMany({
-          take: POSTS_BATCH,
-          where: {
-            communityId,
-          },
-          include: {
-            member: {
-              include: {
-                profile: true,
-              },
-            },
-            community: true,
-            upvotes: true,
-            downvotes: true,
-            comments: true,
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-      }
-      if (feedType === "hot") {
-        posts = await db.post.findMany({
-          take: POSTS_BATCH,
-          where: {
-            communityId,
-          },
-          include: {
-            member: {
-              include: {
-                profile: true,
-              },
-            },
-            community: true,
-            upvotes: true,
-            downvotes: true,
-            comments: true,
-          },
-          orderBy: {
-            upvotes: {
-              _count: "desc",
+      posts = await db.post.findMany({
+        take: POSTS_BATCH,
+        where: {
+          communityId,
+        },
+        include: {
+          member: {
+            include: {
+              profile: true,
             },
           },
-        });
-      }
+          community: true,
+          upvotes: true,
+          downvotes: true,
+          comments: true,
+        },
+      });
     }
 
     if (cursor) {
-      if (feedType === "new") {
-        posts = await db.post.findMany({
-          take: POSTS_BATCH,
-          skip: 1,
-          cursor: {
-            id: cursor,
-          },
-          where: {
-            communityId,
-          },
-          include: {
-            member: {
-              include: {
-                profile: true,
-              },
-            },
-            community: true,
-            upvotes: true,
-            downvotes: true,
-            comments: true,
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
-      }
-      if (feedType === "hot") {
-        posts = await db.post.findMany({
-          take: POSTS_BATCH,
-          skip: 1,
-          cursor: {
-            id: cursor,
-          },
-          where: {
-            communityId,
-          },
-          include: {
-            member: {
-              include: {
-                profile: true,
-              },
-            },
-            community: true,
-            upvotes: true,
-            downvotes: true,
-            comments: true,
-          },
-          orderBy: {
-            upvotes: {
-              _count: "desc",
+      posts = await db.post.findMany({
+        take: POSTS_BATCH,
+        skip: 1,
+        cursor: {
+          id: cursor,
+        },
+        where: {
+          communityId,
+        },
+        include: {
+          member: {
+            include: {
+              profile: true,
             },
           },
-        });
-      }
+          community: true,
+          upvotes: true,
+          downvotes: true,
+          comments: true,
+        },
+      });
     }
 
     let nextCursor = posts[POSTS_BATCH - 1]?.id;

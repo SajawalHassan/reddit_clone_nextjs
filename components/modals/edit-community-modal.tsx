@@ -19,13 +19,12 @@ import { CommunityType } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { FileUploader } from "@/components/file-uploader";
-import { useEffect } from "react";
-import { useGlobalInfo } from "@/hooks/use-global-info";
+import React, { useEffect } from "react";
+import { useCommunityInfo } from "@/hooks/use-community-info";
 
 export const EditCommunityModal = () => {
-  const { isOpen, type, closeModal, data } = useModal();
-  const { setRefetchCommunityHero, refetchCommunityHero } = useGlobalInfo();
-  const { community } = data;
+  const { community, setCommunity } = useCommunityInfo();
+  const { isOpen, type, closeModal } = useModal();
 
   const modalIsOpen = isOpen && type === "editCommunity";
   const router = useRouter();
@@ -51,22 +50,13 @@ export const EditCommunityModal = () => {
     }
   }, [community]);
 
-  useEffect(() => {
-    if (refetchCommunityHero && community) {
-      form.setValue("name", community.name);
-      form.setValue("uniqueName", community.uniqueName);
-      form.setValue("imageUrl", community.imageUrl);
-      form.setValue("type", community.type);
-    }
-  }, [refetchCommunityHero]);
-
   const handleOnSubmit = async (values: any) => {
     try {
       await axios.patch("/api/communities", { communityId: community?.id, data: values });
 
+      setCommunity({ ...community!, name: values.name, imageUrl: values.imageUrl, type: values.type as CommunityType });
       handleModalClose();
       router.refresh();
-      setRefetchCommunityHero(true);
     } catch (error) {
       console.log(error);
     }

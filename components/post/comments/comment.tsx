@@ -4,14 +4,13 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ArrowDownCircle, ArrowUpCircle, ChevronDown, MessageSquare, MoreVertical, Pencil, Trash, ZoomOut } from "lucide-react";
 import { FormEvent, MouseEvent, useEffect, useState } from "react";
-import { PostHomeComponentFooterItem } from "@/components/home-components/post/post-home-component-footer-item";
+import { PostFooterItem } from "@/components/post/post-footer-item";
 import { PostCommentInput } from "./post-comment-input";
 import axios from "axios";
 import { Profile } from "@prisma/client";
-import { PostHomeComponentFooterItemMenuItem } from "@/components/home-components/post/post-home-component-footer-item-menu-item";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { PostFooterItemMenuItem } from "@/components/post/post-footer-item-menu-item";
 import qs from "query-string";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 const DATE_FORMAT = "d MMM";
 
@@ -35,12 +34,12 @@ export const Comment = ({
   const [hasEditedComment, setHasEditedComment] = useState(false);
   const [upvotes, setUpvotes] = useState(comment.upvotes.length - comment.downvotes.length);
   const [activeVote, setActiveVote] = useState<"upvote" | "downvote" | "none">("none");
-  const [currentProfile, setCurrentProfile] = useState<Profile>();
   const [editedContent, setEditedContent] = useState(comment.content);
   const [content, setContent] = useState(comment.content);
 
-  const childComments = getReplies(comment.id);
+  const { profile: currentProfile, setProfile: setCurrentProfile } = useGlobalInfo();
 
+  const childComments = getReplies(comment.id);
   const commentProfile = comment.member.profile;
 
   const hasUpvotedComment = activeVote === "upvote";
@@ -49,6 +48,8 @@ export const Comment = ({
 
   useEffect(() => {
     const getProfile = async () => {
+      if (currentProfile !== null) return;
+
       const response = await axios.get("/api/profile");
       setCurrentProfile(response.data);
     };
@@ -186,7 +187,7 @@ export const Comment = ({
               </div>
 
               <div className="flex items-center">
-                <PostHomeComponentFooterItem
+                <PostFooterItem
                   Icon={MessageSquare}
                   className={cn("py-0.5 px-1 rounded-sm", isDeletingComment && "cursor-not-allowed")}
                   IconClassName="h-5 w-5"
@@ -197,7 +198,7 @@ export const Comment = ({
                 />
                 {isOwner && (
                   <div className="relative">
-                    <PostHomeComponentFooterItem
+                    <PostFooterItem
                       Icon={MoreVertical}
                       className={cn("py-0.5 px-1 rounded-sm", isDeletingComment && "cursor-not-allowed")}
                       IconClassName="h-4 w-4"
@@ -217,7 +218,7 @@ export const Comment = ({
                     )}
                     {moreMenuIsOpen && (
                       <div className="absolute shadow-lg dark:shadow-black py-2 top-8 w-[10rem] bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30">
-                        <PostHomeComponentFooterItemMenuItem
+                        <PostFooterItemMenuItem
                           Icon={Pencil}
                           text="Edit comment"
                           onClick={() => {
@@ -225,7 +226,7 @@ export const Comment = ({
                             setIsEditing(true);
                           }}
                         />
-                        <PostHomeComponentFooterItemMenuItem
+                        <PostFooterItemMenuItem
                           Icon={Trash}
                           text="Delete comment"
                           onClick={() => {

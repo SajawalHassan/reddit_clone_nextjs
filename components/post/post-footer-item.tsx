@@ -12,7 +12,7 @@ interface Props {
   disabled?: boolean;
 }
 
-export const PostHomeComponentFooterItem = ({ Icon, text, onClick, className, IconClassName, textClassName, disabled }: Props) => {
+export const PostFooterItem = ({ Icon, text, onClick, className, IconClassName, textClassName, disabled }: Props) => {
   return (
     <button
       className={cn("flex items-center gap-x-2 py-1.5 px-1.5 hover:bg-gray-200 cursor-pointer dark:text-white dark:hover:bg-zinc-700", className)}

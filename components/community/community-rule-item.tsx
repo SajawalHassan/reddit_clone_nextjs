@@ -9,22 +9,24 @@ import { RuleInput } from "./rule-input";
 import axios from "axios";
 import qs from "query-string";
 import { Separator } from "@/components/ui/seperator";
+import { useCommunityInfo } from "@/hooks/use-community-info";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 interface Props {
   rule: CommunityRule;
   i: number;
   hasPrivilages: boolean;
-  setRulesArr: React.Dispatch<React.SetStateAction<CommunityRule[]>>;
-  rulesArr: CommunityRule[];
 }
 
-export const CommunityRuleItem = ({ rule: pRule, i, hasPrivilages, setRulesArr, rulesArr }: Props) => {
+export const CommunityRuleItem = ({ rule: pRule, i, hasPrivilages }: Props) => {
   const [isEditingRule, setIsEditingRule] = useState(false);
   const [editingRule, setEditingRule] = useState(pRule.rule || "");
   const [rule, setRule] = useState(pRule.rule || "");
   const [isLoading, setIsLoading] = useState(false);
 
-  const isLastRule = pRule.id === rulesArr[rulesArr.length - 1].id;
+  const { community, setCommunity } = useCommunityInfo();
+
+  const isLastRule = community?.rules && pRule.id === community?.rules[community?.rules.length - 1].id;
 
   const handleEditRule = async () => {
     try {
@@ -50,7 +52,7 @@ export const CommunityRuleItem = ({ rule: pRule, i, hasPrivilages, setRulesArr, 
 
       setRule("");
       setEditingRule("");
-      setRulesArr((rulesArr) => rulesArr.filter((rule) => rule.id !== pRule.id));
+      setCommunity({ ...community!, rules: community!.rules.filter((rule) => rule.id !== pRule.id) });
     } catch (error) {
       console.log(error);
     } finally {

@@ -1,3 +1,4 @@
+import { useCommunityInfo } from "@/hooks/use-community-info";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
@@ -20,8 +21,10 @@ export const HeaderSearchItem = ({ type, name, imageUrl, members, karma, communi
 
   const router = useRouter();
   const { setHeaderActivePlace } = useGlobalInfo();
+  const { setCommunity } = useCommunityInfo();
 
   const handleOnClick = () => {
+    setCommunity(null);
     setHeaderActivePlace({ text: name, imageUrl });
 
     if (type === "community") router.push(`/main/communities/${communityId}`);

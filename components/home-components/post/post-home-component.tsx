@@ -1,14 +1,14 @@
 "use client";
 
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
-import { ArrowDownCircle, ArrowUpCircle, Link, Loader2, MessageSquare, Share } from "lucide-react";
+import { ArrowDownCircle, ArrowUpCircle, Link, Loader2, MessageSquare, MoreHorizontal, MoreVertical, Pencil, Share, Trash } from "lucide-react";
 import { IconButton } from "@/components/icon-button";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { MouseEvent, useEffect, useState } from "react";
-import { PostHomeComponentFooterItem } from "./post-home-component-footer-item";
-import { PostHomeComponentFooterItemMenuItem } from "./post-home-component-footer-item-menu-item";
+import { PostFooterItem } from "@/components/post/post-footer-item";
+import { PostFooterItemMenuItem } from "../../post/post-footer-item-menu-item";
 
 import axios from "axios";
 import dynamic from "next/dynamic";
@@ -47,8 +47,10 @@ export const PostHomeComponent = ({
   const [isUpvoting, setIsUpvoting] = useState(false);
   const [isDownvoting, setIsDownvoting] = useState(false);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [moreMenuIsOpen, setMoreMenuIsOpen] = useState(false);
   const [hasViewedPost, setHasViewedPost] = useState(false);
-  const [currentProfile, setCurrentProfile] = useState<Profile>();
+
+  const { profile: currentProfile, setProfile: setCurrentProfile } = useGlobalInfo();
 
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
   const router = useRouter();
@@ -56,6 +58,7 @@ export const PostHomeComponent = ({
   const isOnlyTitle = !post.content && !post.imageUrl && !post.link;
   const hasUpvotedPost = activeVote === "upvote";
   const hasDownvotedPost = activeVote === "downvote";
+  const isOwner = post.member.profile.id === currentProfile?.id;
 
   useEffect(() => {
     const visitedPosts: any[] = JSON.parse(localStorage.getItem("visitedPosts") || "[]");
@@ -72,6 +75,8 @@ export const PostHomeComponent = ({
 
   useEffect(() => {
     const getProfile = async () => {
+      if (currentProfile !== null) return;
+
       const response = await axios.get("/api/profile");
       setCurrentProfile(response.data);
     };
@@ -253,10 +258,10 @@ export const PostHomeComponent = ({
                 <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 cursor-text">{post.comments.length} comments</p>
               </div>
             ) : (
-              <PostHomeComponentFooterItem Icon={MessageSquare} text={`${post.comments.length} comments`} />
+              <PostFooterItem Icon={MessageSquare} text={`${post.comments.length} comments`} />
             )}
             <div className="relative">
-              <PostHomeComponentFooterItem
+              <PostFooterItem
                 Icon={Share}
                 text="Share"
                 onClick={(e: MouseEvent) => {
@@ -276,10 +281,44 @@ export const PostHomeComponent = ({
               )}
               {menuIsOpen && (
                 <div className="absolute top-8 w-[10rem] bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30 shadow-lg dark:shadow-black">
-                  <PostHomeComponentFooterItemMenuItem Icon={Link} text="Copy Link" onClick={(e: MouseEvent) => copyPostLink(e)} />
+                  <PostFooterItemMenuItem Icon={Link} text="Copy Link" onClick={(e: MouseEvent) => copyPostLink(e)} />
                 </div>
               )}
             </div>
+            {isOwner && (
+              <div className="relative">
+                <PostFooterItem
+                  Icon={MoreHorizontal}
+                  IconClassName="h-5 w-5"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setMoreMenuIsOpen(true);
+                  }}
+                />
+
+                {moreMenuIsOpen && (
+                  <div
+                    className="z-20 fixed inset-0 h-full w-full cursor-default"
+                    onClick={(e: MouseEvent) => {
+                      e.stopPropagation();
+                      setMoreMenuIsOpen(false);
+                    }}
+                  />
+                )}
+                {moreMenuIsOpen && (
+                  <div className="absolute shadow-lg dark:shadow-black py-2 top-8 w-[10rem] bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30">
+                    <PostFooterItemMenuItem
+                      Icon={Trash}
+                      text="Delete post"
+                      onClick={() => {
+                        setMoreMenuIsOpen(false);
+                        // handleDelete();
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

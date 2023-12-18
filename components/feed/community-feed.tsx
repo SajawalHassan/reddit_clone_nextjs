@@ -47,7 +47,7 @@ export const CommunityFeed = ({ communityId }: { communityId: string }) => {
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
           }
-          className="mt-2 space-y-2 pb-10">
+          className="mt-2 space-y-2 pb-20">
           {posts?.map((post: PostWithMemberWithProfileWithCommunityWithVotes) => (
             <PostHomeComponent post={post} key={post.id} />
           ))}

@@ -11,17 +11,19 @@ import { ActionLoading } from "@/components/action-loading";
 import { useModal } from "@/hooks/use-modal-store";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import { uploadFile } from "@/components/file-uploader";
+import { useCommunityInfo } from "@/hooks/use-community-info";
 
 export const CommunityHero = ({ communityId }: { communityId: string }) => {
-  const [community, setCommunity] = useState<CommunityWithMembersWithRules>();
-  const [banner, setBanner] = useState("");
-  const [image, setImage] = useState("");
   const [isSubmittingFile, setIsSubmittingFile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [hasJoinedCommunity, setHasJoinedCommunity] = useState(false);
   const [isJoiningOrLeavingCommunity, setIsJoiningOrLeavingCommunity] = useState(false);
+  const [banner, setBanner] = useState("");
+  const [communityImage, setCommunityImage] = useState("");
 
   const { openModal } = useModal();
-  const { refetchCommunityHero, setRefetchCommunityHero, currentMember, setCurrentMember, setHeaderActivePlace } = useGlobalInfo();
+  const { setHeaderActivePlace } = useGlobalInfo();
+  const { community, currentMember, setCommunity, setCurrentMember } = useCommunityInfo();
 
   const bannerUploadRef = useRef<any>(null);
   const imageUploadRef = useRef<any>(null);
@@ -29,6 +31,11 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
 
   const getCommunity = async () => {
     try {
+      if (community !== null) {
+        setBanner(community.bannerUrl || "");
+        setCommunityImage(community.imageUrl);
+      }
+
       const url = qs.stringifyUrl({ url: "/api/communities/specific", query: { communityId } });
 
       const response = await axios.get(url);
@@ -37,7 +44,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
       setCommunity(data.community);
       setCurrentMember(data.currentMember[0]);
       setBanner(data.community.bannerUrl || "");
-      setImage(data.community.imageUrl || "");
+      setCommunityImage(data.community.imageUrl || "");
 
       if (data.currentMember.length > 0) setHasJoinedCommunity(true);
     } catch (error) {
@@ -45,45 +52,46 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
     }
   };
   useEffect(() => {
+    setIsMounted(true);
+
     getCommunity();
   }, []);
 
   useEffect(() => {
     if (community) {
       setHeaderActivePlace({ text: community.uniqueName, imageUrl: community.imageUrl });
+
+      setBanner(community.bannerUrl || "");
+      setCommunityImage(community.imageUrl || "");
     }
   }, [community]);
-
-  useEffect(() => {
-    if (refetchCommunityHero) {
-      getCommunity();
-      setRefetchCommunityHero(false);
-    }
-  }, [refetchCommunityHero]);
 
   const uploadFileJSX = async (e: ChangeEvent, type: "banner" | "image") => {
     const file = (e.target as HTMLInputElement).files![0];
     if (!file) return;
 
     uploadFile(file, setIsSubmittingFile, async (url) => {
-      if (type === "banner") setBanner(url);
-      else setImage(url);
+      if (type === "banner") {
+        setCommunity({ ...community!, bannerUrl: url });
+        setBanner(url);
+        await axios.patch("/api/communities", { communityId, data: { bannerUrl: url } });
+      }
 
-      if (type === "banner") await axios.patch("/api/communities", { communityId, data: { bannerUrl: url } });
-      else await axios.patch("/api/communities", { communityId, data: { imageUrl: url } });
-      setRefetchCommunityHero(true);
+      if (type === "image") {
+        setCommunity({ ...community!, imageUrl: url });
+        setCommunityImage(url);
+        await axios.patch("/api/communities", { communityId, data: { imageUrl: url } });
+      }
     });
   };
 
-  const removeFile = async (type: "banner" | "image") => {
+  const removeBanner = async () => {
     try {
       setIsSubmittingFile(true);
 
-      if (type === "banner") setBanner("");
-      else setImage("");
-
-      if (type === "banner") await axios.patch("/api/communities", { communityId, data: { bannerUrl: "" } });
-      else await axios.patch("/api/communities", { communityId, data: { imageUrl: "" } });
+      setCommunity({ ...community!, bannerUrl: "" });
+      setBanner("");
+      await axios.patch("/api/communities", { communityId, data: { bannerUrl: "" } });
     } catch (error) {
       console.log(error);
     } finally {
@@ -97,9 +105,9 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
 
       await axios.patch("/api/communities/leave", { memberId: currentMember?.id, communityId });
 
+      setCommunity({ ...community!, members: community!.members.filter((member) => member.id !== currentMember?.id) });
       setCurrentMember(null);
       setHasJoinedCommunity(false);
-      setRefetchCommunityHero(true);
     } catch (error) {
       console.log(error);
     } finally {
@@ -114,15 +122,17 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
       const response = await axios.patch("/api/communities/join", { communityId });
       const { currentMember: member } = response.data;
 
+      setCommunity({ ...community!, members: [...community!.members, member] });
       setCurrentMember(member);
       setHasJoinedCommunity(true);
-      setRefetchCommunityHero(true);
     } catch (error) {
       console.log(error);
     } finally {
       setIsJoiningOrLeavingCommunity(false);
     }
   };
+
+  if (!isMounted) return;
 
   return (
     <div suppressHydrationWarning>
@@ -135,7 +145,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
                 Icon={X}
                 className="absolute inset-0 m-auto w-max h-max bg-red-300 hover:bg-red-400"
                 IconClassName="text-white"
-                onClick={() => removeFile("banner")}
+                onClick={removeBanner}
               />
             )}
           </div>
@@ -155,7 +165,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
           {community && (
             <div className="lg:max-w-[984px] w-full pl-2 sm:pl-10 lg:pl-0 relative flex gap-x-2 mt-1.5">
               <div className="relative -top-5">
-                <img src={image} alt={community.uniqueName} className="h-[5rem] w-[5rem] rounded-full border-4 border-white" />
+                <img src={communityImage} alt={community.uniqueName} className="h-[5rem] w-[5rem] rounded-full border-4 border-white" />
                 {isAdmin && (
                   <IconButton
                     Icon={Camera}

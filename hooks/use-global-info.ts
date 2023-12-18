@@ -1,4 +1,4 @@
-import { Member } from "@prisma/client";
+import { Member, Profile } from "@prisma/client";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -9,12 +9,10 @@ type headerActivePlaceType = {
 };
 
 interface useGlobalInfoStore {
-  headerActivePlace: headerActivePlaceType;
   setHeaderActivePlace: (newHeaderActivePlace: headerActivePlaceType) => void;
-  refetchCommunityHero: boolean;
-  setRefetchCommunityHero: (val: boolean) => void;
-  currentMember: Member | null;
-  setCurrentMember: (member: Member | null) => void;
+  setProfile: (profile: Profile | null) => void;
+  headerActivePlace: headerActivePlaceType;
+  profile: Profile | null;
 }
 
 export const useGlobalInfo = create<useGlobalInfoStore>()(
@@ -22,10 +20,8 @@ export const useGlobalInfo = create<useGlobalInfoStore>()(
     (set) => ({
       headerActivePlace: { text: "", imageUrl: "", icon: "" },
       setHeaderActivePlace: (newHeaderActivePlace) => set({ headerActivePlace: newHeaderActivePlace }),
-      refetchCommunityHero: false,
-      setRefetchCommunityHero: (val: boolean) => set({ refetchCommunityHero: val }),
-      currentMember: null,
-      setCurrentMember: (member: Member | null) => set({ currentMember: member }),
+      profile: null,
+      setProfile: (profile) => set({ profile }),
     }),
     { name: "globalInfo" }
   )

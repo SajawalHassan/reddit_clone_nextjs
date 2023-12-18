@@ -30,7 +30,6 @@ export const useFeedQuery = ({ query, apiUrl, communityId, feedType }: Props) =>
     queryKey: [query],
     queryFn: fetchCommunities,
     getNextPageParam: (lastPage) => lastPage?.nextCursor,
-    staleTime: Infinity,
   });
 
   return {

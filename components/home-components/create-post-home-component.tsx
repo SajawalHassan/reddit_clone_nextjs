@@ -8,14 +8,17 @@ import axios from "axios";
 import { IconButton } from "@/components/icon-button";
 import { Image, Link as LinkIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useGlobalInfo } from "@/hooks/use-global-info";
 
 export const CreatePostHomeComponent = () => {
-  const [profile, setProfile] = useState<Profile>();
-
   const router = useRouter();
+
+  const { profile, setProfile } = useGlobalInfo();
 
   useEffect(() => {
     const getProfile = async () => {
+      if (profile !== null) return;
+
       try {
         const response = await axios.get("/api/profile");
 

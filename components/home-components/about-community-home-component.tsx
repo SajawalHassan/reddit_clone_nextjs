@@ -15,21 +15,20 @@ import { useRouter } from "next/navigation";
 import { IconButton } from "@/components/icon-button";
 import { cn } from "@/lib/utils";
 import { AboutCommunitySkeleton } from "@/components/skeletons/about-community-skeleton";
-import { useGlobalInfo } from "@/hooks/use-global-info";
 import { useModal } from "@/hooks/use-modal-store";
+import { useCommunityInfo } from "@/hooks/use-community-info";
 
 const DATE_FORMAT = "MMM d, yyyy";
 const MAX_DESCRIPTION_LEN = 500;
 
 export const AboutCommunitiyHomeComponent = ({ communityId, showMoreInfo = false }: { communityId: string; showMoreInfo?: boolean }) => {
-  const [community, setCommunity] = useState<CommunityWithMembersWithRules>();
   const [description, setDescription] = useState("");
   const [editingDescription, setEditingDescription] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [wantsToEditDescription, setWantsToEditDescription] = useState(false);
   const [isSubmittingDescription, setIsSubmittingDescription] = useState(false);
 
-  const { refetchCommunityHero, setRefetchCommunityHero, currentMember, setCurrentMember } = useGlobalInfo();
+  const { community, currentMember, setCommunity, setCurrentMember } = useCommunityInfo();
   const { openModal } = useModal();
 
   const router = useRouter();
@@ -37,6 +36,10 @@ export const AboutCommunitiyHomeComponent = ({ communityId, showMoreInfo = false
   const isModerator = currentMember?.role === MemberRole.MODERATOR;
 
   const getCommunity = async (setLoadingStates: boolean) => {
+    if (community !== null) {
+      return setDescription(community.description || "");
+    }
+
     if (setLoadingStates) setIsLoading(true);
 
     try {
@@ -53,6 +56,7 @@ export const AboutCommunitiyHomeComponent = ({ communityId, showMoreInfo = false
       if (setLoadingStates) setIsLoading(false);
     }
   };
+
   useEffect(() => {
     getCommunity(true);
   }, []);
@@ -62,13 +66,6 @@ export const AboutCommunitiyHomeComponent = ({ communityId, showMoreInfo = false
       document.title = community.name;
     }
   }, [community]);
-
-  useEffect(() => {
-    if (refetchCommunityHero) {
-      getCommunity(false);
-      setRefetchCommunityHero(false);
-    }
-  }, [refetchCommunityHero]);
 
   const submitDescription = async () => {
     setIsSubmittingDescription(true);
@@ -85,7 +82,7 @@ export const AboutCommunitiyHomeComponent = ({ communityId, showMoreInfo = false
   };
 
   const createPost = () => {
-    if (!currentMember) return openModal("joinCommunity", { community });
+    if (!currentMember) return openModal("joinCommunity", { community: community! });
     router.push(`/main/create/post?plain=true&preselected=${communityId}`);
   };
 
@@ -166,7 +163,7 @@ export const AboutCommunitiyHomeComponent = ({ communityId, showMoreInfo = false
           )}
           <div className={cn("flex items-center gap-x-2", editingDescription.length < 45 ? "mt-4" : "mt-1")}>
             <Cake className="text-gray-500" />
-            <p className="text-sm text-gray-500">Created on {format(new Date(community?.createdAt!), DATE_FORMAT)}</p>
+            <p className="text-sm text-gray-500">Created on {format(new Date(community?.createdAt || 0), DATE_FORMAT)}</p>
           </div>
         </div>
         <Separator className="my-4" />
