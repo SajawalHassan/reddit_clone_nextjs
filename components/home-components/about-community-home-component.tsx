@@ -67,13 +67,23 @@ export const AboutCommunitiyHomeComponent = ({ communityId, showMoreInfo = false
     }
   }, [community]);
 
+  useEffect(() => {
+    if (community) {
+      setDescription(community.description || "");
+      setEditingDescription(community.description || "");
+    }
+  }, [community]);
+
   const submitDescription = async () => {
     setIsSubmittingDescription(true);
 
     try {
       setDescription(editingDescription);
       setWantsToEditDescription(false);
+
       await axios.patch("/api/communities", { communityId, data: { description: editingDescription } });
+
+      setCommunity({ ...community!, description: editingDescription });
     } catch (error) {
       console.log(error);
     } finally {

@@ -26,7 +26,7 @@ import { useCommunityInfo } from "@/hooks/use-community-info";
 export const CreateCommunityModal = () => {
   const { isOpen, type, closeModal } = useModal();
   const { setHeaderActivePlace } = useGlobalInfo();
-  const { setBanner, setCommunity, setCommunityImage, setCurrentMember, setRules } = useCommunityInfo();
+  const { setCommunity, setCurrentMember } = useCommunityInfo();
 
   const modalIsOpen = isOpen && type === "createCommunity";
   const router = useRouter();
@@ -50,11 +50,8 @@ export const CreateCommunityModal = () => {
 
       handleModalClose();
       setHeaderActivePlace({ text: res.data.uniqueName, imageUrl: res.data.imageUrl });
-      setBanner("");
-      setCommunityImage("");
       setCommunity(null);
       setCurrentMember(null);
-      setRules([]);
       router.push(`/main/communities/${res.data.id}`);
     } catch (error) {
       console.log(error);

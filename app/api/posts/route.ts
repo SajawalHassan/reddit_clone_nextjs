@@ -2,7 +2,7 @@ import { getCurrentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { linkFormSchema, mediaFormSchema, plainFormSchema } from "@/schemas/post-schema";
 import { Community, Post } from "@prisma/client";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { SafeParseReturnType } from "zod";
 import { fromZodError } from "zod-validation-error";
 
@@ -127,6 +127,40 @@ export async function GET(req: Request) {
     return NextResponse.json({ items: posts, feedItems: posts, nextCursor });
   } catch (error) {
     console.log("POST_GET", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest, res: NextResponse) {
+  try {
+    const profile = await getCurrentProfile();
+
+    const { searchParams } = new URL(req.url);
+    const communityId = searchParams.get("communityId");
+    const postId = searchParams.get("postId");
+
+    if (!profile) return new NextResponse("Unauthorized", { status: 401 });
+    if (!communityId) return new NextResponse("Community id missing", { status: 400 });
+    if (!postId) return new NextResponse("Post id missing", { status: 400 });
+
+    const post = await db.post.findUnique({
+      where: {
+        id: postId,
+      },
+      include: {
+        member: true,
+      },
+    });
+
+    if (!post) return new NextResponse("Post not found", { status: 404 });
+    if (post.member.profileId !== profile.id) return new NextResponse("Forbidden", { status: 403 });
+
+    await db.$executeRaw`DELETE FROM Comment WHERE postId = ${postId};`;
+    await db.$executeRaw`DELETE FROM Post WHERE id = ${postId};`;
+
+    return new NextResponse("Post deleted!");
+  } catch (error) {
+    console.log("POSTS_DELETE", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

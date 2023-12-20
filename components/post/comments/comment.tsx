@@ -133,141 +133,144 @@ export const Comment = ({
   };
 
   return (
-    <>
-      <div className={cn("flex gap-x-1", isDeletingComment && "cursor-not-allowed")}>
-        <div className="flex gap-x-2">
+    <div className="flex">
+      {childComments?.length > 0 && !childrenAreHidden && (
+        <button className="bg-none border-l-2 px-0.5 mr-2 hover:border-black outline-none" onClick={() => setChildrenAreHidden(true)} />
+      )}
+      <div className="mt-2 w-full">
+        <div className={cn("flex gap-x-1", isDeletingComment && "cursor-not-allowed")}>
           {childrenAreHidden && (
             <ChevronDown className="h-8 w-8 cursor-pointer text-gray-500 hover:text-black" onClick={() => setChildrenAreHidden(false)} />
           )}
-          <img src={commentProfile.imageUrl} alt={commentProfile.displayName} className={cn("h-8 w-8 rounded-full")} />
-        </div>
-        <div className="w-full">
-          <p className={cn("text-sm font-semibold", isDeletingComment && "text-gray-500")}>
-            {commentProfile.displayName} · {hasEditedComment && <span className="text-xs text-gray-500 italic font-normal">edited</span>}{" "}
-            <span className="font-normal text-gray-500 text-[11px]">{format(new Date(comment.createdAt), DATE_FORMAT)}</span>
-          </p>
-          {isEditing ? (
-            <PostCommentInput
-              setComments={setComments}
-              post={comment.post}
-              type="custom"
-              closeInput={() => setIsEditing(false)}
-              prePropulatedContent={editedContent}
-              prePropulatedImageUrl={image}
-              disabled={isSubmittingEdit}
-              onSubmit={handleEditSubmit}
-              setEditedComment={setEditedContent}
-            />
-          ) : content ? (
-            <p className={cn("text-[14px] leading-[21px] whitespace-pre-wrap", isDeletingComment && "text-gray-500")}>{content}</p>
-          ) : (
-            <img src={image} className="py-2" />
-          )}
-          {!isEditing && (
-            <div className="flex items-center gap-x-2">
-              <div className="flex items-center gap-x-1.5">
-                <ArrowUpCircle
-                  className={cn(
-                    "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black dark:hover:text-gray-200",
-                    hasUpvotedComment && "text-orange-500 font-bold hover:text-orange-700 dark:hover:text-orange-300",
-                    isUpvoting && "bg-gray-200 rounded-sm cursor-default",
-                    isDeletingComment && "cursor-not-allowed"
-                  )}
-                  onClick={() => {
-                    if (!isUpvoting && !isDeletingComment) votePost("upvote");
-                  }}
-                />
-                <p className="text-sm font-bold">{upvotes}</p>
-                <ArrowDownCircle
-                  className={cn(
-                    "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black dark:hover:text-gray-200",
-                    hasDownvotedComment && "text-orange-500 font-bold hover:text-orange-700 dark:hover:text-orange-300",
-                    isDownvoting && "bg-gray-200 rounded-sm cursor-default",
-                    isDeletingComment && "cursor-not-allowed"
-                  )}
-                  onClick={() => {
-                    if (!isDownvoting && !isDeletingComment) votePost("downvote");
-                  }}
-                />
-              </div>
+          <img src={commentProfile.imageUrl} alt={commentProfile.displayName} className={cn("h-[32px] w-[32px] rounded-full")} />
+          <div className="w-full">
+            <p className={cn("text-sm font-semibold", isDeletingComment && "text-gray-500")}>
+              {commentProfile.displayName} · {hasEditedComment && <span className="text-xs text-gray-500 italic font-normal">edited</span>}{" "}
+              <span className="font-normal text-gray-500 text-[11px]">{format(new Date(comment.createdAt), DATE_FORMAT)}</span>
+            </p>
+            {isEditing ? (
+              <PostCommentInput
+                setComments={setComments}
+                post={comment.post}
+                type="custom"
+                closeInput={() => setIsEditing(false)}
+                prePropulatedContent={editedContent}
+                prePropulatedImageUrl={image}
+                disabled={isSubmittingEdit}
+                onSubmit={handleEditSubmit}
+                setEditedComment={setEditedContent}
+              />
+            ) : content ? (
+              <p className={cn("text-[14px] leading-[21px] whitespace-pre-wrap", isDeletingComment && "text-gray-500")}>{content}</p>
+            ) : (
+              <img src={image} className="py-2" />
+            )}
+            {!isEditing && (
+              <div className="flex items-center gap-x-2">
+                <div className="flex items-center gap-x-1.5">
+                  <ArrowUpCircle
+                    className={cn(
+                      "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black dark:hover:text-gray-200",
+                      hasUpvotedComment && "text-orange-500 font-bold hover:text-orange-700 dark:hover:text-orange-300",
+                      isUpvoting && "bg-gray-200 rounded-sm cursor-default",
+                      isDeletingComment && "cursor-not-allowed"
+                    )}
+                    onClick={() => {
+                      if (!isUpvoting && !isDeletingComment) votePost("upvote");
+                    }}
+                  />
+                  <p className="text-sm font-bold">{upvotes}</p>
+                  <ArrowDownCircle
+                    className={cn(
+                      "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black dark:hover:text-gray-200",
+                      hasDownvotedComment && "text-orange-500 font-bold hover:text-orange-700 dark:hover:text-orange-300",
+                      isDownvoting && "bg-gray-200 rounded-sm cursor-default",
+                      isDeletingComment && "cursor-not-allowed"
+                    )}
+                    onClick={() => {
+                      if (!isDownvoting && !isDeletingComment) votePost("downvote");
+                    }}
+                  />
+                </div>
 
-              <div className="flex items-center">
-                <PostFooterItem
-                  Icon={MessageSquare}
-                  className={cn("py-0.5 px-1 rounded-sm", isDeletingComment && "cursor-not-allowed")}
-                  IconClassName="h-5 w-5"
-                  textClassName="text-[12px]"
-                  text="Reply"
-                  onClick={() => setIsReplying(true)}
-                  disabled={isDeletingComment}
-                />
-                {isOwner && (
-                  <div className="relative">
-                    <PostFooterItem
-                      Icon={MoreVertical}
-                      className={cn("py-0.5 px-1 rounded-sm", isDeletingComment && "cursor-not-allowed")}
-                      IconClassName="h-4 w-4"
-                      textClassName="text-[12px]"
-                      onClick={() => setMoreMenuIsOpen(true)}
-                      disabled={isDeletingComment}
-                    />
-
-                    {moreMenuIsOpen && (
-                      <div
-                        className="z-20 fixed inset-0 h-full w-full cursor-default"
-                        onClick={(e: MouseEvent) => {
-                          e.stopPropagation();
-                          setMoreMenuIsOpen(false);
-                        }}
+                <div className="flex items-center">
+                  <PostFooterItem
+                    Icon={MessageSquare}
+                    className={cn("py-0.5 px-1 rounded-sm", isDeletingComment && "cursor-not-allowed")}
+                    IconClassName="h-5 w-5"
+                    textClassName="text-[12px]"
+                    text="Reply"
+                    onClick={() => setIsReplying(true)}
+                    disabled={isDeletingComment}
+                  />
+                  {isOwner && (
+                    <div className="relative">
+                      <PostFooterItem
+                        Icon={MoreVertical}
+                        className={cn("py-0.5 px-1 rounded-sm", isDeletingComment && "cursor-not-allowed")}
+                        IconClassName="h-4 w-4"
+                        textClassName="text-[12px]"
+                        onClick={() => setMoreMenuIsOpen(true)}
+                        disabled={isDeletingComment}
                       />
-                    )}
-                    {moreMenuIsOpen && (
-                      <div className="absolute shadow-lg dark:shadow-black py-2 top-8 w-[10rem] bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30">
-                        <PostFooterItemMenuItem
-                          Icon={Pencil}
-                          text="Edit comment"
-                          onClick={() => {
+
+                      {moreMenuIsOpen && (
+                        <div
+                          className="z-20 fixed inset-0 h-full w-full cursor-default"
+                          onClick={(e: MouseEvent) => {
+                            e.stopPropagation();
                             setMoreMenuIsOpen(false);
-                            setIsEditing(true);
                           }}
                         />
-                        <PostFooterItemMenuItem
-                          Icon={Trash}
-                          text="Delete comment"
-                          onClick={() => {
-                            setMoreMenuIsOpen(false);
-                            handleDelete();
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
+                      )}
+                      {moreMenuIsOpen && (
+                        <div className="absolute shadow-lg dark:shadow-black py-2 top-8 w-[10rem] bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30">
+                          <PostFooterItemMenuItem
+                            Icon={Pencil}
+                            text="Edit comment"
+                            onClick={() => {
+                              setMoreMenuIsOpen(false);
+                              setIsEditing(true);
+                            }}
+                          />
+                          <PostFooterItemMenuItem
+                            Icon={Trash}
+                            text="Delete comment"
+                            onClick={() => {
+                              setMoreMenuIsOpen(false);
+                              handleDelete();
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
-          {isReplying && (
-            <PostCommentInput
-              setComments={setComments}
-              post={comment.post}
-              type="reply"
-              parentCommentId={comment.id}
-              className="mt-1.5"
-              closeInput={() => setIsReplying(false)}
-            />
-          )}
+            )}
+            {isReplying && (
+              <PostCommentInput
+                setComments={setComments}
+                post={comment.post}
+                type="reply"
+                parentCommentId={comment.id}
+                className="mt-1.5"
+                closeInput={() => setIsReplying(false)}
+              />
+            )}
+          </div>
         </div>
-      </div>
-      {childComments?.length > 0 && (
-        <>
-          <div className={cn("flex", childrenAreHidden && "hidden")}>
-            <button className="bg-none border-l-2 px-0.5 hover:border-black outline-none" onClick={() => setChildrenAreHidden(true)} />
-            <div className="pl-[1rem] flex-grow space-y-2">
-              <CommentList comments={childComments} getReplies={getReplies} setComments={setComments} />
+        {childComments?.length > 0 && (
+          <div>
+            <div className={cn("flex", childrenAreHidden && "hidden")}>
+              {/* <button className="bg-none border-l-2 px-0.5 hover:border-black outline-none" onClick={() => setChildrenAreHidden(true)} /> */}
+              <div className="pl-[1.5rem] flex-grow space-y-2">
+                <CommentList comments={childComments} getReplies={getReplies} setComments={setComments} />
+              </div>
             </div>
           </div>
-        </>
-      )}
-    </>
+        )}
+      </div>
+    </div>
   );
 };

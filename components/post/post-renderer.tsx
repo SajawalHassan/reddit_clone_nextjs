@@ -72,7 +72,7 @@ export const PostRenderer = ({ postId, communityId }: { postId: string; communit
           {isLoading ? (
             <PostSkeleton />
           ) : (
-            <div className="min-w-[760px] max-w-[760px] w-[760px]">
+            <div className="min-w-[760px] max-w-[760px] w-[760px] relative">
               <PostHomeComponent post={post!} isOnPostPage={true} />
               <PostComments post={post!} />
             </div>

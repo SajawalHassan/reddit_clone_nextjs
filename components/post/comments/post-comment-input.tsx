@@ -64,7 +64,7 @@ export const PostCommentInput = ({
         });
       }
 
-      setComments((comments) => [...comments, res.data]);
+      setComments((comments) => [res.data, ...comments]);
       setComment("");
       setImage("");
       closeInput && closeInput();

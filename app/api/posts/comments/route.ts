@@ -22,6 +22,9 @@ export async function GET(req: NextRequest, res: NextResponse) {
         downvotes: true,
         post: true,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     return NextResponse.json(comments);
@@ -110,7 +113,6 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
     if (comment?.memberId !== memberId) return new NextResponse("Forbidden", { status: 403 });
 
     await db.$executeRaw`DELETE FROM Comment WHERE parentId = ${commentId};`;
-
     await db.$executeRaw`DELETE FROM Comment WHERE id = ${commentId};`;
 
     return NextResponse.json("Comment deleted");

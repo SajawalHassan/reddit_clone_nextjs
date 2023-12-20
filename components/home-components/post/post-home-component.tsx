@@ -14,6 +14,7 @@ import axios from "axios";
 import dynamic from "next/dynamic";
 import { Profile } from "@prisma/client";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+import qs from "query-string";
 
 const FroalaEditorView = dynamic(
   async () => {
@@ -50,6 +51,7 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [moreMenuIsOpen, setMoreMenuIsOpen] = useState(false);
   const [hasViewedPost, setHasViewedPost] = useState(false);
+  const [isDeletingPost, setIsDeletingPost] = useState(false);
 
   const { profile: currentProfile, setProfile: setCurrentProfile } = useGlobalInfo();
 
@@ -123,6 +125,21 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      setIsDeletingPost(true);
+
+      const url = qs.stringifyUrl({ url: "/api/posts", query: { communityId: post.communityId, postId: post.id } });
+      await axios.delete(url);
+
+      router.push(`/main/communities/${post.communityId}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsDeletingPost(false);
+    }
+  };
+
   const copyPostLink = (e: MouseEvent) => {
     e.stopPropagation();
     if (process.env.NODE_ENV === "development") {
@@ -145,6 +162,7 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
 
   return (
     <div className={cn("px-2", isOnPostPage ? "w-full dark:bg-[#1a1a1a]" : "home-component-container")}>
+      {isDeletingPost && <div className="absolute inset-0 m-auto bg-black opacity-10 mx-2" />}
       <div
         className={cn(
           "flex p-0 hover:border-black hover:dark:border-[#818384] cursor-pointer",
@@ -234,13 +252,17 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
                     <img
                       src={post.imageUrl}
                       alt={post.title}
-                      className={cn("max-h-[512px] mt-1", post.spoiler && "blur-[20px] brightness-75", isOnPostPage && "cursor-pointer")}
+                      className={cn(
+                        "max-h-[512px] mt-1",
+                        post.spoiler && !isOnPostPage && "blur-[20px] brightness-75",
+                        isOnPostPage && "cursor-pointer"
+                      )}
                       onClick={() => {
                         if (isOnPostPage) window.open(post.imageUrl as string, "_blank");
                       }}
                     />
-                    {post.spoiler && (
-                      <p className="w-full max-w-[15rem] py-1.5 font-bold text-center text-gray-600 hover:bg-opacity-80 bg-gray-100 bg-opacity-60 rounded-md uppercase absolute bottom-5 inset-x-0 mx-auto">
+                    {post.spoiler && !isOnPostPage && (
+                      <p className="w-full max-w-[15rem] py-1.5 font-bold text-center text-gray-600 hover:bg-opacity-80 bg-gray-100 bg-opacity-60 rounded-md uppercase absolute bottom-5 inset-x-0 mx-auto cursor-pointer">
                         Click to see spoiler
                       </p>
                     )}
@@ -288,7 +310,7 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
                 </div>
               )}
             </div>
-            {isOwner && (
+            {isOwner && isOnPostPage && (
               <div className="relative">
                 <PostFooterItem
                   Icon={MoreHorizontal}
@@ -315,7 +337,7 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
                       text="Delete post"
                       onClick={() => {
                         setMoreMenuIsOpen(false);
-                        // handleDelete();
+                        handleDelete();
                       }}
                     />
                   </div>
