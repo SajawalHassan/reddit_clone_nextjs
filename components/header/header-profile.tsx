@@ -43,7 +43,7 @@ export const HeaderProfile = () => {
   }, []);
 
   const pushToUrl = (url: string) => {
-    setHeaderActivePlace({ text: `u/${profile?.displayName}`, imageUrl: profile?.imageUrl });
+    setHeaderActivePlace({ text: profile!.displayName, imageUrl: profile!.imageUrl });
     router.push(url);
   };
 

@@ -5,6 +5,7 @@ import axios from "axios";
 import { cn } from "@/lib/utils";
 import { HeaderCommunitiesMenu } from "./header-communities-menu";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+import { usePathname } from "next/navigation";
 
 const icon_map = {
   Home: <Home />,
@@ -18,6 +19,11 @@ export const HeaderCommunities = () => {
   const [isMounted, setIsMounted] = useState(false);
 
   const { headerActivePlace } = useGlobalInfo();
+
+  const pathname = usePathname();
+
+  const isOnUser = pathname.includes("users");
+  const isOnCommunity = pathname.includes("communities");
 
   const getCommunities = async () => {
     const res = await axios.get("/api/communities");
@@ -53,7 +59,10 @@ export const HeaderCommunities = () => {
           ) : (
             <img src={headerActivePlace.imageUrl} alt="" className="rounded-full h-6 w-6" />
           )}
-          <p className="hidden lg:flex text-sm font-bold">{headerActivePlace.text}</p>
+          <p className="hidden lg:flex text-sm font-bold">
+            {isOnCommunity ? "r/" : isOnCommunity && "u/"}
+            {headerActivePlace.text}
+          </p>
         </div>
         <ArrowDownCircle className="h-5 w-5" />
       </div>
