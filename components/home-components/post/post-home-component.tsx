@@ -33,13 +33,14 @@ const FroalaEditorView = dynamic(
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
 const SHORT_DATE_FORMAT = "d MMM yyyy";
 
-export const PostHomeComponent = ({
-  post,
-  isOnPostPage = false,
-}: {
+interface Props {
   post: PostWithMemberWithProfileWithCommunityWithVotes;
   isOnPostPage?: boolean;
-}) => {
+  className?: string;
+  votesClassName?: string;
+}
+
+export const PostHomeComponent = ({ post, isOnPostPage = false, className, votesClassName }: Props) => {
   const { setHeaderActivePlace } = useGlobalInfo();
 
   const [upvotes, setUpvotes] = useState(post.upvotes.length - post.downvotes.length);
@@ -148,7 +149,8 @@ export const PostHomeComponent = ({
         className={cn(
           "flex p-0 hover:border-black hover:dark:border-[#818384] cursor-pointer",
           menuIsOpen && "border-transparent hover:border-transparent dark:border-transparent dark:hover:border-transparent",
-          isOnPostPage ? "bg-white dark:bg-[#1a1a1a] cursor-default" : "home-component"
+          isOnPostPage ? "bg-white dark:bg-[#1a1a1a] cursor-default" : "home-component",
+          className
         )}
         onClick={(e: MouseEvent) => {
           if (!isOnPostPage) pushToUrl(e, `/main/communities/${post.communityId}/post/${post.id}`, "community");
@@ -156,7 +158,8 @@ export const PostHomeComponent = ({
         <div
           className={cn(
             "w-[2.5rem] xs:w-[4rem] p-1 xs:p-2 flex flex-col items-center rounded-l-md",
-            !isOnPostPage && "bg-gray-100 dark:bg-[#151516]"
+            !isOnPostPage && "bg-gray-100 dark:bg-[#151516]",
+            votesClassName
           )}>
           <IconButton
             Icon={ArrowUpCircle}

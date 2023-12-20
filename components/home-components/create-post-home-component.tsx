@@ -3,7 +3,6 @@
 import { Input } from "@/components/ui/input";
 import { ProfilePicture } from "@/components/profile-picture";
 import { useEffect, useState } from "react";
-import { Profile } from "@prisma/client";
 import axios from "axios";
 import { IconButton } from "@/components/icon-button";
 import { Image, Link as LinkIcon } from "lucide-react";

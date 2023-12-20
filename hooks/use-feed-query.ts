@@ -5,10 +5,11 @@ interface Props {
   query: string;
   apiUrl: string;
   communityId?: string;
+  profileId?: string;
   feedType?: "new" | "hot";
 }
 
-export const useFeedQuery = ({ query, apiUrl, communityId, feedType }: Props) => {
+export const useFeedQuery = ({ query, apiUrl, communityId, feedType, profileId }: Props) => {
   const fetchCommunities = async ({ pageParam = undefined }) => {
     const url = qs.stringifyUrl(
       {
@@ -17,6 +18,7 @@ export const useFeedQuery = ({ query, apiUrl, communityId, feedType }: Props) =>
           cursor: pageParam,
           communityId,
           feedType,
+          profileId,
         },
       },
       { skipNull: true }

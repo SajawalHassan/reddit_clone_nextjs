@@ -16,12 +16,15 @@ import { useGlobalInfo } from "@/hooks/use-global-info";
 export const HeaderProfile = () => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
 
-  const router = useRouter();
-
   const { setTheme, resolvedTheme } = useTheme();
   const { signOut } = useClerk();
   const { openModal } = useModal();
-  const { profile, setProfile } = useGlobalInfo();
+  const { profile, setProfile, setHeaderActivePlace } = useGlobalInfo();
+
+  const router = useRouter();
+
+  const formatter = Intl.NumberFormat("en", { notation: "compact" });
+  const formattedKarma = formatter.format(profile?.karma as number);
 
   useEffect(() => {
     const getProfile = async () => {
@@ -39,8 +42,10 @@ export const HeaderProfile = () => {
     getProfile();
   }, []);
 
-  const formatter = Intl.NumberFormat("en", { notation: "compact" });
-  const formattedKarma = formatter.format(profile?.karma as number);
+  const pushToUrl = (url: string) => {
+    setHeaderActivePlace({ text: `u/${profile?.displayName}`, imageUrl: profile?.imageUrl });
+    router.push(url);
+  };
 
   return (
     <div className="relative">
@@ -66,11 +71,11 @@ export const HeaderProfile = () => {
         <div className="absolute right-0 w-[15rem] bg-white dark:bg-[#1A1A1B] dark:text-white border border-zinc-200 dark:border-zinc-800 py-5 z-30 space-y-2">
           <HeaderProfileMenuHeading Icon={UserCircle} text="My Stuff" />
           <div>
-            <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} text="Profile" onClick={() => router.push(`/main/users/${profile?.id}`)} />
+            <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} text="Profile" onClick={() => pushToUrl(`/main/users/${profile?.id}`)} />
             <HeaderProfileMenuItem
               setMenuIsOpen={setMenuIsOpen}
               text="User Settings"
-              onClick={() => router.push(`/main/users/${profile?.id}/settings`)}
+              onClick={() => pushToUrl(`/main/users/${profile?.id}/settings`)}
             />
           </div>
           <Separator />

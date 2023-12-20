@@ -15,8 +15,9 @@ interface Props {
   type: "comment" | "reply" | "custom";
   className?: string;
   closeInput?: () => void;
-  onSubmit?: (e: FormEvent, newComment: string) => void;
+  onSubmit?: (e: FormEvent, newComment: string, newImage: string) => void;
   prePropulatedContent?: string;
+  prePropulatedImageUrl?: string;
   disabled?: boolean;
   setEditedComment?: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -32,9 +33,10 @@ export const PostCommentInput = ({
   disabled,
   setEditedComment,
   prePropulatedContent = "",
+  prePropulatedImageUrl = "",
 }: Props) => {
   const [comment, setComment] = useState(prePropulatedContent);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(prePropulatedImageUrl);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmittingImage, setIsSubmittingImage] = useState(false);
 
@@ -45,19 +47,26 @@ export const PostCommentInput = ({
     e.preventDefault();
     setEditedComment && setEditedComment(comment);
 
-    if (onSubmit) return onSubmit(e, comment);
+    if (onSubmit) return onSubmit(e, comment, image);
 
     try {
       setIsLoading(true);
 
       if (type === "comment") {
-        var res = await axios.post("/api/posts/comments", { content: comment, postId: post.id, memberId: post.memberId });
+        var res = await axios.post("/api/posts/comments", { content: comment, postId: post.id, memberId: post.memberId, imageUrl: image });
       } else {
-        var res = await axios.post("/api/posts/replies", { content: comment, postId: post.id, memberId: post.memberId, parentId: parentCommentId });
+        var res = await axios.post("/api/posts/comments", {
+          content: comment,
+          imageUrl: image,
+          postId: post.id,
+          memberId: post.memberId,
+          parentId: parentCommentId,
+        });
       }
 
       setComments((comments) => [...comments, res.data]);
       setComment("");
+      setImage("");
       closeInput && closeInput();
     } catch (error) {
       console.log(error);
@@ -67,6 +76,8 @@ export const PostCommentInput = ({
   };
 
   const uploadFileJSX = (e: ChangeEvent) => {
+    setComment("");
+
     const file = (e.target as HTMLInputElement).files![0];
     if (!file) return;
 
@@ -131,7 +142,7 @@ export const PostCommentInput = ({
                 Cancel
               </Button>
             )}
-            <Button variant="primary" className="disabled:bg-zinc-700 h-7" disabled={comment.length === 0 || isLoading || disabled}>
+            <Button variant="primary" className="disabled:bg-zinc-700 h-7" disabled={(comment.length === 0 && !image) || isLoading || disabled}>
               Comment
             </Button>
           </div>

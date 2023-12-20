@@ -34,17 +34,19 @@ export async function GET(req: NextRequest, res: NextResponse) {
 export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const values = await req.json();
-    const { content, postId, memberId } = values;
+    const { content, imageUrl, postId, memberId, parentId } = values;
 
     if (!postId) return new NextResponse("No post id", { status: 400 });
     if (!memberId) return new NextResponse("No member id", { status: 400 });
-    if (!content) return new NextResponse("No content", { status: 400 });
+    if (!content && !imageUrl) return new NextResponse("No content", { status: 400 });
 
     const comment = await db.comment.create({
       data: {
         postId,
         memberId,
         content,
+        imageUrl,
+        parentId,
       },
       include: {
         member: {
@@ -68,10 +70,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
 export async function PATCH(req: NextRequest, res: NextResponse) {
   try {
     const values = await req.json();
-    const { content, commentId } = values;
+    const { content, imageUrl, commentId } = values;
 
     if (!commentId) return new NextResponse("No comment id", { status: 400 });
-    if (!content) return new NextResponse("No content", { status: 400 });
+    if (!content && imageUrl) return new NextResponse("No content", { status: 400 });
 
     const comment = await db.comment.update({
       where: {
@@ -79,6 +81,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
       },
       data: {
         content,
+        imageUrl,
       },
     });
 

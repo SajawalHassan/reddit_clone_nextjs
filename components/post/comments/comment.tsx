@@ -34,8 +34,9 @@ export const Comment = ({
   const [hasEditedComment, setHasEditedComment] = useState(false);
   const [upvotes, setUpvotes] = useState(comment.upvotes.length - comment.downvotes.length);
   const [activeVote, setActiveVote] = useState<"upvote" | "downvote" | "none">("none");
-  const [editedContent, setEditedContent] = useState(comment.content);
-  const [content, setContent] = useState(comment.content);
+  const [editedContent, setEditedContent] = useState<string>(comment.content);
+  const [content, setContent] = useState<string>(comment.content);
+  const [image, setImage] = useState<string>(comment.imageUrl || "");
 
   const { profile: currentProfile, setProfile: setCurrentProfile } = useGlobalInfo();
 
@@ -94,15 +95,16 @@ export const Comment = ({
     }
   };
 
-  const handleEditSubmit = async (e: FormEvent, newComment: string) => {
+  const handleEditSubmit = async (e: FormEvent, newComment: string, newImage: string) => {
     e.preventDefault();
 
     if (newComment === comment.content) return;
-    if (newComment === "") return;
+    if (newComment === "" && newImage === "") return;
 
     try {
       setIsSubmittingEdit(true);
       setContent(newComment);
+      setImage(newImage);
 
       await axios.patch("/api/posts/comments", { content: newComment, commentId: comment.id });
 
@@ -151,12 +153,15 @@ export const Comment = ({
               type="custom"
               closeInput={() => setIsEditing(false)}
               prePropulatedContent={editedContent}
+              prePropulatedImageUrl={image}
               disabled={isSubmittingEdit}
               onSubmit={handleEditSubmit}
               setEditedComment={setEditedContent}
             />
-          ) : (
+          ) : content ? (
             <p className={cn("text-[14px] leading-[21px] whitespace-pre-wrap", isDeletingComment && "text-gray-500")}>{content}</p>
+          ) : (
+            <img src={image} className="py-2" />
           )}
           {!isEditing && (
             <div className="flex items-center gap-x-2">
