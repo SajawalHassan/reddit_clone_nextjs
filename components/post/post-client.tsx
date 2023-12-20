@@ -15,13 +15,13 @@ export const PostClient = ({ postId }: { postId: string }) => {
 
     const visitedPosts: any[] = JSON.parse(localStorage.getItem("visitedPosts") || "[]");
 
-    const existingIndex = visitedPosts.findIndex((visitedPost) => visitedPost.id === post.id);
+    const existingIndex = visitedPosts.indexOf(post.id);
 
     if (existingIndex !== -1) {
       visitedPosts.splice(existingIndex, 1); // Remove the element
-      visitedPosts.unshift(post); // Add it as the first element of the list
+      visitedPosts.unshift(post.id); // Add it as the first element of the list
     } else {
-      visitedPosts.unshift(post);
+      visitedPosts.unshift(post.id);
     }
 
     localStorage.setItem("visitedPosts", JSON.stringify(visitedPosts));

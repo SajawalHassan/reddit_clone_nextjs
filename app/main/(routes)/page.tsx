@@ -2,6 +2,11 @@ import { HomeFeed } from "@/components/feed/home-feed";
 import { CreatePostHomeComponent } from "@/components/home-components/create-post-home-component";
 import { HomeFeedQuickActionsHomeComponent } from "@/components/home-components/home-feed-quick-actions-home-component";
 import { RecentPosts } from "@/components/recent-posts";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Reddit clone - Dive into anything",
+};
 
 export default function Home() {
   return (

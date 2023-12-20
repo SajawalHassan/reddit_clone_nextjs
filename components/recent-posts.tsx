@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import Link from "next/link";
+import qs from "query-string";
+import axios from "axios";
 
 const DATE_FORMAT = "d MMM";
 
@@ -16,8 +18,14 @@ export const RecentPosts = () => {
   const [visitedPosts, setVisitedPosts] = useState<PostWithCommentsWithCommunity[]>([]);
 
   useEffect(() => {
-    const visitedPostsLS: any[] = JSON.parse(localStorage.getItem("visitedPosts") || "[]");
-    setVisitedPosts(visitedPostsLS);
+    const getVisitedPosts = async () => {
+      const url = qs.stringifyUrl({ url: "/api/posts/array", query: { postsIdArray: localStorage.getItem("visitedPosts") || "[]" } });
+      const res = await axios.get(url);
+
+      setVisitedPosts(res.data);
+    };
+
+    getVisitedPosts();
   }, []);
 
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
@@ -36,10 +44,10 @@ export const RecentPosts = () => {
   };
 
   return (
-    <div className={cn(visitedPosts.length === 0 ? "hidden" : "home-component w-[20rem]")}>
+    <div className={cn(visitedPosts?.length === 0 ? "hidden" : "home-component w-[20rem]")}>
       <p className="uppercase text-xs font-bold mb-2">Recent Posts</p>
       <div className="space-y-2">
-        {visitedPosts.slice(0, 5).map((post: PostWithCommentsWithCommunity) => (
+        {visitedPosts?.slice(0, 5).map((post: PostWithCommentsWithCommunity) => (
           <Link key={post.id} href={`/main/communities/${post.communityId}/post/${post.id}`}>
             <div
               className="flex gap-x-2 cursor-pointer group"
