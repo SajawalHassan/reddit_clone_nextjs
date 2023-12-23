@@ -35,30 +35,30 @@ export const AboutCommunitiyHomeComponent = ({ communityId, showMoreInfo = false
   const isAdmin = currentMember?.role === MemberRole.ADMIN;
   const isModerator = currentMember?.role === MemberRole.MODERATOR;
 
-  const getCommunity = async (setLoadingStates: boolean) => {
-    if (community !== null) {
-      return setDescription(community.description || "");
-    }
-
-    if (setLoadingStates) setIsLoading(true);
-
-    try {
-      const url = qs.stringifyUrl({ url: "/api/communities/specific", query: { communityId } });
-
-      const response = await axios.get(url);
-      setCommunity(response.data.community);
-      setCurrentMember(response.data.currentMember[0]);
-      setDescription(response.data.community.description || "");
-      setEditingDescription(response.data.community.description || "");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      if (setLoadingStates) setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    getCommunity(true);
+    const getCommunity = async () => {
+      if (community !== null) {
+        return setDescription(community.description || "");
+      }
+
+      setIsLoading(true);
+
+      try {
+        const url = qs.stringifyUrl({ url: "/api/communities/specific", query: { communityId } });
+
+        const response = await axios.get(url);
+        setCommunity(response.data.community);
+        setCurrentMember(response.data.currentMember[0]);
+        setDescription(response.data.community.description || "");
+        setEditingDescription(response.data.community.description || "");
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getCommunity();
   }, []);
 
   useEffect(() => {

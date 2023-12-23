@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { useFeedInfo } from "@/hooks/use-feed-info";
 
 export const HomeFeed = () => {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<PostWithMemberWithProfileWithCommunityWithVotes[]>([]);
 
   const query = "feed:home";
 

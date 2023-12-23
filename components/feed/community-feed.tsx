@@ -6,11 +6,13 @@ import { Loader2 } from "lucide-react";
 import { PostHomeComponent } from "@/components/home-components/post/post-home-component";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { FeedLoadingSkeleton } from "@/components/skeletons/feed-loading-skeleton";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { NoPostsCommunity } from "@/components/community/no-posts-community";
 import { useFeedInfo } from "@/hooks/use-feed-info";
 
 export const CommunityFeed = ({ communityId }: { communityId: string }) => {
+  const [posts, setPosts] = useState<PostWithMemberWithProfileWithCommunityWithVotes[]>([]);
+
   const query = `feed:community:${communityId}`;
 
   const { setFeedPosts } = useFeedInfo();
@@ -25,13 +27,17 @@ export const CommunityFeed = ({ communityId }: { communityId: string }) => {
     refetch();
   }, []);
 
-  let posts = data?.pages?.reduce((prev: any, current: any) => {
-    return [...prev, ...current.feedItems];
-  }, []);
+  useEffect(() => {
+    setPosts(
+      data?.pages?.reduce((prev: any, current: any) => {
+        return [...prev, ...current.feedItems];
+      }, [])
+    );
+  }, [data]);
 
   useEffect(() => {
     if (posts) setFeedPosts(posts);
-  }, []);
+  }, [posts]);
 
   if (status === "loading" || !posts) {
     return (

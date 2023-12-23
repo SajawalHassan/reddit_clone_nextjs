@@ -1,9 +1,8 @@
 "use client";
 
-import { CommunityWithMembersWithRules } from "@/types";
-import { MemberRole } from "@prisma/client";
 import axios from "axios";
 import qs from "query-string";
+import { MemberRole } from "@prisma/client";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { IconButton } from "../icon-button";
 import { Camera, Pencil, Trash, X } from "lucide-react";
