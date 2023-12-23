@@ -19,8 +19,9 @@ export async function GET(req: NextRequest, res: NextResponse) {
     });
 
     const orderedPosts = postsIdArray.map((id: string) => posts.find((post) => post.id === id));
+    const nonNullOrderedPosts = orderedPosts.filter((post: any) => post !== undefined);
 
-    return NextResponse.json(orderedPosts);
+    return NextResponse.json(nonNullOrderedPosts);
   } catch (error) {
     console.log("POSTS_ARRAY_GET", error);
     return new NextResponse("Internal Server Error", { status: 500 });

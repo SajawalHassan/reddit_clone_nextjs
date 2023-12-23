@@ -7,22 +7,36 @@ import { PostHomeComponent } from "@/components/home-components/post/post-home-c
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { FeedLoadingSkeleton } from "@/components/skeletons/feed-loading-skeleton";
 import { useGlobalInfo } from "@/hooks/use-global-info";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useFeedInfo } from "@/hooks/use-feed-info";
 
 export const HomeFeed = () => {
+  const [posts, setPosts] = useState([]);
+
   const query = "feed:home";
 
   const { data, fetchNextPage, hasNextPage, status, refetch } = useFeedQuery({ query, apiUrl: "/api/posts" });
   const { setHeaderActivePlace } = useGlobalInfo();
+  const { setFeedPosts, feedPosts } = useFeedInfo();
 
-  let posts = data?.pages?.reduce((prev: any, current: any) => {
-    return [...prev, ...current.feedItems];
-  }, []);
+  useEffect(() => {
+    setPosts(
+      data?.pages?.reduce((prev: any, current: any) => {
+        return [...prev, ...current.feedItems];
+      }, [])
+    );
+  }, [data]);
+
+  useEffect(() => {
+    if (posts) setFeedPosts(posts);
+  }, [posts]);
 
   useEffect(() => {
     setHeaderActivePlace({ text: "Home", icon: "Home" });
     refetch();
   }, []);
+
+  console.log(feedPosts);
 
   if (status === "loading") {
     return (

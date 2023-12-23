@@ -8,10 +8,12 @@ import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { FeedLoadingSkeleton } from "@/components/skeletons/feed-loading-skeleton";
 import { useEffect } from "react";
 import { NoPostsCommunity } from "@/components/community/no-posts-community";
+import { useFeedInfo } from "@/hooks/use-feed-info";
 
 export const CommunityFeed = ({ communityId }: { communityId: string }) => {
   const query = `feed:community:${communityId}`;
 
+  const { setFeedPosts } = useFeedInfo();
   const { data, fetchNextPage, hasNextPage, status, refetch } = useFeedQuery({
     query,
     apiUrl: "/api/communities/feed",
@@ -25,6 +27,10 @@ export const CommunityFeed = ({ communityId }: { communityId: string }) => {
 
   let posts = data?.pages?.reduce((prev: any, current: any) => {
     return [...prev, ...current.feedItems];
+  }, []);
+
+  useEffect(() => {
+    if (posts) setFeedPosts(posts);
   }, []);
 
   if (status === "loading" || !posts) {

@@ -11,6 +11,7 @@ import { Image, Link, Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PostSkeleton } from "@/components/skeletons/post-skeleton";
 import { PostComments } from "./comments/post-comments";
+import { useFeedInfo } from "@/hooks/use-feed-info";
 
 export const PostRenderer = ({ postId, communityId }: { postId: string; communityId: string }) => {
   const [post, setPost] = useState<PostWithMemberWithProfileWithCommunityWithVotes>();
@@ -18,8 +19,16 @@ export const PostRenderer = ({ postId, communityId }: { postId: string; communit
 
   const router = useRouter();
 
+  const { feedPosts, setFeedPosts } = useFeedInfo();
+
   useEffect(() => {
     const getPost = async (postId: string) => {
+      const feedPost = feedPosts.filter((feedPost) => feedPost.id === postId)[0];
+      if (feedPost) {
+        setIsLoading(false);
+        return setPost(feedPost);
+      }
+
       try {
         setIsLoading(true);
         const url = qs.stringifyUrl({ url: "/api/posts/specific", query: { postId } });
@@ -28,6 +37,7 @@ export const PostRenderer = ({ postId, communityId }: { postId: string; communit
         const post = response.data;
         if (!post) return;
         setPost(post);
+        setFeedPosts([...feedPosts, post]);
       } catch (error) {
         console.log(error);
       } finally {

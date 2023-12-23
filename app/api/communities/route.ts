@@ -110,14 +110,13 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
     if (!currentMemberId) return new NextResponse("Current Member id missing", { status: 400 });
 
     const member = await db.member.findUnique({ where: { id: currentMemberId } });
+
     if (!member) return new NextResponse("Member not found!", { status: 404 });
     if (member.role !== MemberRole.ADMIN) return new NextResponse("Action not allowed", { status: 403 });
 
-    await db.community.delete({
-      where: {
-        id: communityId,
-      },
-    });
+    await db.$executeRaw`DELETE FROM Comment WHERE postId IN (SELECT id FROM Post WHERE communityId = ${communityId});`;
+    await db.$executeRaw`DELETE FROM Post WHERE communityId = ${communityId};`;
+    await db.$executeRaw`DELETE FROM Community WHERE id = ${communityId};`;
 
     return NextResponse.json("Community deleted");
   } catch (error) {

@@ -12,7 +12,6 @@ import { PostFooterItemMenuItem } from "../../post/post-footer-item-menu-item";
 
 import axios from "axios";
 import dynamic from "next/dynamic";
-import { Profile } from "@prisma/client";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import qs from "query-string";
 
@@ -350,3 +349,6 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
     </div>
   );
 };
+
+// comp 1 (number) > comp 2 > comp 3 > comp 4
+// number
