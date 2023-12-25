@@ -17,7 +17,7 @@ export const HomeFeed = () => {
 
   const { data, fetchNextPage, hasNextPage, status, refetch } = useFeedQuery({ query, apiUrl: "/api/posts" });
   const { setHeaderActivePlace } = useGlobalInfo();
-  const { setFeedPosts, feedPosts } = useFeedInfo();
+  const { setFeedPosts } = useFeedInfo();
 
   useEffect(() => {
     setPosts(
@@ -32,11 +32,10 @@ export const HomeFeed = () => {
   }, [posts]);
 
   useEffect(() => {
+    document.title = "Reddit clone - Dive into anything";
     setHeaderActivePlace({ text: "Home", icon: "Home" });
     refetch();
   }, []);
-
-  console.log(feedPosts);
 
   if (status === "loading") {
     return (

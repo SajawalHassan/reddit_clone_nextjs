@@ -1,4 +1,4 @@
-import { UserOverviewFeed } from "@/components/feed/user/user-overview-feed";
+import { UserOverviewFeed } from "@/components/feed/user-overview-feed";
 
 export default function UserIdPage({ params: { userId } }: { params: { userId: string } }) {
   return (

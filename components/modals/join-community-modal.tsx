@@ -8,12 +8,15 @@ import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useCommunityInfo } from "@/hooks/use-community-info";
 
 export const JoinCommunityModal = () => {
   const { isOpen, type, closeModal, data } = useModal();
-  const { community } = data;
+  const { joinCommunityText } = data;
+  const { community } = useCommunityInfo();
 
   const [isLoading, setIsLoading] = useState(false);
+  const { setCurrentMember } = useCommunityInfo();
 
   const modalIsOpen = isOpen && type === "joinCommunity";
   const router = useRouter();
@@ -22,9 +25,9 @@ export const JoinCommunityModal = () => {
     try {
       setIsLoading(true);
 
-      await axios.patch("/api/communities/join", { communityId: community?.id });
+      const res = await axios.patch("/api/communities/join", { communityId: community?.id });
 
-      router.push(`/main/create/post?plain=true&preselected=${community?.id}`);
+      setCurrentMember(res.data.currentMember);
       handleModalClose();
     } catch (error) {
       console.log(error);
@@ -42,9 +45,7 @@ export const JoinCommunityModal = () => {
       <DialogContent className="dark:bg-[#161718]">
         <DialogHeader>
           <p className="font-semibold text-lg text-center">Join r/{community?.uniqueName}?</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
-            In order to create a post in r/{community?.uniqueName} you must be a member.
-          </p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 text-center">{joinCommunityText}</p>
         </DialogHeader>
         <div className="flex items-center gap-x-2 justify-end">
           <Button onClick={joinCommunity} variant="primary" disabled={isLoading}>

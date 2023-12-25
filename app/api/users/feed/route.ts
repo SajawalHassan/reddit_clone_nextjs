@@ -34,7 +34,18 @@ export async function GET(req: NextRequest) {
           community: true,
           upvotes: true,
           downvotes: true,
-          comments: true,
+          comments: {
+            include: {
+              member: {
+                include: {
+                  profile: true,
+                },
+              },
+              upvotes: true,
+              downvotes: true,
+              post: true,
+            },
+          },
         },
       });
     } else {
@@ -58,7 +69,18 @@ export async function GET(req: NextRequest) {
           community: true,
           upvotes: true,
           downvotes: true,
-          comments: true,
+          comments: {
+            include: {
+              member: {
+                include: {
+                  profile: true,
+                },
+              },
+              upvotes: true,
+              downvotes: true,
+              post: true,
+            },
+          },
         },
       });
     }

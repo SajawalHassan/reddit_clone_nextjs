@@ -92,7 +92,8 @@ export const AboutCommunitiyHomeComponent = ({ communityId, showMoreInfo = false
   };
 
   const createPost = () => {
-    if (!currentMember) return openModal("joinCommunity", { community: community! });
+    if (!currentMember)
+      return openModal("joinCommunity", { joinCommunityText: `In order to create a post in r/${community?.uniqueName} you must be a member.` });
     router.push(`/main/create/post?plain=true&preselected=${communityId}`);
   };
 

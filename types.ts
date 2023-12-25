@@ -23,7 +23,7 @@ export type PostWithMemberWithProfileWithCommunityWithVotes = Post & {
   community: Community;
   upvotes: PostProfileUpvotes[];
   downvotes: PostProfileDownvotes[];
-  comments: Comment[];
+  comments: CommentWithMemberWithProfileWithVotesWithPost[];
 };
 
 export type PostWithCommentsWithCommunity = Post & {

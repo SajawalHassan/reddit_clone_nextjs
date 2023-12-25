@@ -10,15 +10,13 @@ import axios from "axios";
 import qs from "query-string";
 import { FeedLoadingSkeleton } from "../skeletons/feed-loading-skeleton";
 import { useModal } from "@/hooks/use-modal-store";
-import { useGlobalInfo } from "@/hooks/use-global-info";
 import { useCommunityInfo } from "@/hooks/use-community-info";
 
 export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
-  const [community, setCommunity] = useState();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { openModal } = useModal();
-  const { currentMember, setCurrentMember } = useCommunityInfo();
+  const { currentMember, setCurrentMember, community, setCommunity } = useCommunityInfo();
 
   const router = useRouter();
 
@@ -28,6 +26,8 @@ export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
 
   useEffect(() => {
     const setMember = async () => {
+      if (community && currentMember) return;
+
       setIsLoading(true);
       const url = qs.stringifyUrl({ url: "/api/communities/specific", query: { communityId } });
 
@@ -39,10 +39,16 @@ export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
     setMember();
   }, []);
 
-  if (isLoading) return <FeedLoadingSkeleton />;
+  if (isLoading)
+    return (
+      <div className="mx-2">
+        <FeedLoadingSkeleton />
+      </div>
+    );
 
   const createPost = () => {
-    if (!currentMember) return openModal("joinCommunity", { community });
+    if (!currentMember)
+      return openModal("joinCommunity", { joinCommunityText: `In order to create a post in r/${community?.uniqueName} you must be a member.` });
     router.push(`/main/create/post?plain=true&preselected=${communityId}`);
   };
 

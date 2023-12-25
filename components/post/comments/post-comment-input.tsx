@@ -7,6 +7,8 @@ import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import { IconButton } from "@/components/icon-button";
 import { Image, Loader2, Trash, Tv } from "lucide-react";
 import { uploadFile } from "@/components/file-uploader";
+import { useModal } from "@/hooks/use-modal-store";
+import { useCommunityInfo } from "@/hooks/use-community-info";
 
 interface Props {
   setComments: React.Dispatch<React.SetStateAction<CommentWithMemberWithProfileWithVotesWithPost[]>>;
@@ -20,6 +22,7 @@ interface Props {
   prePropulatedImageUrl?: string;
   disabled?: boolean;
   setEditedComment?: React.Dispatch<React.SetStateAction<string>>;
+  memberId?: string;
 }
 
 export const PostCommentInput = ({
@@ -34,6 +37,7 @@ export const PostCommentInput = ({
   setEditedComment,
   prePropulatedContent = "",
   prePropulatedImageUrl = "",
+  memberId,
 }: Props) => {
   const [comment, setComment] = useState(prePropulatedContent);
   const [image, setImage] = useState(prePropulatedImageUrl);
@@ -43,23 +47,35 @@ export const PostCommentInput = ({
   const imageUploadRef = useRef<any>(null);
   const gifUploadRef = useRef<any>(null);
 
+  const { openModal } = useModal();
+  const { currentMember } = useCommunityInfo();
+
   const handleOnSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setEditedComment && setEditedComment(comment);
 
     if (onSubmit) return onSubmit(e, comment, image);
+    if (!currentMember)
+      return openModal("joinCommunity", {
+        joinCommunityText: `In order to comment on this post you must be a member of r/${post.community.uniqueName}.`,
+      });
 
     try {
       setIsLoading(true);
 
       if (type === "comment") {
-        var res = await axios.post("/api/posts/comments", { content: comment, postId: post.id, memberId: post.memberId, imageUrl: image });
+        var res = await axios.post("/api/posts/comments", {
+          content: comment,
+          postId: post.id,
+          memberId: memberId || currentMember.id,
+          imageUrl: image,
+        });
       } else {
         var res = await axios.post("/api/posts/comments", {
           content: comment,
           imageUrl: image,
           postId: post.id,
-          memberId: post.memberId,
+          memberId: memberId || currentMember.id,
           parentId: parentCommentId,
         });
       }

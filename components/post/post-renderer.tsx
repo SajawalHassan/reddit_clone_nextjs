@@ -66,8 +66,12 @@ export const PostRenderer = ({ postId, communityId }: { postId: string; communit
                   </div>
                 ) : post.imageUrl ? (
                   <Image className="text-white h-5 w-5" />
-                ) : (
+                ) : post.link ? (
                   <Link className="text-white h-5 w-5" />
+                ) : (
+                  <div className="border p-1 rounded-sm">
+                    <Menu className="text-white h-4 w-4" />
+                  </div>
                 )}
                 <p className="font-semibold">{post.title}</p>
               </div>

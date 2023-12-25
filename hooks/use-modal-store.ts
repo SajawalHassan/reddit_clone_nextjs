@@ -5,6 +5,7 @@ export type ModalTypes = "createCommunity" | "editCommunity" | "deleteCommunity"
 
 interface ModalData {
   community?: CommunityWithMembersWithRules;
+  joinCommunityText?: string;
 }
 
 interface ModalStores {

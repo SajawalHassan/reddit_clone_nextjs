@@ -11,18 +11,19 @@ import { Profile } from "@prisma/client";
 import { PostFooterItemMenuItem } from "@/components/post/post-footer-item-menu-item";
 import qs from "query-string";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+import { useCommunityInfo } from "@/hooks/use-community-info";
+import { useRouter } from "next/navigation";
 
 const DATE_FORMAT = "d MMM";
 
-export const Comment = ({
-  comment,
-  getReplies,
-  setComments,
-}: {
+interface Props {
   comment: CommentWithMemberWithProfileWithVotesWithPost;
   getReplies: (parentId: string) => any;
   setComments: React.Dispatch<React.SetStateAction<CommentWithMemberWithProfileWithVotesWithPost[]>>;
-}) => {
+  showReplies?: boolean;
+}
+
+export const Comment = ({ comment, getReplies, setComments, showReplies = true }: Props) => {
   const [isReplying, setIsReplying] = useState(false);
   const [childrenAreHidden, setChildrenAreHidden] = useState(false);
   const [isUpvoting, setIsUpvoting] = useState(false);
@@ -39,7 +40,9 @@ export const Comment = ({
   const [image, setImage] = useState<string>(comment.imageUrl || "");
 
   const { profile: currentProfile, setProfile: setCurrentProfile } = useGlobalInfo();
+  const { currentMember } = useCommunityInfo();
 
+  const router = useRouter();
   const childComments = getReplies(comment.id);
   const commentProfile = comment.member.profile;
 
@@ -133,12 +136,23 @@ export const Comment = ({
   };
 
   return (
-    <div className="flex">
-      {childComments?.length > 0 && !childrenAreHidden && (
+    <div
+      className="flex"
+      onClick={() => {
+        if (!showReplies) {
+          router.push(`/main/communities/${comment.post.communityId}/post/${comment.postId}`);
+        }
+      }}>
+      {childComments?.length > 0 && !childrenAreHidden && showReplies && (
         <button className="bg-none border-l-2 px-0.5 mr-2 hover:border-black outline-none" onClick={() => setChildrenAreHidden(true)} />
       )}
-      <div className="mt-2 w-full">
-        <div className={cn("flex gap-x-1", isDeletingComment && "cursor-not-allowed")}>
+      <div className={cn("w-full", showReplies && "mt-2")} id={comment.id}>
+        <div
+          className={cn(
+            "flex gap-x-1",
+            isDeletingComment && "cursor-not-allowed",
+            !showReplies && "border-2 border-transparent hover:border-black dark:hover:border-[#3c3c3d] px-6 rounded-sm py-2 cursor-pointer"
+          )}>
           {childrenAreHidden && (
             <ChevronDown className="h-8 w-8 cursor-pointer text-gray-500 hover:text-black" onClick={() => setChildrenAreHidden(false)} />
           )}
@@ -150,6 +164,7 @@ export const Comment = ({
             </p>
             {isEditing ? (
               <PostCommentInput
+                memberId={currentMember?.id}
                 setComments={setComments}
                 post={comment.post}
                 type="custom"
@@ -172,10 +187,11 @@ export const Comment = ({
                     className={cn(
                       "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black dark:hover:text-gray-200",
                       hasUpvotedComment && "text-orange-500 font-bold hover:text-orange-700 dark:hover:text-orange-300",
-                      isUpvoting && "bg-gray-200 rounded-sm cursor-default",
+                      isUpvoting && "bg-gray-200 rounded-sm cursor-not-allowed dark:bg-stone-600",
                       isDeletingComment && "cursor-not-allowed"
                     )}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       if (!isUpvoting && !isDeletingComment) votePost("upvote");
                     }}
                   />
@@ -184,25 +200,28 @@ export const Comment = ({
                     className={cn(
                       "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black dark:hover:text-gray-200",
                       hasDownvotedComment && "text-orange-500 font-bold hover:text-orange-700 dark:hover:text-orange-300",
-                      isDownvoting && "bg-gray-200 rounded-sm cursor-default",
+                      isDownvoting && "bg-gray-200 rounded-sm cursor-not-allowed dark:bg-stone-600",
                       isDeletingComment && "cursor-not-allowed"
                     )}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       if (!isDownvoting && !isDeletingComment) votePost("downvote");
                     }}
                   />
                 </div>
 
                 <div className="flex items-center">
-                  <PostFooterItem
-                    Icon={MessageSquare}
-                    className={cn("py-0.5 px-1 rounded-sm", isDeletingComment && "cursor-not-allowed")}
-                    IconClassName="h-5 w-5"
-                    textClassName="text-[12px]"
-                    text="Reply"
-                    onClick={() => setIsReplying(true)}
-                    disabled={isDeletingComment}
-                  />
+                  {showReplies && (
+                    <PostFooterItem
+                      Icon={MessageSquare}
+                      className={cn("py-0.5 px-1 rounded-sm", isDeletingComment && "cursor-not-allowed")}
+                      IconClassName="h-5 w-5"
+                      textClassName="text-[12px]"
+                      text="Reply"
+                      onClick={() => setIsReplying(true)}
+                      disabled={isDeletingComment}
+                    />
+                  )}
                   {isOwner && (
                     <div className="relative">
                       <PostFooterItem
@@ -210,7 +229,10 @@ export const Comment = ({
                         className={cn("py-0.5 px-1 rounded-sm", isDeletingComment && "cursor-not-allowed")}
                         IconClassName="h-4 w-4"
                         textClassName="text-[12px]"
-                        onClick={() => setMoreMenuIsOpen(true)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setMoreMenuIsOpen(true);
+                        }}
                         disabled={isDeletingComment}
                       />
 
@@ -225,14 +247,16 @@ export const Comment = ({
                       )}
                       {moreMenuIsOpen && (
                         <div className="absolute shadow-lg dark:shadow-black py-2 top-8 w-[10rem] bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30">
-                          <PostFooterItemMenuItem
-                            Icon={Pencil}
-                            text="Edit comment"
-                            onClick={() => {
-                              setMoreMenuIsOpen(false);
-                              setIsEditing(true);
-                            }}
-                          />
+                          {showReplies && (
+                            <PostFooterItemMenuItem
+                              Icon={Pencil}
+                              text="Edit comment"
+                              onClick={() => {
+                                setMoreMenuIsOpen(false);
+                                setIsEditing(true);
+                              }}
+                            />
+                          )}
                           <PostFooterItemMenuItem
                             Icon={Trash}
                             text="Delete comment"
@@ -250,6 +274,7 @@ export const Comment = ({
             )}
             {isReplying && (
               <PostCommentInput
+                memberId={currentMember?.id}
                 setComments={setComments}
                 post={comment.post}
                 type="reply"
@@ -260,10 +285,9 @@ export const Comment = ({
             )}
           </div>
         </div>
-        {childComments?.length > 0 && (
+        {childComments?.length > 0 && showReplies && (
           <div>
             <div className={cn("flex", childrenAreHidden && "hidden")}>
-              {/* <button className="bg-none border-l-2 px-0.5 hover:border-black outline-none" onClick={() => setChildrenAreHidden(true)} /> */}
               <div className="pl-[1.5rem] flex-grow space-y-2">
                 <CommentList comments={childComments} getReplies={getReplies} setComments={setComments} />
               </div>
