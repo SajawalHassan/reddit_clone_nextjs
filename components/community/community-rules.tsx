@@ -24,15 +24,18 @@ export const CommunityRules = ({ communityId }: { communityId: string }) => {
   const hasPrivilages = isAdmin || isModerator;
 
   useEffect(() => {
-    if (community) {
+    if (community && community.id === communityId) {
       setRules(community.rules);
+    } else {
+      setCommunity(null);
     }
   }, [community]);
 
   useEffect(() => {
     const getCommunity = async () => {
-      if (community !== null) return;
+      if (community !== null && community.id === communityId) return;
 
+      setCommunity(null);
       setIsLoading(true);
 
       try {

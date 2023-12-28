@@ -37,10 +37,11 @@ export const AboutCommunitiyHomeComponent = ({ communityId, showMoreInfo = false
 
   useEffect(() => {
     const getCommunity = async () => {
-      if (community !== null) {
+      if (community !== null && community.id === communityId) {
         return setDescription(community.description || "");
       }
 
+      setCommunity(null);
       setIsLoading(true);
 
       try {
@@ -68,9 +69,11 @@ export const AboutCommunitiyHomeComponent = ({ communityId, showMoreInfo = false
   }, [community]);
 
   useEffect(() => {
-    if (community) {
+    if (community && community.id === communityId) {
       setDescription(community.description || "");
       setEditingDescription(community.description || "");
+    } else {
+      setCommunity(null);
     }
   }, [community]);
 

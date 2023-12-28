@@ -31,7 +31,7 @@ export const PostAndCommentsHomeComponent = ({ post }: Props) => {
   const getReplies = (parentId: string) => commentsByParentId[parentId];
 
   return (
-    <div className="bg-white dark:bg-[#1a1a1a] py-2">
+    <div className="bg-white dark:bg-[#1a1a1a] py-2 rounded-sm">
       <PostHomeComponent
         post={post}
         className="rounded-sm border-transparent dark:rounded-sm dark:border-transparent"

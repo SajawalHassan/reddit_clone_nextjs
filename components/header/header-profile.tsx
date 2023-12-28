@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Profile } from "@prisma/client";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { ArrowDownCircle, Eye, LogOut, PlusCircle, UserCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { HeaderProfileMenuHeading } from "./header-profile-menu-heading";
@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/seperator";
 import { HeaderProfileMenuItem } from "./header-profile-menu-item";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useClerk } from "@clerk/nextjs";
+import { redirectToSignIn, useClerk } from "@clerk/nextjs";
 import { useModal } from "@/hooks/use-modal-store";
 import { ProfilePicture } from "@/components/profile-picture";
 import { useGlobalInfo } from "@/hooks/use-global-info";
@@ -34,8 +34,9 @@ export const HeaderProfile = () => {
         const response = await axios.get("/api/profile");
 
         setProfile(response.data);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (error.response.status === 401) redirectToSignIn();
+        else console.log(error);
       }
     };
 

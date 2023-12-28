@@ -8,24 +8,46 @@ import { useFeedInfo } from "@/hooks/use-feed-info";
 import { useFeedQuery } from "@/hooks/use-feed-query";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
+import { redirectToSignIn } from "@clerk/nextjs";
+import axios from "axios";
 import { Loader2 } from "lucide-react";
+import qs from "query-string";
 import { useEffect, useMemo, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export const UserOverviewFeed = () => {
+export const UserOverviewFeed = ({ profileId }: { profileId: string }) => {
   const [posts, setPosts] = useState<PostWithMemberWithProfileWithCommunityWithVotes[]>([]);
 
-  const { profile } = useGlobalInfo();
+  const { viewingProfile, setViewingProfile } = useGlobalInfo();
 
-  const query = `feed:community:${profile?.id}`;
+  const query = `feed:user:${viewingProfile?.id}`;
 
   const { setFeedPosts } = useFeedInfo();
   const { data, fetchNextPage, hasNextPage, status, refetch } = useFeedQuery({
     query,
     apiUrl: "/api/users/feed",
-    profileId: profile?.id,
+    profileId: profileId,
     feedType: "hot",
   });
+
+  useEffect(() => {
+    const getViewingProfile = async () => {
+      if (viewingProfile !== null && viewingProfile.id === profileId) return;
+
+      setViewingProfile(null);
+      try {
+        const url = qs.stringifyUrl({ url: "/api/profile/specific", query: { profileId } });
+        const res = await axios.get(url);
+
+        setViewingProfile(res.data);
+      } catch (error: any) {
+        if (error.response.status === 401) redirectToSignIn();
+        else console.log(error);
+      }
+    };
+
+    getViewingProfile();
+  }, []);
 
   useEffect(() => {
     refetch();
@@ -62,7 +84,7 @@ export const UserOverviewFeed = () => {
             <Loader2 className="h-8 w-8 animate-spin" />
           </div>
         }
-        className="mt-2 space-y-2 pb-20">
+        className="space-y-2 pb-20">
         {posts?.map((post: PostWithMemberWithProfileWithCommunityWithVotes) => (
           <PostAndCommentsHomeComponent post={post} />
         ))}

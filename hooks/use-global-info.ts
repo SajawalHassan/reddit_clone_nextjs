@@ -11,8 +11,10 @@ type headerActivePlaceType = {
 interface useGlobalInfoStore {
   setHeaderActivePlace: (newHeaderActivePlace: headerActivePlaceType) => void;
   setProfile: (profile: Profile | null) => void;
+  setViewingProfile: (profile: Profile | null) => void;
   headerActivePlace: headerActivePlaceType;
   profile: Profile | null;
+  viewingProfile: Profile | null;
 }
 
 export const useGlobalInfo = create<useGlobalInfoStore>()(
@@ -22,6 +24,8 @@ export const useGlobalInfo = create<useGlobalInfoStore>()(
       setHeaderActivePlace: (newHeaderActivePlace) => set({ headerActivePlace: newHeaderActivePlace }),
       profile: null,
       setProfile: (profile) => set({ profile }),
+      viewingProfile: null,
+      setViewingProfile: (viewingProfile) => set({ viewingProfile }),
     }),
     { name: "globalInfo" }
   )

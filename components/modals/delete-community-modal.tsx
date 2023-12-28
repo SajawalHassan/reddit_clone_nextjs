@@ -11,6 +11,7 @@ import qs from "query-string";
 import { Profile } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+import { redirectToSignIn } from "@clerk/nextjs";
 
 export const DeleteCommunityModal = () => {
   const { isOpen, type, closeModal, data } = useModal();
@@ -26,8 +27,13 @@ export const DeleteCommunityModal = () => {
     const getProfile = async () => {
       if (profile !== null) return;
 
-      const res = await axios.get("/api/profile");
-      setProfile(res.data);
+      try {
+        const res = await axios.get("/api/profile");
+        setProfile(res.data);
+      } catch (error: any) {
+        if (error.response.status === 401) redirectToSignIn();
+        else console.log(error);
+      }
     };
 
     getProfile();

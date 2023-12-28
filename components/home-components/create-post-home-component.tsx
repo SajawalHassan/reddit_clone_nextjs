@@ -8,6 +8,7 @@ import { IconButton } from "@/components/icon-button";
 import { Image, Link as LinkIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+import { redirectToSignIn } from "@clerk/nextjs";
 
 export const CreatePostHomeComponent = () => {
   const router = useRouter();
@@ -22,8 +23,9 @@ export const CreatePostHomeComponent = () => {
         const response = await axios.get("/api/profile");
 
         setProfile(response.data);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (error.response.status === 401) redirectToSignIn();
+        else console.log(error);
       }
     };
 

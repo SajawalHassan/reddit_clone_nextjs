@@ -10,24 +10,33 @@ interface Props {
   className?: string;
   IconClassName?: string;
   onClick?: (e: MouseEvent) => void;
+  disabled?: boolean;
   content?: string;
 }
 
-export const IconButton = ({ Icon, className, IconClassName, onClick, content = "" }: Props) => {
+export const IconButton = ({ Icon, className, IconClassName, onClick, disabled, content = "" }: Props) => {
   return content ? (
     <ActionTooltip content={content}>
       <button
-        className={cn("p-1.5 rounded-full text-zinc-600 hover:bg-gray-200 dark:hover:bg-stone-800 cursor-pointer", className)}
+        className={cn(
+          "p-1.5 rounded-full text-zinc-600 hover:bg-gray-200 dark:hover:bg-stone-800 cursor-pointer disabled:cursor-not-allowed",
+          className
+        )}
         onClick={onClick}
-        type="button">
+        type="button"
+        disabled={disabled}>
         <Icon className={cn("h-6 w-6", IconClassName)} />
       </button>
     </ActionTooltip>
   ) : (
     <button
-      className={cn("p-1.5 rounded-full text-zinc-600 hover:bg-gray-200 dark:hover:bg-stone-800 cursor-pointer", className)}
+      className={cn(
+        "p-1.5 rounded-full text-zinc-600 hover:bg-gray-200 dark:hover:bg-stone-800 cursor-pointer disabled:cursor-not-allowed",
+        className
+      )}
       onClick={onClick}
-      type="button">
+      type="button"
+      disabled={disabled}>
       <Icon className={cn("h-6 w-6", IconClassName)} />
     </button>
   );

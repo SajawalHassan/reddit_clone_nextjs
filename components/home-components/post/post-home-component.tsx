@@ -14,6 +14,7 @@ import axios from "axios";
 import dynamic from "next/dynamic";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import qs from "query-string";
+import { redirectToSignIn } from "@clerk/nextjs";
 
 const FroalaEditorView = dynamic(
   async () => {
@@ -79,8 +80,13 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
     const getProfile = async () => {
       if (currentProfile !== null) return;
 
-      const response = await axios.get("/api/profile");
-      setCurrentProfile(response.data);
+      try {
+        const response = await axios.get("/api/profile");
+        setCurrentProfile(response.data);
+      } catch (error: any) {
+        if (error.response.status === 401) redirectToSignIn();
+        else console.log(error);
+      }
     };
     getProfile();
   }, []);

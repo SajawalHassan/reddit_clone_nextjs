@@ -13,6 +13,7 @@ import qs from "query-string";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import { useCommunityInfo } from "@/hooks/use-community-info";
 import { useRouter } from "next/navigation";
+import { redirectToSignIn } from "@clerk/nextjs";
 
 const DATE_FORMAT = "d MMM";
 
@@ -54,8 +55,13 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
     const getProfile = async () => {
       if (currentProfile !== null) return;
 
-      const response = await axios.get("/api/profile");
-      setCurrentProfile(response.data);
+      try {
+        const response = await axios.get("/api/profile");
+        setCurrentProfile(response.data);
+      } catch (error: any) {
+        if (error.response.status === 401) redirectToSignIn();
+        else console.log(error);
+      }
     };
     getProfile();
   }, []);
@@ -135,6 +141,8 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
     }
   };
 
+  console.log(`${commentProfile.id}, ${commentProfile.displayName} | ${comment.content}`);
+
   return (
     <div
       className="flex"
@@ -159,7 +167,15 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
           <img src={commentProfile.imageUrl} alt={commentProfile.displayName} className={cn("h-[32px] w-[32px] rounded-full")} />
           <div className="w-full">
             <p className={cn("text-sm font-semibold", isDeletingComment && "text-gray-500")}>
-              {commentProfile.displayName} · {hasEditedComment && <span className="text-xs text-gray-500 italic font-normal">edited</span>}{" "}
+              <span
+                className="hover:underline cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/main/users/${commentProfile.id}`);
+                }}>
+                {commentProfile.displayName}
+              </span>{" "}
+              · {hasEditedComment && <span className="text-xs text-gray-500 italic font-normal">edited</span>}{" "}
               <span className="font-normal text-gray-500 text-[11px]">{format(new Date(comment.createdAt), DATE_FORMAT)}</span>
             </p>
             {isEditing ? (

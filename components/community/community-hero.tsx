@@ -30,11 +30,12 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
 
   const getCommunity = async () => {
     try {
-      if (community !== null) {
+      if (community !== null && community.id === communityId) {
         setBanner(community.bannerUrl || "");
         setCommunityImage(community.imageUrl);
       }
 
+      setCommunity(null);
       const url = qs.stringifyUrl({ url: "/api/communities/specific", query: { communityId } });
 
       const response = await axios.get(url);
@@ -57,11 +58,13 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
   }, []);
 
   useEffect(() => {
-    if (community) {
+    if (community && community.id === communityId) {
       setHeaderActivePlace({ text: community.uniqueName, imageUrl: community.imageUrl });
 
       setBanner(community.bannerUrl || "");
       setCommunityImage(community.imageUrl || "");
+    } else {
+      setCommunity(null);
     }
   }, [community]);
 
