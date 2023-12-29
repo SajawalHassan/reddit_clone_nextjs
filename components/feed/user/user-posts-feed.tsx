@@ -12,15 +12,16 @@ import { redirectToSignIn } from "@clerk/nextjs";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import qs from "query-string";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { NoPostsUser } from "../../user/no-posts-user";
 
-export const UserOverviewFeed = ({ profileId }: { profileId: string }) => {
+export const UserPostsFeed = ({ profileId }: { profileId: string }) => {
   const [posts, setPosts] = useState<PostWithMemberWithProfileWithCommunityWithVotes[]>([]);
 
   const { viewingProfile, setViewingProfile } = useGlobalInfo();
 
-  const query = `feed:user:${viewingProfile?.id}`;
+  const query = `feed:user:${viewingProfile?.id}:posts`;
 
   const { setFeedPosts } = useFeedInfo();
   const { data, fetchNextPage, hasNextPage, status, refetch } = useFeedQuery({
@@ -75,20 +76,24 @@ export const UserOverviewFeed = ({ profileId }: { profileId: string }) => {
 
   return (
     <div className="home-component-container">
-      <InfiniteScroll
-        dataLength={posts ? posts.length : 0}
-        next={() => fetchNextPage()}
-        hasMore={hasNextPage ? true : false}
-        loader={
-          <div className="w-full flex items-center justify-center p-10">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        }
-        className="space-y-2 pb-20">
-        {posts?.map((post: PostWithMemberWithProfileWithCommunityWithVotes) => (
-          <PostAndCommentsHomeComponent post={post} />
-        ))}
-      </InfiniteScroll>
+      {posts?.length > 0 ? (
+        <InfiniteScroll
+          dataLength={posts ? posts.length : 0}
+          next={() => fetchNextPage()}
+          hasMore={hasNextPage ? true : false}
+          loader={
+            <div className="w-full flex items-center justify-center p-10">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          }
+          className="space-y-2 pb-20">
+          {posts?.map((post: PostWithMemberWithProfileWithCommunityWithVotes) => (
+            <PostHomeComponent post={post} />
+          ))}
+        </InfiniteScroll>
+      ) : (
+        <NoPostsUser text="This user has not created any posts" />
+      )}
     </div>
   );
 };

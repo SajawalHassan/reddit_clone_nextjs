@@ -72,7 +72,11 @@ export const HeaderProfile = () => {
         <div className="absolute right-0 w-[15rem] bg-white dark:bg-[#1A1A1B] dark:text-white border border-zinc-200 dark:border-zinc-800 py-5 z-30 space-y-2">
           <HeaderProfileMenuHeading Icon={UserCircle} text="My Stuff" />
           <div>
-            <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} text="Profile" onClick={() => pushToUrl(`/main/users/${profile?.id}`)} />
+            <HeaderProfileMenuItem
+              setMenuIsOpen={setMenuIsOpen}
+              text="Profile"
+              onClick={() => pushToUrl(`/main/users/${profile?.id}?overview=true`)}
+            />
             <HeaderProfileMenuItem
               setMenuIsOpen={setMenuIsOpen}
               text="User Settings"

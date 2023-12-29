@@ -60,7 +60,7 @@ export const HeaderCommunities = () => {
             <img src={headerActivePlace.imageUrl} alt="" className="rounded-full h-6 w-6" />
           )}
           <p className="hidden lg:flex text-sm font-bold">
-            {isOnCommunity ? "r/" : isOnCommunity && "u/"}
+            {isOnCommunity ? "r/" : isOnUser && "u/"}
             {headerActivePlace.text}
           </p>
         </div>

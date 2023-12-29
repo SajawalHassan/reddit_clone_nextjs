@@ -14,6 +14,8 @@ import { useGlobalInfo } from "@/hooks/use-global-info";
 import { useCommunityInfo } from "@/hooks/use-community-info";
 import { useRouter } from "next/navigation";
 import { redirectToSignIn } from "@clerk/nextjs";
+import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 
 const DATE_FORMAT = "d MMM";
 
@@ -40,12 +42,13 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
   const [content, setContent] = useState<string>(comment.content);
   const [image, setImage] = useState<string>(comment.imageUrl || "");
 
-  const { profile: currentProfile, setProfile: setCurrentProfile } = useGlobalInfo();
+  const { profile: currentProfile, setProfile: setCurrentProfile, viewingProfile } = useGlobalInfo();
   const { currentMember } = useCommunityInfo();
 
   const router = useRouter();
   const childComments = getReplies(comment.id);
   const commentProfile = comment.member.profile;
+  const queryClient = useQueryClient();
 
   const hasUpvotedComment = activeVote === "upvote";
   const hasDownvotedComment = activeVote === "downvote";
@@ -141,8 +144,6 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
     }
   };
 
-  console.log(`${commentProfile.id}, ${commentProfile.displayName} | ${comment.content}`);
-
   return (
     <div
       className="flex"
@@ -167,14 +168,15 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
           <img src={commentProfile.imageUrl} alt={commentProfile.displayName} className={cn("h-[32px] w-[32px] rounded-full")} />
           <div className="w-full">
             <p className={cn("text-sm font-semibold", isDeletingComment && "text-gray-500")}>
-              <span
+              <Link
+                href={`/main/users/${commentProfile.id}?overview=true`}
                 className="hover:underline cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
-                  router.push(`/main/users/${commentProfile.id}`);
+                  queryClient.setQueryData([`feed:user:${viewingProfile?.id}:overview`], []);
                 }}>
                 {commentProfile.displayName}
-              </span>{" "}
+              </Link>{" "}
               · {hasEditedComment && <span className="text-xs text-gray-500 italic font-normal">edited</span>}{" "}
               <span className="font-normal text-gray-500 text-[11px]">{format(new Date(comment.createdAt), DATE_FORMAT)}</span>
             </p>

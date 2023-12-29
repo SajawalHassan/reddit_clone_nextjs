@@ -6,16 +6,17 @@ import { useGlobalInfo } from "@/hooks/use-global-info";
 
 interface Props {
   post: PostWithMemberWithProfileWithCommunityWithVotes;
+  showPost?: boolean;
 }
 
-export const PostAndCommentsHomeComponent = ({ post }: Props) => {
-  const { profile } = useGlobalInfo();
+export const PostAndCommentsHomeComponent = ({ post, showPost = true }: Props) => {
+  const { viewingProfile } = useGlobalInfo();
 
   const [comments, setComments] = useState<CommentWithMemberWithProfileWithVotesWithPost[]>(post.comments);
 
   useEffect(() => {
-    if (profile) setComments(post.comments.filter((comment) => comment.member.profileId === profile.id));
-  }, [profile]);
+    if (viewingProfile) setComments(post.comments.filter((comment) => comment.member.profileId === viewingProfile.id));
+  }, [viewingProfile]);
 
   const commentsByParentId = useMemo(() => {
     const group: any = {};
@@ -32,11 +33,13 @@ export const PostAndCommentsHomeComponent = ({ post }: Props) => {
 
   return (
     <div className="bg-white dark:bg-[#1a1a1a] py-2 rounded-sm">
-      <PostHomeComponent
-        post={post}
-        className="rounded-sm border-transparent dark:rounded-sm dark:border-transparent"
-        votesClassName="bg-transparent dark:bg-transparent"
-      />
+      {showPost && (
+        <PostHomeComponent
+          post={post}
+          className="rounded-sm border-transparent dark:rounded-sm dark:border-transparent"
+          votesClassName="bg-transparent dark:bg-transparent"
+        />
+      )}
       <div className="mx-2">
         <CommentList comments={rootComments} getReplies={getReplies} setComments={setComments} max={3} showReplies={false} />
       </div>

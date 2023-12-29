@@ -17,7 +17,7 @@ export const ProfilePicture = ({ src, profileId, className }: Props) => {
       src={src as string}
       alt="profile"
       className={cn("h-10 w-10 rounded-full cursor-pointer bg-gray-700", className)}
-      onClick={() => router.push(`/main/users/${profileId}`)}
+      onClick={() => router.push(`/main/users/${profileId}?overview=true`)}
     />
   );
 };

@@ -28,7 +28,7 @@ export const HeaderSearchItem = ({ type, name, imageUrl, members, karma, communi
     setHeaderActivePlace({ text: name, imageUrl });
 
     if (type === "community") router.push(`/main/communities/${communityId}`);
-    if (type === "user") router.push(`/main/users/${profileId}`);
+    if (type === "user") router.push(`/main/users/${profileId}?overview=true`);
 
     setInputIsFocused(false);
   };

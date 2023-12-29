@@ -224,7 +224,7 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
                 <span className="hidden xs:block">Posted by</span>{" "}
                 <span
                   className="hover:underline cursor-pointer"
-                  onClick={(e: MouseEvent) => pushToUrl(e, `/main/users/${post.member.profileId}`, "user")}>
+                  onClick={(e: MouseEvent) => pushToUrl(e, `/main/users/${post.member.profileId}?overview=true`, "user")}>
                   u/{post.member.profile.displayName}
                 </span>{" "}
                 on

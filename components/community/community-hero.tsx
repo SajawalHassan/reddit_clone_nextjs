@@ -33,6 +33,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
       if (community !== null && community.id === communityId) {
         setBanner(community.bannerUrl || "");
         setCommunityImage(community.imageUrl);
+        return;
       }
 
       setCommunity(null);

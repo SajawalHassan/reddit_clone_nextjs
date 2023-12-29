@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import qs from "query-string";
+import { Dispatch, SetStateAction } from "react";
 
 interface Props {
   query: string;
@@ -11,21 +12,25 @@ interface Props {
 
 export const useFeedQuery = ({ query, apiUrl, communityId, feedType, profileId }: Props) => {
   const fetchCommunities = async ({ pageParam = undefined }) => {
-    const url = qs.stringifyUrl(
-      {
-        url: apiUrl,
-        query: {
-          cursor: pageParam,
-          communityId,
-          feedType,
-          profileId,
+    try {
+      const url = qs.stringifyUrl(
+        {
+          url: apiUrl,
+          query: {
+            cursor: pageParam,
+            communityId,
+            feedType,
+            profileId,
+          },
         },
-      },
-      { skipNull: true }
-    );
+        { skipNull: true }
+      );
 
-    const res = await fetch(url);
-    return res.json();
+      const res = await fetch(url);
+      return res.json();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const { data, fetchNextPage, hasNextPage, status, isFetching, refetch } = useInfiniteQuery({
