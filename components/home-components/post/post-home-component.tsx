@@ -359,6 +359,3 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
     </div>
   );
 };
-
-// comp 1 (number) > comp 2 > comp 3 > comp 4
-// number

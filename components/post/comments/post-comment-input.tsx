@@ -1,6 +1,5 @@
 import TextareaAutosize from "react-textarea-autosize";
 import axios from "axios";
-
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CommentWithMemberWithProfileWithVotesWithPost, PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
