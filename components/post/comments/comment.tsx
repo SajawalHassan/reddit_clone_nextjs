@@ -153,7 +153,7 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
         }
       }}>
       {childComments?.length > 0 && !childrenAreHidden && showReplies && (
-        <button className="bg-none border-l-2 px-0.5 mr-2 hover:border-black outline-none" onClick={() => setChildrenAreHidden(true)} />
+        <button className="bg-none border-l-2 pr-1 sm:pr-1.5 hover:border-black outline-none" onClick={() => setChildrenAreHidden(true)} />
       )}
       <div className={cn("w-full", showReplies && "mt-2")} id={comment.id}>
         <div
@@ -165,9 +165,13 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
           {childrenAreHidden && (
             <ChevronDown className="h-8 w-8 cursor-pointer text-gray-500 hover:text-black" onClick={() => setChildrenAreHidden(false)} />
           )}
-          <img src={commentProfile.imageUrl} alt={commentProfile.displayName} className={cn("h-[32px] w-[32px] rounded-full")} />
+          <img
+            src={commentProfile.imageUrl}
+            alt={commentProfile.displayName}
+            className={cn("h-[24px] w-[24px] sm:h-[32px] sm:w-[32px] rounded-full")}
+          />
           <div className="w-full">
-            <p className={cn("text-sm font-semibold", isDeletingComment && "text-gray-500")}>
+            <p className={cn("text-xs sm:text-sm font-semibold truncate", isDeletingComment && "text-gray-500")}>
               <Link
                 href={`/main/users/${commentProfile.id}?overview=true`}
                 className="hover:underline cursor-pointer"
@@ -194,7 +198,7 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
                 setEditedComment={setEditedContent}
               />
             ) : content ? (
-              <p className={cn("text-[14px] leading-[21px] whitespace-pre-wrap break-all", isDeletingComment && "text-gray-500")}>{content}</p>
+              <p className={cn("text-[14px] leading-[21px] break-all", isDeletingComment && "text-gray-500")}>{content}</p>
             ) : (
               <img src={image} className="py-2" />
             )}
@@ -306,7 +310,7 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
         {childComments?.length > 0 && showReplies && (
           <div>
             <div className={cn("flex", childrenAreHidden && "hidden")}>
-              <div className="pl-[1.5rem] flex-grow space-y-2">
+              <div className="pl-3 flex-grow space-y-2">
                 <CommentList comments={childComments} getReplies={getReplies} setComments={setComments} />
               </div>
             </div>

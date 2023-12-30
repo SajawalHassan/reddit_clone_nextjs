@@ -19,7 +19,7 @@ export const PostFooterItem = ({ Icon, text, onClick, className, IconClassName, 
       onClick={onClick}
       disabled={disabled}>
       <Icon className={cn("font-light h-5 w-5 text-zinc-500 dark:text-zinc-400", IconClassName)} />
-      {text && <p className={cn("text-xs font-semibold text-zinc-500 dark:text-zinc-400", textClassName)}>{text}</p>}
+      {text && <p className={cn("text-xs font-semibold text-zinc-500 dark:text-zinc-400 hidden sm:block", textClassName)}>{text}</p>}
     </button>
   );
 };
