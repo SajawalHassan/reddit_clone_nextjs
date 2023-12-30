@@ -1,20 +1,20 @@
 "use client";
 
+import axios from "axios";
+import Link from "next/link";
+import qs from "query-string";
+
 import { uploadFile } from "@/components/file-uploader";
 import { IconButton } from "@/components/icon-button";
 import { AboutCommunitySkeleton } from "@/components/skeletons/about-community-skeleton";
 import { Button } from "@/components/ui/button";
-import { useCommunityInfo } from "@/hooks/use-community-info";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import { useProfileInfo } from "@/hooks/use-profile-info";
 import { cn } from "@/lib/utils";
 import { redirectToSignIn } from "@clerk/nextjs";
-import axios from "axios";
 import { format } from "date-fns";
 import { Cake, Camera, Loader2, Settings, Star, X } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import qs from "query-string";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 const DATE_FORMAT = "yyyy";

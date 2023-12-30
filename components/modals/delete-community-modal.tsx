@@ -1,16 +1,14 @@
 "use client";
 
 import axios from "axios";
+import qs from "query-string";
 
 import { useModal } from "@/hooks/use-modal-store";
 
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import qs from "query-string";
-import { Profile } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { useGlobalInfo } from "@/hooks/use-global-info";
 import { redirectToSignIn } from "@clerk/nextjs";
 import { useProfileInfo } from "@/hooks/use-profile-info";
 

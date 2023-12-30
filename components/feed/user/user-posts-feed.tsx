@@ -1,20 +1,18 @@
 "use client";
 
-import { PostAndCommentsHomeComponent } from "@/components/home-components/post/post-and-comments-home-component";
+import axios from "axios";
+import qs from "query-string";
+import InfiniteScroll from "react-infinite-scroll-component";
+
 import { PostHomeComponent } from "@/components/home-components/post/post-home-component";
-import { CommentList } from "@/components/post/comments/comment-list";
 import { FeedLoadingSkeleton } from "@/components/skeletons/feed-loading-skeleton";
 import { useFeedInfo } from "@/hooks/use-feed-info";
 import { useFeedQuery } from "@/hooks/use-feed-query";
-import { useGlobalInfo } from "@/hooks/use-global-info";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { redirectToSignIn } from "@clerk/nextjs";
-import axios from "axios";
 import { Loader2 } from "lucide-react";
-import qs from "query-string";
 import { useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { NoPostsUser } from "../../user/no-posts-user";
+import { NoPostsUser } from "@/components/user/no-posts-user";
 import { useProfileInfo } from "@/hooks/use-profile-info";
 
 export const UserPostsFeed = ({ profileId }: { profileId: string }) => {

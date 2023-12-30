@@ -1,6 +1,6 @@
+import axios from "axios";
+
 import { cn } from "@/lib/utils";
-import { Profile } from "@prisma/client";
-import axios, { AxiosError } from "axios";
 import { ArrowDownCircle, Eye, LogOut, PlusCircle, UserCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { HeaderProfileMenuHeading } from "./header-profile-menu-heading";

@@ -4,7 +4,7 @@ import axios from "axios";
 import qs from "query-string";
 import { MemberRole } from "@prisma/client";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { IconButton } from "../icon-button";
+import { IconButton } from "@/components/icon-button";
 import { Camera, Pencil, Trash, X } from "lucide-react";
 import { ActionLoading } from "@/components/action-loading";
 import { useModal } from "@/hooks/use-modal-store";
@@ -166,11 +166,15 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
             )}
           </div>
         )}
-        <div className="bg-white dark:bg-[#1A1A1B] flex justify-center min-h-[5rem]">
+        <div className="bg-white dark:bg-[#1A1A1B] flex justify-center min-h-[5rem] pb-2">
           {community && (
             <div className="lg:max-w-[984px] w-full pl-2 sm:pl-10 lg:pl-0 relative flex gap-x-2 mt-1.5">
               <div className="relative -top-5">
-                <img src={communityImage} alt={community.uniqueName} className="h-[5rem] w-[5rem] rounded-full border-4 border-white" />
+                <img
+                  src={communityImage}
+                  alt={community.uniqueName}
+                  className="min-h-[5rem] min-w-[5rem] max-h-[5rem] max-w-[5rem] rounded-full border-4 border-white"
+                />
                 {isAdmin && (
                   <IconButton
                     Icon={Camera}
@@ -182,7 +186,7 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
               </div>
               <div>
                 <div className="md:flex items-center gap-x-2 h-max">
-                  <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold">{community.name}</p>
+                  <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold truncate">{community.name}</p>
                   {!isAdmin ? (
                     hasJoinedCommunity ? (
                       <div
@@ -201,19 +205,19 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
                   ) : (
                     <div className="flex items-center gap-x-2">
                       <button
-                        className="hidden lg:block px-5 py-1 text-sm rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer font-bold"
+                        className="hidden lg:block px-5 py-1 text-sm rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer font-bold truncate"
                         onClick={() => openModal("editCommunity", { community })}>
                         Edit community
                       </button>
                       <button
-                        className="hidden lg:block px-5 py-1 text-sm rounded-full bg-red-500 text-white hover:bg-red-400 cursor-pointer font-bold"
+                        className="hidden lg:block px-5 py-1 text-sm rounded-full bg-red-500 text-white hover:bg-red-400 cursor-pointer font-bold truncate"
                         onClick={() => openModal("deleteCommunity", { community })}>
                         Delete community
                       </button>
                     </div>
                   )}
                 </div>
-                <div className="flex items-center gap-x-2 mt-1">
+                <div className="flex gap-x-2 mt-1">
                   <p className="font-semibold text-sm text-[#818181]">r/{community.uniqueName}</p>
                   {!isAdmin ? (
                     hasJoinedCommunity ? (
@@ -233,14 +237,14 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
                   ) : (
                     <div className="flex items-center gap-x-2">
                       <button
-                        className="lg:hidden p-1 sm:p-1.5 text-[11px] rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer font-bold"
+                        className="lg:hidden py-0.5 px-2 sm:py-1 text-[11px] rounded-full bg-black dark:bg-gray-300 dark:text-[#1A1A1B] dark:hover:opacity-90 text-white hover:bg-zinc-800 cursor-pointer font-bold"
                         onClick={() => openModal("editCommunity", { community })}>
-                        <Pencil className="h-4 w-4" />
+                        Edit
                       </button>
                       <button
-                        className="lg:hidden p-1 sm:p-1.5 text-[11px] rounded-full bg-red-500 text-white hover:bg-red-400 cursor-pointer font-bold"
+                        className="lg:hidden py-0.5 px-2 sm:py-1 text-[11px] rounded-full bg-red-500 text-white hover:bg-red-400 cursor-pointer font-bold"
                         onClick={() => openModal("editCommunity", { community })}>
-                        <Trash className="h-4 w-4" />
+                        Delete
                       </button>
                     </div>
                   )}

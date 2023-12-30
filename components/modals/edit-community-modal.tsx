@@ -9,7 +9,6 @@ import { Separator } from "@/components/ui/seperator";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { CommunityTypeButton } from "@/components/community-type-button";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { createCommunityFormSchema } from "@/schemas/community-schema";
@@ -125,57 +124,6 @@ export const EditCommunityModal = () => {
                   />
                 </div>
               </div>
-            </div>
-
-            <div>
-              <p className="font-semibold text-lg">Community Type</p>
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <div className="flex w-full items-center gap-x-2 mt-2">
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <CommunityTypeButton
-                          Icon={User2}
-                          text="Public"
-                          tooltipContent="Anyone can view, post, and comment to this community"
-                          isSelected={field.value === "PUBLIC"}
-                          onChange={() => field.onChange(CommunityType.PUBLIC.toString())}
-                          value={field.value}
-                          isLoading={isLoading}
-                        />
-                      </FormControl>
-                    </FormItem>
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <CommunityTypeButton
-                          Icon={Eye}
-                          text="Restricted"
-                          tooltipContent="Anyone can view this community, but only approved users can post"
-                          isSelected={(field.value as string) === "RESTRICTED"}
-                          onChange={() => field.onChange(CommunityType.RESTRICTED.toString())}
-                          value={field.value}
-                          isLoading={isLoading}
-                        />
-                      </FormControl>
-                    </FormItem>
-                    <FormItem className="w-full">
-                      <FormControl>
-                        <CommunityTypeButton
-                          Icon={Lock}
-                          text="Private"
-                          tooltipContent="Only approved users can view and submit to this community"
-                          isSelected={(field.value as string) === "PRIVATE"}
-                          onChange={() => field.onChange(CommunityType.PRIVATE.toString())}
-                          value={field.value}
-                          isLoading={isLoading}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  </div>
-                )}
-              />
             </div>
 
             <DialogFooter>

@@ -2,7 +2,6 @@ import { CommentWithMemberWithProfileWithVotesWithPost, PostWithMemberWithProfil
 import { PostHomeComponent } from "./post-home-component";
 import { CommentList } from "@/components/post/comments/comment-list";
 import { useEffect, useMemo, useState } from "react";
-import { useGlobalInfo } from "@/hooks/use-global-info";
 import { useProfileInfo } from "@/hooks/use-profile-info";
 
 interface Props {
@@ -31,6 +30,8 @@ export const PostAndCommentsHomeComponent = ({ post, showPost = true }: Props) =
 
   const rootComments = commentsByParentId[null!];
   const getReplies = (parentId: string) => commentsByParentId[parentId];
+
+  if (!showPost && post.comments.length < 1) return;
 
   return (
     <div className="bg-white dark:bg-[#1a1a1a] py-2 rounded-sm">

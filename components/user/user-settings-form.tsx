@@ -1,21 +1,22 @@
 "use client";
 
+import * as z from "zod";
+import TextareaAutosize from "react-textarea-autosize";
+import axios from "axios";
+
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Profile } from "@prisma/client";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Separator } from "@/components/ui/seperator";
 import { Input } from "@/components/ui/input";
-import TextareaAutosize from "react-textarea-autosize";
-import { FileUploader, uploadFile } from "../file-uploader";
+import { FileUploader, uploadFile } from "@/components/file-uploader";
 import { Camera, Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { IconButton } from "../icon-button";
-import axios from "axios";
+import { IconButton } from "@/components/icon-button";
 import { useGlobalInfo } from "@/hooks/use-global-info";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useProfileInfo } from "@/hooks/use-profile-info";
 
 const formSchema = z.object({

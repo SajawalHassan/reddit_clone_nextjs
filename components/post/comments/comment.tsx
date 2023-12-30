@@ -1,3 +1,7 @@
+import axios from "axios";
+import qs from "query-string";
+import Link from "next/link";
+
 import { CommentWithMemberWithProfileWithVotesWithPost } from "@/types";
 import { CommentList } from "./comment-list";
 import { cn } from "@/lib/utils";
@@ -6,15 +10,10 @@ import { ArrowDownCircle, ArrowUpCircle, ChevronDown, MessageSquare, MoreVertica
 import { FormEvent, MouseEvent, useEffect, useState } from "react";
 import { PostFooterItem } from "@/components/post/post-footer-item";
 import { PostCommentInput } from "./post-comment-input";
-import axios from "axios";
-import { Profile } from "@prisma/client";
 import { PostFooterItemMenuItem } from "@/components/post/post-footer-item-menu-item";
-import qs from "query-string";
-import { useGlobalInfo } from "@/hooks/use-global-info";
 import { useCommunityInfo } from "@/hooks/use-community-info";
 import { useRouter } from "next/navigation";
 import { redirectToSignIn } from "@clerk/nextjs";
-import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { useProfileInfo } from "@/hooks/use-profile-info";
 

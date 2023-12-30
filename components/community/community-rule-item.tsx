@@ -1,16 +1,16 @@
 "use client";
 
+import axios from "axios";
+import qs from "query-string";
+
 import { CommunityRule } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import { IconButton } from "@/components/icon-button";
 import { Pencil, Trash } from "lucide-react";
 import { useState } from "react";
 import { RuleInput } from "./rule-input";
-import axios from "axios";
-import qs from "query-string";
 import { Separator } from "@/components/ui/seperator";
 import { useCommunityInfo } from "@/hooks/use-community-info";
-import { useGlobalInfo } from "@/hooks/use-global-info";
 
 interface Props {
   rule: CommunityRule;

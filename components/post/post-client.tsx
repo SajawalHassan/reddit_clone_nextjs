@@ -1,8 +1,10 @@
 "use client";
-import { PostWithCommentsWithCommunity } from "@/types";
-import { useEffect, useState } from "react";
+
 import axios from "axios";
 import qs from "query-string";
+
+import { PostWithCommentsWithCommunity } from "@/types";
+import { useEffect, useState } from "react";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 
 export const PostClient = ({ postId }: { postId: string }) => {

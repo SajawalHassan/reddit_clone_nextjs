@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/seperator";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+
 import Link from "next/link";
 import qs from "query-string";
 import axios from "axios";
@@ -63,8 +64,8 @@ export const RecentPosts = () => {
                   </div>
                 )}
               </div>
-              <div className="flex flex-col justify-between pb-0.5 truncate">
-                <p className="font-semibold whitespace-pre-wrap group-hover:underline text-sm">{post.title}</p>
+              <div className="flex flex-col justify-between pb-0.5">
+                <p className="font-semibold group-hover:underline text-sm line-clamp-2">{post.title}</p>
                 <p className="text-sm text-gray-500">
                   {formatter.format(post.comments.length)} comments · {format(new Date(post.createdAt), DATE_FORMAT)}
                 </p>

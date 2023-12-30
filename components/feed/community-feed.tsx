@@ -1,6 +1,7 @@
 "use client";
 
 import InfiniteScroll from "react-infinite-scroll-component";
+
 import { useFeedQuery } from "@/hooks/use-feed-query";
 import { Loader2 } from "lucide-react";
 import { PostHomeComponent } from "@/components/home-components/post/post-home-component";

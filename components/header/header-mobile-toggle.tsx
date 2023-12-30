@@ -1,10 +1,11 @@
 "use client";
 
+import axios from "axios";
+
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { HeaderCommunitiesMenu } from "./header-communities-menu";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Community } from "@prisma/client";
 
 export const HeaderMobileToggle = () => {

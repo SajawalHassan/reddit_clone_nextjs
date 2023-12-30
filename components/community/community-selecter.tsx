@@ -1,11 +1,12 @@
 "use client";
 
+import axios from "axios";
+
 import { Community } from "@prisma/client";
 import { ArrowDownCircle, CircleDashed, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CommunitiesSelectionSearch } from "@/components/community/communities-search";
 import { CommunitySelectionOption } from "./community-selection-option";
-import axios from "axios";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -74,7 +75,7 @@ export const CommunitySelecter = ({ value, setValue, preSelectedCommunityId }: P
 
       {menuIsOpen && <div className="z-20 fixed inset-0 h-full w-full" onClick={() => setMenuIsOpen(false)} />}
       {menuIsOpen && (
-        <div className="absolute w-full max-w-[20rem] py-2 space-y-3 bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30">
+        <div className="absolute w-full max-w-[20rem] max-h-[25rem] overflow-y-auto py-2 space-y-3 bg-white dark:bg-[#1A1A1B] dark:text-white border-zinc-200 dark:border-zinc-800 z-30">
           <div className="flex flex-col items-center mx-5">
             <CommunitiesSelectionSearch setCommunities={setFilteredCommunities} allCommunities={allCommunities} />
           </div>

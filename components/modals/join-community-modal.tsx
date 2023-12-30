@@ -3,9 +3,8 @@
 import axios from "axios";
 
 import { useModal } from "@/hooks/use-modal-store";
-
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCommunityInfo } from "@/hooks/use-community-info";

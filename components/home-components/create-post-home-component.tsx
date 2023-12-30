@@ -1,13 +1,13 @@
 "use client";
 
+import axios from "axios";
+
 import { Input } from "@/components/ui/input";
 import { ProfilePicture } from "@/components/profile-picture";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect } from "react";
 import { IconButton } from "@/components/icon-button";
 import { Image, Link as LinkIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useGlobalInfo } from "@/hooks/use-global-info";
 import { redirectToSignIn } from "@clerk/nextjs";
 import { useProfileInfo } from "@/hooks/use-profile-info";
 

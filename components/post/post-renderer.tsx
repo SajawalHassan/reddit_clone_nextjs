@@ -1,12 +1,13 @@
 "use client";
 
-import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import axios from "axios";
 import qs from "query-string";
+
+import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
 import { useEffect, useState } from "react";
-import { AboutCommunitiyHomeComponent } from "../home-components/about-community-home-component";
-import { CommunityRules } from "../community/community-rules";
-import { PostHomeComponent } from "../home-components/post/post-home-component";
+import { AboutCommunitiyHomeComponent } from "@/components/home-components/about-community-home-component";
+import { CommunityRules } from "@/components/community/community-rules";
+import { PostHomeComponent } from "@/components/home-components/post/post-home-component";
 import { Image, Link, Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PostSkeleton } from "@/components/skeletons/post-skeleton";
@@ -59,21 +60,21 @@ export const PostRenderer = ({ postId, communityId }: { postId: string; communit
         {post && (
           <div className="bg-black py-2 px-2 text-white flex justify-center">
             <div className="w-full max-w-[741px] xl:max-w-[1077px] flex items-center justify-between">
-              <div className="flex items-center gap-x-2">
+              <div className="flex items-center gap-x-2 max-w-[90%]">
                 {post.content ? (
                   <div className="border p-1 rounded-sm">
-                    <Menu className="text-white h-4 w-4" />
+                    <Menu className="text-white min-h-4 min-w-4" />
                   </div>
                 ) : post.imageUrl ? (
-                  <Image className="text-white h-5 w-5" />
+                  <Image className="text-white min-h-5 min-w-5" />
                 ) : post.link ? (
-                  <Link className="text-white h-5 w-5" />
+                  <Link className="text-white min-h-5 min-w-5" />
                 ) : (
                   <div className="border p-1 rounded-sm">
                     <Menu className="text-white h-4 w-4" />
                   </div>
                 )}
-                <p className="font-semibold">{post.title}</p>
+                <p className="font-semibold truncate">{post.title}</p>
               </div>
               <div className="flex items-center gap-x-1 cursor-pointer" onClick={() => router.back()}>
                 <X className="h-5 w-5" />

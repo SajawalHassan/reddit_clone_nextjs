@@ -1,8 +1,9 @@
+import axios from "axios";
+import qs from "query-string";
+
 import { Loader2, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ChangeEvent, useState } from "react";
-import axios from "axios";
-import qs from "query-string";
 import { Profile } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import { HeaderSearchItem } from "./header-search-item";

@@ -1,14 +1,15 @@
 "use client";
 
+import axios from "axios";
+import qs from "query-string";
+
 import { ArrowDownCircle, ArrowUpCircle, Plus } from "lucide-react";
-import { IconButton } from "../icon-button";
-import { Button } from "../ui/button";
+import { IconButton } from "@/components/icon-button";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Member, MemberRole } from "@prisma/client";
-import axios from "axios";
-import qs from "query-string";
-import { FeedLoadingSkeleton } from "../skeletons/feed-loading-skeleton";
+import { FeedLoadingSkeleton } from "@/components/skeletons/feed-loading-skeleton";
 import { useModal } from "@/hooks/use-modal-store";
 import { useCommunityInfo } from "@/hooks/use-community-info";
 

@@ -13,6 +13,13 @@ import * as z from "zod";
 
 import "froala-editor/css/froala_editor.pkgd.css";
 import "froala-editor/css/themes/dark.min.css";
+import "froala-editor/js/plugins/align.min.js";
+import "froala-editor/js/plugins/link.min.js";
+import "froala-editor/js/plugins/markdown.min.js";
+import "froala-editor/js/plugins/quote.min.js";
+import "froala-editor/js/plugins/emoticons.min.js";
+import "froala-editor/js/plugins/font_size.min.js";
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { PostTypeItem } from "./post-type-item";
 import { FileUploader } from "@/components/file-uploader";
@@ -149,8 +156,24 @@ export const CreatePostForm = () => {
                         config={{
                           toolbarButtons: {
                             moreText: {
-                              buttons: ["bold", "italic", "underline", "strikeThrough", "subscript", "superscript"],
-                              moreParagraph: { buttons: ["alignLeft", "alignCenter", "alignRight", "quote"] },
+                              buttons: [
+                                "bold",
+                                "italic",
+                                "underline",
+                                "strikeThrough",
+                                "textColor",
+                                "backgroundColor",
+                                "clearFormatting",
+                                "fontSize",
+                              ],
+                            },
+
+                            moreParagraph: {
+                              buttons: ["alignLeft", "alignCenter", "alignRight", "alignJustify", "outdent", "indent", "quote"],
+                            },
+
+                            moreRich: {
+                              buttons: ["insertLink", "emoticons", "specialCharacters", "markdown"],
                             },
                           },
                         }}

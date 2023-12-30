@@ -8,12 +8,13 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { MouseEvent, useEffect, useState } from "react";
 import { PostFooterItem } from "@/components/post/post-footer-item";
-import { PostFooterItemMenuItem } from "../../post/post-footer-item-menu-item";
+import { PostFooterItemMenuItem } from "@/components/post/post-footer-item-menu-item";
 
 import axios from "axios";
 import dynamic from "next/dynamic";
-import { useGlobalInfo } from "@/hooks/use-global-info";
 import qs from "query-string";
+
+import { useGlobalInfo } from "@/hooks/use-global-info";
 import { redirectToSignIn } from "@clerk/nextjs";
 import { useProfileInfo } from "@/hooks/use-profile-info";
 
@@ -249,7 +250,9 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
                         </p>
                       </div>
                     ) : (
-                      <FroalaEditorView model={post.content} />
+                      <div className={isOnPostPage ? "" : "max-h-[45rem] overflow-y-auto"}>
+                        <FroalaEditorView model={post.content} />
+                      </div>
                     )}
                   </div>
                 )}

@@ -1,7 +1,8 @@
+import axios from "axios";
+
 import { Community } from "@prisma/client";
 import { ArrowDownCircle, Home, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { cn } from "@/lib/utils";
 import { HeaderCommunitiesMenu } from "./header-communities-menu";
 import { useGlobalInfo } from "@/hooks/use-global-info";

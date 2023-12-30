@@ -1,5 +1,5 @@
 import { ArrowDownCircle, ArrowUpCircle } from "lucide-react";
-import { IconButton } from "../icon-button";
+import { IconButton } from "@/components/icon-button";
 
 export const NoPostsUser = ({ text }: { text: string }) => {
   return (

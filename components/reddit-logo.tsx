@@ -4,11 +4,11 @@ import RedditLogoSvg from "@/svgs/reddit-logo.svg";
 import RedditLogoText from "@/svgs/reddit-logo-text.svg";
 import RedditLogoTextDark from "@/svgs/reddit-logo-text-dark.svg";
 import Image from "next/image";
+import Link from "next/link";
 
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useCommunityInfo } from "@/hooks/use-community-info";
 
 interface Props {

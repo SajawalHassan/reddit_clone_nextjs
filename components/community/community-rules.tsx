@@ -1,9 +1,10 @@
 "use client";
 
-import { CommunityRule, MemberRole } from "@prisma/client";
 import axios from "axios";
-import { LandPlot, Loader2 } from "lucide-react";
 import qs from "query-string";
+
+import { CommunityRule, MemberRole } from "@prisma/client";
+import { LandPlot, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CommunityRuleItem } from "./community-rule-item";

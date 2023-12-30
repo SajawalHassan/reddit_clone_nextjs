@@ -1,5 +1,5 @@
 import { CommunityWithMembersWithRules } from "@/types";
-import { CommunityRule, Member } from "@prisma/client";
+import { Member } from "@prisma/client";
 import { create } from "zustand";
 
 interface useCommunityInfoStore {

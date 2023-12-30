@@ -1,6 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import qs from "query-string";
-import { Dispatch, SetStateAction } from "react";
 
 interface Props {
   query: string;

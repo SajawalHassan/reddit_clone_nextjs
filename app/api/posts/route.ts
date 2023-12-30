@@ -75,6 +75,7 @@ export async function POST(req: Request) {
 }
 
 const POSTS_BATCH = 10;
+const INTRO_POST_ID = "cb6d808d-340f-41af-a535-11faf980e32e";
 
 export async function GET(req: Request) {
   try {
@@ -83,6 +84,23 @@ export async function GET(req: Request) {
 
     const { searchParams } = new URL(req.url);
     const cursor = searchParams.get("cursor");
+
+    const introPost = await db.post.findUnique({
+      where: {
+        id: INTRO_POST_ID,
+      },
+      include: {
+        member: {
+          include: {
+            profile: true,
+          },
+        },
+        community: true,
+        upvotes: true,
+        downvotes: true,
+        comments: true,
+      },
+    });
 
     let posts: any[] = [];
 
@@ -101,10 +119,20 @@ export async function GET(req: Request) {
           comments: true,
         },
       });
+
+      // Adding an intro post to the top of the list
+      const existingIntroPost = posts.filter((post) => post.id === INTRO_POST_ID)[0];
+
+      if (existingIntroPost !== undefined) {
+        posts = posts.filter((post) => post.id !== INTRO_POST_ID);
+        posts.unshift(introPost);
+      } else {
+        posts.unshift(introPost);
+      }
     } else {
       posts = await db.post.findMany({
         take: POSTS_BATCH,
-        skip: 1,
+        skip: 2,
         cursor: {
           id: cursor,
         },
@@ -120,7 +148,11 @@ export async function GET(req: Request) {
           comments: true,
         },
       });
+
+      posts = posts.filter((post) => post.id !== INTRO_POST_ID);
     }
+
+    // posts = posts.filter((value, i) => posts.indexOf(value) === i);
 
     let nextCursor = posts[POSTS_BATCH - 1]?.id;
 

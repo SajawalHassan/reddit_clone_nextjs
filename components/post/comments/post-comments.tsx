@@ -1,10 +1,11 @@
 "use client";
 
+import axios from "axios";
+import qs from "query-string";
+
 import { useEffect, useMemo, useState } from "react";
 import { PostCommentInput } from "./post-comment-input";
 import { CommentWithMemberWithProfileWithVotesWithPost, PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
-import axios from "axios";
-import qs from "query-string";
 import { CommentList } from "./comment-list";
 import { CommentSectionSkeleton } from "@/components/skeletons/comment-section-skeleton";
 

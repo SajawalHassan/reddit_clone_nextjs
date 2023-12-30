@@ -4,12 +4,11 @@ import axios from "axios";
 import qs from "query-string";
 import TextareaAutosize from "react-textarea-autosize";
 
-import { Member, MemberRole } from "@prisma/client";
+import { MemberRole } from "@prisma/client";
 import { format } from "date-fns";
 import { Cake, Loader2, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/seperator";
-import { CommunityWithMembersWithRules } from "@/types";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { IconButton } from "@/components/icon-button";
@@ -124,7 +123,7 @@ export const AboutCommunitiyHomeComponent = ({ communityId, showMoreInfo = false
           {isAdmin || isModerator ? (
             description && !wantsToEditDescription ? (
               <div className={cn(editingDescription.length < 45 ? "flex items-center gap-x-2" : "")}>
-                <p className="text-sm flex items-center">{description}</p>
+                <p className="text-sm">{description}</p>
                 <div className="flex items-center gap-x-2 whitespace-nowrap">
                   <IconButton
                     Icon={Pencil}
