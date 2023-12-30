@@ -18,7 +18,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     if (!communityId) return new NextResponse("Community id not found", { status: 404 });
     if (feedType !== "new" && feedType !== "hot") return new NextResponse("Feed type incorrect", { status: 400 });
 
-    let posts: PostWithMemberWithProfileWithCommunityWithVotes[] = [];
+    let posts: any[] = [];
 
     if (!cursor) {
       posts = await db.post.findMany({
