@@ -15,6 +15,7 @@ import dynamic from "next/dynamic";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import qs from "query-string";
 import { redirectToSignIn } from "@clerk/nextjs";
+import { useProfileInfo } from "@/hooks/use-profile-info";
 
 const FroalaEditorView = dynamic(
   async () => {
@@ -53,7 +54,7 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
   const [hasViewedPost, setHasViewedPost] = useState(false);
   const [isDeletingPost, setIsDeletingPost] = useState(false);
 
-  const { profile: currentProfile, setProfile: setCurrentProfile } = useGlobalInfo();
+  const { profile: currentProfile, setProfile: setCurrentProfile } = useProfileInfo();
 
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
   const router = useRouter();

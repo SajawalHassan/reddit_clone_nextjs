@@ -9,11 +9,12 @@ import { Image, Link as LinkIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import { redirectToSignIn } from "@clerk/nextjs";
+import { useProfileInfo } from "@/hooks/use-profile-info";
 
 export const CreatePostHomeComponent = () => {
   const router = useRouter();
 
-  const { profile, setProfile } = useGlobalInfo();
+  const { profile, setProfile } = useProfileInfo();
 
   useEffect(() => {
     const getProfile = async () => {

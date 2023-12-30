@@ -12,6 +12,7 @@ import { redirectToSignIn, useClerk } from "@clerk/nextjs";
 import { useModal } from "@/hooks/use-modal-store";
 import { ProfilePicture } from "@/components/profile-picture";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+import { useProfileInfo } from "@/hooks/use-profile-info";
 
 export const HeaderProfile = () => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
@@ -19,7 +20,8 @@ export const HeaderProfile = () => {
   const { setTheme, resolvedTheme } = useTheme();
   const { signOut } = useClerk();
   const { openModal } = useModal();
-  const { profile, setProfile, setHeaderActivePlace } = useGlobalInfo();
+  const { setHeaderActivePlace } = useGlobalInfo();
+  const { profile, setProfile } = useProfileInfo();
 
   const router = useRouter();
 
@@ -59,8 +61,8 @@ export const HeaderProfile = () => {
         {formattedKarma.toLowerCase() !== "nan" && (
           <div className="hidden lg:flex gap-x-1">
             <ProfilePicture src={profile?.imageUrl} profileId={profile?.id as string} className="h-8 w-8" />
-            <div>
-              <p className="font-bold text-xs">{profile?.displayName}</p>
+            <div className="w-[7.5rem]">
+              <p className="font-bold text-xs truncate">{profile?.displayName}</p>
               <p className="font-bold text-zinc-500 text-xs">{formattedKarma} karma</p>
             </div>
           </div>
@@ -77,11 +79,7 @@ export const HeaderProfile = () => {
               text="Profile"
               onClick={() => pushToUrl(`/main/users/${profile?.id}?overview=true`)}
             />
-            <HeaderProfileMenuItem
-              setMenuIsOpen={setMenuIsOpen}
-              text="User Settings"
-              onClick={() => pushToUrl(`/main/users/${profile?.id}/settings`)}
-            />
+            <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} text="User Settings" onClick={() => pushToUrl(`/main/settings`)} />
           </div>
           <Separator />
           <HeaderProfileMenuHeading Icon={Eye} text="View Options" />

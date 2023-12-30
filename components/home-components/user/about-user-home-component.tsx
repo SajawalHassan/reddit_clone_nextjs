@@ -6,11 +6,12 @@ import { AboutCommunitySkeleton } from "@/components/skeletons/about-community-s
 import { Button } from "@/components/ui/button";
 import { useCommunityInfo } from "@/hooks/use-community-info";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+import { useProfileInfo } from "@/hooks/use-profile-info";
 import { cn } from "@/lib/utils";
 import { redirectToSignIn } from "@clerk/nextjs";
 import axios from "axios";
 import { format } from "date-fns";
-import { Cake, Camera, Loader2, Star, X } from "lucide-react";
+import { Cake, Camera, Loader2, Settings, Star, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import qs from "query-string";
@@ -23,7 +24,8 @@ export const AboutUserHomeComponent = ({ profileId }: { profileId: string }) => 
   const [isUploadingBanner, setIsUploadingBanner] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { viewingProfile, setViewingProfile, setHeaderActivePlace, profile: currentProfile } = useGlobalInfo();
+  const { viewingProfile, setViewingProfile, profile: currentProfile } = useProfileInfo();
+  const { setHeaderActivePlace } = useGlobalInfo();
 
   const bannerUploadRef = useRef<any>(null);
 
@@ -35,6 +37,7 @@ export const AboutUserHomeComponent = ({ profileId }: { profileId: string }) => 
     const getViewingProfile = async () => {
       if (viewingProfile !== null && viewingProfile.id === profileId) return setIsLoading(false);
 
+      console.log("Setting viewing profile to null");
       setViewingProfile(null);
       setIsLoading(true);
 
@@ -68,13 +71,15 @@ export const AboutUserHomeComponent = ({ profileId }: { profileId: string }) => 
     uploadFile(file, setIsUploadingBanner, async (url) => {
       setViewingProfile({ ...viewingProfile!, bannerUrl: url });
       await axios.patch("/api/profile", { data: { bannerUrl: url } });
+
+      setIsUploadingBanner(false);
     });
   };
 
   if (isLoading) return <AboutCommunitySkeleton />;
 
   return (
-    <div className="home-component p-0 w-[20rem] h-[20rem]">
+    <div className="home-component p-0 w-[20rem] min-h-[20rem] pb-2">
       <div className="h-[5rem] bg-[#33A8FF] w-full rounded-t-sm relative overflow-hidden">
         {viewingProfile?.bannerUrl && <img src={viewingProfile?.bannerUrl} alt={viewingProfile?.displayName} className="w-full" />}
         {isOwner &&
@@ -96,6 +101,11 @@ export const AboutUserHomeComponent = ({ profileId }: { profileId: string }) => 
           ))}
       </div>
       <div className="relative w-full flex flex-col items-center text-center h-max">
+        {isOwner && (
+          <Link href={`/main/settings`}>
+            <IconButton Icon={Settings} IconClassName={cn("text-blue-500 h-5 w-5")} className="absolute top-2 right-2" disabled={isUploadingBanner} />
+          </Link>
+        )}
         <img
           src={viewingProfile?.imageUrl}
           alt={viewingProfile?.displayName}

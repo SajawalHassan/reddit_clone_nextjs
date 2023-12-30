@@ -15,11 +15,12 @@ import qs from "query-string";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { NoPostsUser } from "../../user/no-posts-user";
+import { useProfileInfo } from "@/hooks/use-profile-info";
 
 export const UserPostsFeed = ({ profileId }: { profileId: string }) => {
   const [posts, setPosts] = useState<PostWithMemberWithProfileWithCommunityWithVotes[]>([]);
 
-  const { viewingProfile, setViewingProfile } = useGlobalInfo();
+  const { viewingProfile, setViewingProfile } = useProfileInfo();
 
   const query = `feed:user:${viewingProfile?.id}:posts`;
 

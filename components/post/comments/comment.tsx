@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { redirectToSignIn } from "@clerk/nextjs";
 import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
+import { useProfileInfo } from "@/hooks/use-profile-info";
 
 const DATE_FORMAT = "d MMM";
 
@@ -42,7 +43,7 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
   const [content, setContent] = useState<string>(comment.content);
   const [image, setImage] = useState<string>(comment.imageUrl || "");
 
-  const { profile: currentProfile, setProfile: setCurrentProfile, viewingProfile } = useGlobalInfo();
+  const { profile: currentProfile, setProfile: setCurrentProfile, viewingProfile } = useProfileInfo();
   const { currentMember } = useCommunityInfo();
 
   const router = useRouter();
@@ -194,7 +195,7 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
                 setEditedComment={setEditedContent}
               />
             ) : content ? (
-              <p className={cn("text-[14px] leading-[21px] whitespace-pre-wrap", isDeletingComment && "text-gray-500")}>{content}</p>
+              <p className={cn("text-[14px] leading-[21px] whitespace-pre-wrap break-all", isDeletingComment && "text-gray-500")}>{content}</p>
             ) : (
               <img src={image} className="py-2" />
             )}

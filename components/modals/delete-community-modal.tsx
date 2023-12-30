@@ -12,11 +12,12 @@ import { Profile } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import { redirectToSignIn } from "@clerk/nextjs";
+import { useProfileInfo } from "@/hooks/use-profile-info";
 
 export const DeleteCommunityModal = () => {
   const { isOpen, type, closeModal, data } = useModal();
   const { community } = data;
-  const { profile, setProfile } = useGlobalInfo();
+  const { profile, setProfile } = useProfileInfo();
 
   const [isLoading, setIsLoading] = useState(false);
 

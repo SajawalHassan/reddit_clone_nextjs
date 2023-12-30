@@ -99,6 +99,7 @@ export const PostCommentInput = ({
 
     uploadFile(file, setIsSubmittingImage, (url) => {
       setImage(url);
+      setIsSubmittingImage(false);
     });
   };
 

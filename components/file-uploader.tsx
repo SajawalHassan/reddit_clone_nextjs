@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 interface PropTypes {
   value: string;
-  onChange: (url?: string) => void;
+  onChange: (url: string) => void;
   isLoading: boolean;
   text: string;
   className?: string;
@@ -27,8 +27,6 @@ export const uploadFile = async (file: File, setIsLoading: React.Dispatch<React.
     onDone(uploadCareFile.cdnUrl as string);
   } catch (error) {
     console.log(error);
-  } finally {
-    setIsLoading(false);
   }
 };
 
@@ -58,6 +56,8 @@ export const FileUploader = ({
     uploadFile(file, setIsLoading, (url) => {
       onChange(url);
       setUploadIsFinished(true);
+
+      setIsLoading(false);
     });
   };
 

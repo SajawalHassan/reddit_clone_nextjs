@@ -1,5 +1,4 @@
 import { UserFeedsController } from "@/components/feed/user/user-feeds-controller";
-import { UserOverviewFeed } from "@/components/feed/user/user-overview-feed";
 import { AboutUserHomeComponent } from "@/components/home-components/user/about-user-home-component";
 import { UserFeedTopbar } from "@/components/user/user-feed-topbar";
 

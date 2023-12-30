@@ -85,6 +85,8 @@ export const CommunityHero = ({ communityId }: { communityId: string }) => {
         setCommunityImage(url);
         await axios.patch("/api/communities", { communityId, data: { imageUrl: url } });
       }
+
+      setIsSubmittingFile(false);
     });
   };
 

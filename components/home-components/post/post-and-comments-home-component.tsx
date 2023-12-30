@@ -3,6 +3,7 @@ import { PostHomeComponent } from "./post-home-component";
 import { CommentList } from "@/components/post/comments/comment-list";
 import { useEffect, useMemo, useState } from "react";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+import { useProfileInfo } from "@/hooks/use-profile-info";
 
 interface Props {
   post: PostWithMemberWithProfileWithCommunityWithVotes;
@@ -10,7 +11,7 @@ interface Props {
 }
 
 export const PostAndCommentsHomeComponent = ({ post, showPost = true }: Props) => {
-  const { viewingProfile } = useGlobalInfo();
+  const { viewingProfile } = useProfileInfo();
 
   const [comments, setComments] = useState<CommentWithMemberWithProfileWithVotesWithPost[]>(post.comments);
 
