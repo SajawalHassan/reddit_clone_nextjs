@@ -87,7 +87,7 @@ export const UserOverviewFeed = ({ profileId }: { profileId: string }) => {
           }
           className="space-y-2 pb-20">
           {posts?.map((post: PostWithMemberWithProfileWithCommunityWithVotes) => (
-            <PostAndCommentsHomeComponent post={post} />
+            <PostAndCommentsHomeComponent post={post} key={post.id} />
           ))}
         </InfiniteScroll>
       ) : (

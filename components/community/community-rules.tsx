@@ -134,7 +134,9 @@ export const CommunityRules = ({ communityId }: { communityId: string }) => {
                   <div className="space-y-2 px-4">
                     <div className="space-y-1 flex flex-col items-center w-full">
                       <LandPlot className="h-10 w-10 text-zinc-600" />
-                      <p className="text-[11px] text-gray-500 max-w-[70%] text-center">This community has no rules, you're free to do anything!</p>
+                      <p className="text-[11px] text-gray-500 max-w-[70%] text-center">
+                        This community has no rules, you&apos;re free to do anything!
+                      </p>
                     </div>
                     {hasPrivilages && (
                       <Button variant="primary" className="w-full py-0.5" onClick={() => setWantsToAddRule(true)}>

@@ -87,7 +87,7 @@ export const UserDownvotedPostsFeed = ({ profileId }: { profileId: string }) => 
           }
           className="space-y-2 pb-20">
           {posts?.map((post: PostWithMemberWithProfileWithCommunityWithVotes) => (
-            <PostHomeComponent post={post} />
+            <PostHomeComponent post={post} key={post.id} />
           ))}
         </InfiniteScroll>
       ) : (

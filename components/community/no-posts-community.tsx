@@ -67,7 +67,7 @@ export const NoPostsCommunity = ({ communityId }: { communityId: string }) => {
             />
             <div className="space-y-2">
               <p className="text-xl font-semibold">Time to make your first post!</p>
-              <p className="text-sm text-gray-500">Now that you've created your community, start things off right by making your first post.</p>
+              <p className="text-sm text-gray-500">Now that you&apos;ve created your community, start things off right by making your first post.</p>
               <Button variant="primary" onClick={createPost}>
                 Make your first post
               </Button>
