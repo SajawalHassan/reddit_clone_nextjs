@@ -146,6 +146,10 @@ body,
   background-color: var(--froala-editor-bg) !important;
 }
 
+.fr-wrapper > a {
+  display: none !important;
+}
+
 .fr-toolbar {
   background-color: var(--froala-editor-bg) !important;
 }
