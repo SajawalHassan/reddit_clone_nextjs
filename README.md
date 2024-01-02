@@ -1,34 +1,84 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Reddit Clone
 
-## Getting Started
+This project is a Reddit clone developed using NextJS 14, Typescript 5, Prisma ORM 5, and Tailwind CSS 3. It aims to replicate some of the core functionalities of the popular social media platform Reddit.
 
-First, run the development server:
+## Table of Contents
+
+- [Installation](#installation)
+- [Contribution](#contribution)
+- [Usage](#usage)
+- [Technologies Used](#technologies-used)
+- [License](#license)
+
+## Installation
+
+To get started with contributing to this Reddit clone, follow these steps:
+
+1. Clone the repository to your local machine:
+
+   ```bash
+   git clone https://github.com/your-username/reddit-clone.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```bash
+   cd reddit-clone
+   ```
+
+3. Install the required dependencies by running:
+
+   ```bash
+   npm i
+   ```
+
+4. Fill in the necessary information in a `.env` file as specified in the `env.template` file
+
+## Contribution
+
+We welcome contributions from developers to help improve this Reddit clone. To contribute, please follow these steps:
+
+1. Fork the repository on GitHub.
+2. Create a new branch from the `main` branch for your contributions:
+
+   ```bash
+   git checkout -b feature/new-feature
+   ```
+
+3. Make your changes and ensure they adhere to the project's coding guidelines.
+4. Commit your changes with descriptive commit messages:
+
+   ```bash
+   git commit -m "Add new feature"
+   ```
+
+5. Push your changes to your forked repository:
+
+   ```bash
+   git push origin feature/new-feature
+   ```
+
+6. Finally, open a pull request detailing the changes you made and explaining their purpose.
+
+## Usage
+
+Once the initial setup is completed and environment variables are appropriately configured, you can start the development server by running:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This command will start the application locally, allowing you to access the Reddit clone in your browser at `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Technologies Used
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- NextJS 14
+- Typescript 5
+- Prisma ORM 5
+- Tailwind CSS 3
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
+This Reddit clone is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute this project according to the terms of the license.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+For further information or inquiries, please contact [maintainer's email/contact].
