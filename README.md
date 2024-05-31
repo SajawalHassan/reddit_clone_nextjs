@@ -81,4 +81,4 @@ This command will start the application locally, allowing you to access the Redd
 
 This Reddit clone is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute this project according to the terms of the license.
 
-For further information or inquiries, please contact [maintainer's email/contact].
+For further information or inquiries, please contact me: sajawalhassan.1feb@gmail.com.
