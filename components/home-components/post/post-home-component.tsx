@@ -199,7 +199,7 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
                       </div>
                     ) : (
                       <div className={isOnPostPage ? "" : "max-h-[45rem] overflow-y-auto"}>
-                        <div dangerouslySetInnerHTML={{ __html: post.content }} className="prose" />
+                        <div dangerouslySetInnerHTML={{ __html: post.content }} className="prose dark:!text-white dark:prose-headings:!text-white" />
                       </div>
                     )}
                   </div>
