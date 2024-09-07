@@ -37,7 +37,7 @@ export const HeaderProfile = () => {
 
         setProfile(response.data);
       } catch (error: any) {
-        if (error.response.status === 401) redirectToSignIn();
+        if (error.response.status === 401) console.log("Unauthorized");
         else console.log(error);
       }
     };
@@ -52,12 +52,7 @@ export const HeaderProfile = () => {
 
   return (
     <div className="relative">
-      <div
-        onClick={() => setMenuIsOpen(true)}
-        className={cn(
-          "flex items-center justify-between gap-x-5 border border-transparent hover:border-gray-200 dark:hover:border-zinc-800 py-1.5 px-2 cursor-pointer lg:w-[13rem]",
-          menuIsOpen && "border-gray-200 dark:border-zinc-800"
-        )}>
+      <div onClick={() => setMenuIsOpen(true)} className={cn("flex items-center justify-between gap-x-5 border border-transparent hover:border-gray-200 dark:hover:border-zinc-800 py-1.5 px-2 cursor-pointer lg:w-[13rem]", menuIsOpen && "border-gray-200 dark:border-zinc-800")}>
         {formattedKarma.toLowerCase() !== "nan" && (
           <div className="hidden lg:flex gap-x-1">
             <ProfilePicture src={profile?.imageUrl} profileId={profile?.id as string} className="h-8 w-8" />
@@ -74,29 +69,14 @@ export const HeaderProfile = () => {
         <div className="absolute right-0 w-[15rem] bg-white dark:bg-[#1A1A1B] dark:text-white border border-zinc-200 dark:border-zinc-800 py-5 z-30 space-y-2">
           <HeaderProfileMenuHeading Icon={UserCircle} text="My Stuff" />
           <div>
-            <HeaderProfileMenuItem
-              setMenuIsOpen={setMenuIsOpen}
-              text="Profile"
-              onClick={() => pushToUrl(`/main/users/${profile?.id}?overview=true`)}
-            />
+            <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} text="Profile" onClick={() => pushToUrl(`/main/users/${profile?.id}?overview=true`)} />
             <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} text="User Settings" onClick={() => pushToUrl(`/main/settings`)} />
           </div>
           <Separator />
           <HeaderProfileMenuHeading Icon={Eye} text="View Options" />
-          <HeaderProfileMenuItem
-            setMenuIsOpen={setMenuIsOpen}
-            text="Dark Mode"
-            useSwitch={true}
-            switchValue={resolvedTheme === "dark"}
-            switchFunction={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
-          />
+          <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} text="Dark Mode" useSwitch={true} switchValue={resolvedTheme === "dark"} switchFunction={() => setTheme(resolvedTheme === "light" ? "dark" : "light")} />
           <Separator />
-          <HeaderProfileMenuItem
-            setMenuIsOpen={setMenuIsOpen}
-            Icon={PlusCircle}
-            text="Create Community"
-            onClick={() => openModal("createCommunity", {})}
-          />
+          <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} Icon={PlusCircle} text="Create Community" onClick={() => openModal("createCommunity", {})} />
           <HeaderProfileMenuItem setMenuIsOpen={setMenuIsOpen} Icon={LogOut} text="Logout" onClick={() => signOut()} />
         </div>
       )}

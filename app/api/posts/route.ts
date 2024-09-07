@@ -25,9 +25,9 @@ export async function POST(req: Request) {
       if (!validatedValues.success) return new NextResponse(fromZodError(validatedValues.error).toString(), { status: 400 });
     }
 
-    const { title, froalaContent, communityId, isSpoiler, imageUrl, link } = validatedValues.data;
+    const { title, postContent, communityId, isSpoiler, imageUrl, link } = validatedValues.data;
 
-    if ((froalaContent && imageUrl) || (froalaContent && link)) {
+    if ((postContent && imageUrl) || (postContent && link)) {
       return new NextResponse("Multiple content types are not supported", { status: 400 });
     }
 
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
       },
       data: {
         posts: {
-          create: [{ title, memberId: member?.id, spoiler: isSpoiler, content: froalaContent, imageUrl, link }],
+          create: [{ title, memberId: member?.id, spoiler: isSpoiler, content: postContent, imageUrl, link }],
         },
       },
       include: {

@@ -12,12 +12,5 @@ interface Props {
 export const ProfilePicture = ({ src, profileId, className }: Props) => {
   const router = useRouter();
 
-  return (
-    <img
-      src={src as string}
-      alt="profile"
-      className={cn("h-10 w-10 rounded-full cursor-pointer bg-gray-700", className)}
-      onClick={() => router.push(`/main/users/${profileId}?overview=true`)}
-    />
-  );
+  return <img src={src as string} alt="profile" className={cn("h-10 w-10 rounded-full cursor-pointer bg-gray-700 object-cover", className)} onClick={() => router.push(`/main/users/${profileId}?overview=true`)} />;
 };

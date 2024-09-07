@@ -9,7 +9,7 @@ import { FeedLoadingSkeleton } from "@/components/skeletons/feed-loading-skeleto
 import { useFeedInfo } from "@/hooks/use-feed-info";
 import { useFeedQuery } from "@/hooks/use-feed-query";
 import { PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
-import { redirectToSignIn } from "@clerk/nextjs";
+
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NoPostsUser } from "@/components/user/no-posts-user";
@@ -41,7 +41,7 @@ export const UserUpvotedPostsFeed = ({ profileId }: { profileId: string }) => {
 
         setViewingProfile(res.data);
       } catch (error: any) {
-        if (error.response.status === 401) redirectToSignIn();
+        if (error.response.status === 401) console.log("Unauthorized");
         else console.log(error);
       }
     };

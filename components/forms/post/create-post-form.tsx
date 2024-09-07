@@ -4,21 +4,12 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Image, Link, Loader2, Menu, Plus, Trash } from "lucide-react";
+import { Image, Link, Menu, Trash } from "lucide-react";
+import { Editor } from "@tinymce/tinymce-react";
 import { Input } from "@/components/ui/input";
 
-import dynamic from "next/dynamic";
 import axios from "axios";
 import * as z from "zod";
-
-import "froala-editor/css/froala_editor.pkgd.css";
-import "froala-editor/css/themes/dark.min.css";
-import "froala-editor/js/plugins/align.min.js";
-import "froala-editor/js/plugins/link.min.js";
-import "froala-editor/js/plugins/markdown.min.js";
-import "froala-editor/js/plugins/quote.min.js";
-import "froala-editor/js/plugins/emoticons.min.js";
-import "froala-editor/js/plugins/font_size.min.js";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { PostTypeItem } from "./post-type-item";
@@ -28,23 +19,7 @@ import { Button } from "@/components/ui/button";
 import { CommunitySelecter } from "@/components/community/community-selecter";
 import { PostTagItem } from "./post-tag-item";
 import { linkFormSchema, mediaFormSchema, plainFormSchema } from "@/schemas/post-schema";
-import { useTheme } from "next-themes";
 import { useGlobalInfo } from "@/hooks/use-global-info";
-
-const FroalaEditor = dynamic(
-  async () => {
-    const values = await Promise.all([import("react-froala-wysiwyg")]);
-    return values[0];
-  },
-  {
-    loading: () => (
-      <div className="flex items-center justify-center w-full mt-5">
-        <Loader2 className="h-6 w-6 animate-spin" />
-      </div>
-    ),
-    ssr: false,
-  }
-);
 
 export const CreatePostForm = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -57,25 +32,14 @@ export const CreatePostForm = () => {
   const formSchema = isMedia ? mediaFormSchema : isLink ? linkFormSchema : plainFormSchema;
 
   const router = useRouter();
-  const { resolvedTheme } = useTheme();
   const { setHeaderActivePlace } = useGlobalInfo();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: { title: "", froalaContent: "", imageUrl: "", link: "", communityId: "", isSpoiler: false },
+    defaultValues: { title: "", postContent: "", imageUrl: "", link: "", communityId: "", isSpoiler: false },
   });
 
   const isLoading = form.formState.isSubmitting;
-
-  useEffect(() => {
-    if (resolvedTheme === "light") {
-      document.documentElement.style.setProperty(`--froala-editor-bg`, `#fff`);
-      document.documentElement.style.setProperty(`--froala-editor-text-color`, `#000`);
-    } else {
-      document.documentElement.style.setProperty(`--froala-editor-bg`, `#272729`);
-      document.documentElement.style.setProperty(`--froala-editor-text-color`, `#fff`);
-    }
-  }, [resolvedTheme]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -88,10 +52,10 @@ export const CreatePostForm = () => {
       values.imageUrl = "";
       values.link = "";
     } else if (isMedia) {
-      values.froalaContent = "";
+      values.postContent = "";
       values.link = "";
     } else {
-      values.froalaContent = "";
+      values.postContent = "";
       values.imageUrl = "";
     }
 
@@ -146,36 +110,21 @@ export const CreatePostForm = () => {
             {isPlain && (
               <FormField
                 control={form.control}
-                name="froalaContent"
+                name="postContent"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <FroalaEditor
-                        model={field.value}
-                        onModelChange={field.onChange}
-                        config={{
-                          toolbarButtons: {
-                            moreText: {
-                              buttons: [
-                                "bold",
-                                "italic",
-                                "underline",
-                                "strikeThrough",
-                                "textColor",
-                                "backgroundColor",
-                                "clearFormatting",
-                                "fontSize",
-                              ],
-                            },
-
-                            moreParagraph: {
-                              buttons: ["alignLeft", "alignCenter", "alignRight", "alignJustify", "outdent", "indent", "quote"],
-                            },
-
-                            moreRich: {
-                              buttons: ["insertLink", "emoticons", "specialCharacters", "markdown"],
-                            },
-                          },
+                      <Editor
+                        apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+                        value={field.value}
+                        onEditorChange={field.onChange}
+                        initialValue=""
+                        init={{
+                          height: 200,
+                          menubar: false,
+                          plugins: ["advlist", "autolink", "lists", "link", "image", "charmap", "preview", "anchor", "searchreplace", "visualblocks", "code", "fullscreen", "insertdatetime", "media", "table", "code", "help", "wordcount"],
+                          toolbar: "undo redo | blocks | " + "bold italic forecolor | alignleft aligncenter " + "alignright alignjustify | bullist numlist outdent indent | " + "removeformat | help",
+                          content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
                         }}
                       />
                     </FormControl>

@@ -1,6 +1,5 @@
 import { UserSettingsForm } from "@/components/user/user-settings-form";
 import { getCurrentProfile } from "@/lib/current-profile";
-import { redirectToSignIn } from "@clerk/nextjs";
 
 export default async function UserIdPage() {
   const profile = await getCurrentProfile();

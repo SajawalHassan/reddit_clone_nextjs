@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { redirectToSignIn } from "@clerk/nextjs";
+
 import { useProfileInfo } from "@/hooks/use-profile-info";
 
 export const DeleteCommunityModal = () => {
@@ -30,7 +30,7 @@ export const DeleteCommunityModal = () => {
         const res = await axios.get("/api/profile");
         setProfile(res.data);
       } catch (error: any) {
-        if (error.response.status === 401) redirectToSignIn();
+        if (error.response.status === 401) console.log("Unauthorized");
         else console.log(error);
       }
     };

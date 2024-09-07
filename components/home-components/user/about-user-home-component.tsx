@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useGlobalInfo } from "@/hooks/use-global-info";
 import { useProfileInfo } from "@/hooks/use-profile-info";
 import { cn } from "@/lib/utils";
-import { redirectToSignIn } from "@clerk/nextjs";
+
 import { format } from "date-fns";
 import { Cake, Camera, Loader2, Settings, Star, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -47,7 +47,7 @@ export const AboutUserHomeComponent = ({ profileId }: { profileId: string }) => 
 
         setViewingProfile(res.data);
       } catch (error: any) {
-        if (error.response.status === 401) redirectToSignIn();
+        if (error.response.status === 401) console.log("Unauthorized");
         else console.log(error);
       } finally {
         setIsLoading(false);
@@ -79,26 +79,10 @@ export const AboutUserHomeComponent = ({ profileId }: { profileId: string }) => 
   if (isLoading) return <AboutCommunitySkeleton />;
 
   return (
-    <div className="home-component p-0 w-[20rem] min-h-[20rem] pb-2">
+    <div className="home-component p-0 w-[20rem] max-h-[20rem] pb-2">
       <div className="h-[5rem] bg-[#33A8FF] w-full rounded-t-sm relative overflow-hidden">
         {viewingProfile?.bannerUrl && <img src={viewingProfile?.bannerUrl} alt={viewingProfile?.displayName} className="w-full" />}
-        {isOwner &&
-          (viewingProfile?.bannerUrl ? (
-            <IconButton
-              Icon={X}
-              IconClassName="text-white h-5 w-5"
-              className="absolute bottom-2 right-2 bg-red-400 hover:bg-red-600 dark:hover:bg-red-600"
-              onClick={() => setViewingProfile({ ...viewingProfile!, bannerUrl: "" })}
-            />
-          ) : (
-            <IconButton
-              Icon={isUploadingBanner ? Loader2 : Camera}
-              IconClassName={cn("text-blue-500 h-5 w-5", isUploadingBanner && "animate-spin")}
-              className="absolute bottom-2 right-2 bg-white dark:hover:bg-gray-300"
-              onClick={() => bannerUploadRef?.current?.click()}
-              disabled={isUploadingBanner}
-            />
-          ))}
+        {isOwner && (viewingProfile?.bannerUrl ? <IconButton Icon={X} IconClassName="text-white h-5 w-5" className="absolute bottom-2 right-2 bg-red-400 hover:bg-red-600 dark:hover:bg-red-600" onClick={() => setViewingProfile({ ...viewingProfile!, bannerUrl: "" })} /> : <IconButton Icon={isUploadingBanner ? Loader2 : Camera} IconClassName={cn("text-blue-500 h-5 w-5", isUploadingBanner && "animate-spin")} className="absolute bottom-2 right-2 bg-white dark:hover:bg-gray-300" onClick={() => bannerUploadRef?.current?.click()} disabled={isUploadingBanner} />)}
       </div>
       <div className="relative w-full flex flex-col items-center text-center h-max">
         {isOwner && (
@@ -106,11 +90,7 @@ export const AboutUserHomeComponent = ({ profileId }: { profileId: string }) => 
             <IconButton Icon={Settings} IconClassName={cn("text-blue-500 h-5 w-5")} className="absolute top-2 right-2" disabled={isUploadingBanner} />
           </Link>
         )}
-        <img
-          src={viewingProfile?.imageUrl}
-          alt={viewingProfile?.displayName}
-          className="h-[7rem] w-[7rem] border-2 border-white rounded-full absolute -top-[3rem]"
-        />
+        <img src={viewingProfile?.imageUrl} alt={viewingProfile?.displayName} className="h-[7rem] w-[7rem] border-2 border-white rounded-full absolute -top-[3rem] object-cover" />
         <p className="font-semibold mt-16 text-2xl">{viewingProfile?.displayName}</p>
         {viewingProfile && (
           <p className="text-xs text-gray-500 font-bold">
@@ -135,9 +115,11 @@ export const AboutUserHomeComponent = ({ profileId }: { profileId: string }) => 
             </div>
           </div>
         </div>
-        <Button variant="primary" className="w-full" onClick={() => router.push("/main/create/post?plain=true")}>
-          Create a post
-        </Button>
+        {isOwner && (
+          <Button variant="primary" className="w-full" onClick={() => router.push("/main/create/post?plain=true")}>
+            Create a post
+          </Button>
+        )}
       </div>
       <input type="file" ref={bannerUploadRef} onChange={(e: ChangeEvent) => uploadBanner(e)} className="hidden" accept="image/*" />
     </div>
