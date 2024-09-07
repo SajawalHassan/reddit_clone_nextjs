@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ModalsProvider } from "@/components/providers/modals-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "Reddit clone - Dive into anything",
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <QueryProvider>
               {children}
               <Analytics />
+              <SpeedInsights />
             </QueryProvider>
           </ThemeProvider>
         </body>
