@@ -1,5 +1,5 @@
 import TextareaAutosize from "react-textarea-autosize";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -66,15 +66,17 @@ export const PostCommentInput = ({
     try {
       setIsLoading(true);
 
+      let res: AxiosResponse;
+
       if (type === "comment") {
-        var res = await axios.post("/api/posts/comments", {
+        res = await axios.post("/api/posts/comments", {
           content: comment,
           postId: post?.id,
           memberId: memberId || currentMember.id,
           imageUrl: image,
         });
       } else {
-        var res = await axios.post("/api/posts/comments", {
+        res = await axios.post("/api/posts/comments", {
           content: comment,
           imageUrl: image,
           postId: post?.id,
