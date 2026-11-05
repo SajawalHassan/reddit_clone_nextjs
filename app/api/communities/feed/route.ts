@@ -21,7 +21,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     let posts: any[] = [];
 
     if (!cursor) {
-      posts = await db.post.findMany({
+      posts = await db.post?.findMany({
         take: POSTS_BATCH,
         where: {
           communityId,
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     }
 
     if (cursor) {
-      posts = await db.post.findMany({
+      posts = await db.post?.findMany({
         take: POSTS_BATCH,
         skip: 1,
         cursor: {

@@ -19,7 +19,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
     if (!postId) return new NextResponse("Post id not found", { status: 404 });
     if (type !== "upvote" && type !== "downvote") return new NextResponse("Type incorrect", { status: 400 });
 
-    const post = await db.post.findUnique({
+    const post = await db.post?.findUnique({
       where: {
         id: postId,
       },
@@ -34,8 +34,8 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
     const wantsToUpvote = type === "upvote";
     const wantsToDownvote = type === "downvote";
 
-    const hasUpvotedPost = post.upvotes.some((upvote) => upvote.profileId === profile.id);
-    const hasDownvotedPost = post.downvotes.some((downvote) => downvote.profileId === profile.id);
+    const hasUpvotedPost = post?.upvotes.some((upvote) => upvote.profileId === profile.id);
+    const hasDownvotedPost = post?.downvotes.some((downvote) => downvote.profileId === profile.id);
 
     const voteInfo: voteInfoInterface = { voteType: "upvote", amount: 1, activeVote: "upvote" };
 
@@ -45,7 +45,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
         voteInfo["voteType"] = "downvote";
         voteInfo["activeVote"] = "none";
 
-        await db.post.update({
+        await db.post?.update({
           where: {
             id: postId,
           },
@@ -61,7 +61,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
           voteInfo["voteType"] = "upvote";
           voteInfo["activeVote"] = "upvote";
 
-          await db.post.update({
+          await db.post?.update({
             where: {
               id: postId,
             },
@@ -79,7 +79,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
           voteInfo["voteType"] = "upvote";
           voteInfo["activeVote"] = "upvote";
 
-          await db.post.update({
+          await db.post?.update({
             where: {
               id: postId,
             },
@@ -99,7 +99,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
         voteInfo["voteType"] = "upvote";
         voteInfo["activeVote"] = "none";
 
-        await db.post.update({
+        await db.post?.update({
           where: {
             id: postId,
           },
@@ -115,7 +115,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
           voteInfo["voteType"] = "downvote";
           voteInfo["activeVote"] = "downvote";
 
-          await db.post.update({
+          await db.post?.update({
             where: {
               id: postId,
             },
@@ -133,7 +133,7 @@ export async function PATCH(req: NextRequest, res: NextResponse) {
           voteInfo["voteType"] = "downvote";
           voteInfo["activeVote"] = "downvote";
 
-          await db.post.update({
+          await db.post?.update({
             where: {
               id: postId,
             },

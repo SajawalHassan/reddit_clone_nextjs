@@ -22,7 +22,7 @@ export const useFeedQuery = ({ query, apiUrl, communityId, feedType, profileId }
             profileId,
           },
         },
-        { skipNull: true }
+        { skipNull: true },
       );
 
       const res = await fetch(url);

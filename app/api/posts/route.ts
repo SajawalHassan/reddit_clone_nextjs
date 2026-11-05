@@ -16,13 +16,16 @@ export async function POST(req: Request) {
     let validatedValues: SafeParseReturnType<any, any>;
     if (values.type === "plain") {
       validatedValues = plainFormSchema.safeParse(values);
-      if (!validatedValues.success) return new NextResponse(fromZodError(validatedValues.error).toString(), { status: 400 });
+      if (!validatedValues.success)
+        return new NextResponse(fromZodError(validatedValues.error).toString(), { status: 400 });
     } else if (values.type === "media") {
       validatedValues = mediaFormSchema.safeParse(values);
-      if (!validatedValues.success) return new NextResponse(fromZodError(validatedValues.error).toString(), { status: 400 });
+      if (!validatedValues.success)
+        return new NextResponse(fromZodError(validatedValues.error).toString(), { status: 400 });
     } else {
       validatedValues = linkFormSchema.safeParse(values);
-      if (!validatedValues.success) return new NextResponse(fromZodError(validatedValues.error).toString(), { status: 400 });
+      if (!validatedValues.success)
+        return new NextResponse(fromZodError(validatedValues.error).toString(), { status: 400 });
     }
 
     const { title, postContent, communityId, isSpoiler, imageUrl, link } = validatedValues.data;
@@ -85,7 +88,7 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const cursor = searchParams.get("cursor");
 
-    const introPost = await db.post.findUnique({
+    const introPost = await db.post?.findUnique({
       where: {
         id: INTRO_POST_ID,
       },
@@ -105,7 +108,7 @@ export async function GET(req: Request) {
     let posts: any[] = [];
 
     if (!cursor) {
-      posts = await db.post.findMany({
+      posts = await db.post?.findMany({
         take: POSTS_BATCH,
         include: {
           member: {
@@ -121,16 +124,16 @@ export async function GET(req: Request) {
       });
 
       // Adding an intro post to the top of the list
-      const existingIntroPost = posts.filter((post) => post.id === INTRO_POST_ID)[0];
+      const existingIntroPost = posts.filter((post) => post?.id === INTRO_POST_ID)[0];
 
       if (existingIntroPost !== undefined) {
-        posts = posts.filter((post) => post.id !== INTRO_POST_ID);
+        posts = posts.filter((post) => post?.id !== INTRO_POST_ID);
         posts.unshift(introPost);
       } else {
         posts.unshift(introPost);
       }
     } else {
-      posts = await db.post.findMany({
+      posts = await db.post?.findMany({
         take: POSTS_BATCH,
         skip: 2,
         cursor: {
@@ -149,7 +152,7 @@ export async function GET(req: Request) {
         },
       });
 
-      posts = posts.filter((post) => post.id !== INTRO_POST_ID);
+      posts = posts.filter((post) => post?.id !== INTRO_POST_ID);
     }
 
     // posts = posts.filter((value, i) => posts.indexOf(value) === i);
@@ -175,7 +178,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
     if (!communityId) return new NextResponse("Community id missing", { status: 400 });
     if (!postId) return new NextResponse("Post id missing", { status: 400 });
 
-    const post = await db.post.findUnique({
+    const post = await db.post?.findUnique({
       where: {
         id: postId,
       },
@@ -185,7 +188,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
     });
 
     if (!post) return new NextResponse("Post not found", { status: 404 });
-    if (post.member.profileId !== profile.id) return new NextResponse("Forbidden", { status: 403 });
+    if (post?.member.profileId !== profile.id) return new NextResponse("Forbidden", { status: 403 });
 
     await db.$executeRaw`DELETE FROM Comment WHERE postId = ${postId};`;
     await db.$executeRaw`DELETE FROM Post WHERE id = ${postId};`;

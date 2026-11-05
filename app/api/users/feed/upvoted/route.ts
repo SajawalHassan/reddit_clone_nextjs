@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
     let posts: any[] = [];
 
     if (!cursor) {
-      posts = await db.post.findMany({
+      posts = await db.post?.findMany({
         take: POSTS_BATCH,
         where: {
           upvotes: {
@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
         },
       });
     } else {
-      posts = await db.post.findMany({
+      posts = await db.post?.findMany({
         take: POSTS_BATCH,
         skip: 1,
         where: {

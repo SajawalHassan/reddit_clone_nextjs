@@ -6,7 +6,16 @@ import { CommentWithMemberWithProfileWithVotesWithPost } from "@/types";
 import { CommentList } from "./comment-list";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { ArrowDownCircle, ArrowUpCircle, ChevronDown, MessageSquare, MoreVertical, Pencil, Trash, ZoomOut } from "lucide-react";
+import {
+  ArrowDownCircle,
+  ArrowUpCircle,
+  ChevronDown,
+  MessageSquare,
+  MoreVertical,
+  Pencil,
+  Trash,
+  ZoomOut,
+} from "lucide-react";
 import { FormEvent, MouseEvent, useEffect, useState } from "react";
 import { PostFooterItem } from "@/components/post/post-footer-item";
 import { PostCommentInput } from "./post-comment-input";
@@ -133,7 +142,10 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
     try {
       setIsDeletingComment(true);
 
-      const url = qs.stringifyUrl({ url: "/api/posts/comments", query: { commentId: comment.id, memberId: comment.memberId } });
+      const url = qs.stringifyUrl({
+        url: "/api/posts/comments",
+        query: { commentId: comment.id, memberId: comment.memberId },
+      });
       await axios.delete(url);
 
       setComments((comments) => comments.filter((itemComment) => itemComment.id !== comment.id));
@@ -149,14 +161,36 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
       className="flex"
       onClick={() => {
         if (!showReplies) {
-          router.push(`/main/communities/${comment.post.communityId}/post/${comment.postId}`);
+          router.push(`/main/communities/${comment.post?.communityId}/post/${comment.postId}`);
         }
-      }}>
-      {childComments?.length > 0 && !childrenAreHidden && showReplies && <button className="bg-none border-l-2 pr-1 sm:pr-1.5 hover:border-black outline-none" onClick={() => setChildrenAreHidden(true)} />}
+      }}
+    >
+      {childComments?.length > 0 && !childrenAreHidden && showReplies && (
+        <button
+          className="bg-none border-l-2 pr-1 sm:pr-1.5 hover:border-black outline-none"
+          onClick={() => setChildrenAreHidden(true)}
+        />
+      )}
       <div className={cn("w-full", showReplies && "mt-2")} id={comment.id}>
-        <div className={cn("flex gap-x-1", isDeletingComment && "cursor-not-allowed", !showReplies && "border-2 border-transparent hover:border-black dark:hover:border-[#3c3c3d] px-6 rounded-sm py-2 cursor-pointer")}>
-          {childrenAreHidden && <ChevronDown className="h-8 w-8 cursor-pointer text-gray-500 hover:text-black" onClick={() => setChildrenAreHidden(false)} />}
-          <img src={commentProfile.imageUrl} alt={commentProfile.displayName} className={cn("h-[24px] w-[24px] sm:h-[32px] sm:w-[32px] rounded-full")} />
+        <div
+          className={cn(
+            "flex gap-x-1",
+            isDeletingComment && "cursor-not-allowed",
+            !showReplies &&
+              "border-2 border-transparent hover:border-black dark:hover:border-[#3c3c3d] px-6 rounded-sm py-2 cursor-pointer",
+          )}
+        >
+          {childrenAreHidden && (
+            <ChevronDown
+              className="h-8 w-8 cursor-pointer text-gray-500 hover:text-black"
+              onClick={() => setChildrenAreHidden(false)}
+            />
+          )}
+          <img
+            src={commentProfile.imageUrl}
+            alt={commentProfile.displayName}
+            className={cn("h-[24px] w-[24px] sm:h-[32px] sm:w-[32px] rounded-full")}
+          />
           <div className="w-full">
             <p className={cn("text-xs sm:text-sm font-semibold truncate", isDeletingComment && "text-gray-500")}>
               <Link
@@ -165,17 +199,45 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
                 onClick={(e) => {
                   e.stopPropagation();
                   queryClient.setQueryData([`feed:user:${viewingProfile?.id}:overview`], []);
-                }}>
+                }}
+              >
                 {commentProfile.displayName}
               </Link>{" "}
-              · {hasEditedComment && <span className="text-xs text-gray-500 italic font-normal">edited</span>} <span className="font-normal text-gray-500 text-[11px]">{format(new Date(comment.createdAt), DATE_FORMAT)}</span>
+              · {hasEditedComment && <span className="text-xs text-gray-500 italic font-normal">edited</span>}{" "}
+              <span className="font-normal text-gray-500 text-[11px]">
+                {format(new Date(comment.createdAt), DATE_FORMAT)}
+              </span>
             </p>
-            {isEditing ? <PostCommentInput memberId={currentMember?.id} setComments={setComments} post={comment.post} type="custom" closeInput={() => setIsEditing(false)} prePropulatedContent={editedContent} prePropulatedImageUrl={image} disabled={isSubmittingEdit} onSubmit={handleEditSubmit} setEditedComment={setEditedContent} /> : content ? <p className={cn("text-[14px] leading-[21px] break-all", isDeletingComment && "text-gray-500")}>{content}</p> : <img src={image} className="py-2" />}
+            {isEditing ? (
+              <PostCommentInput
+                memberId={currentMember?.id}
+                setComments={setComments}
+                post={comment.post}
+                type="custom"
+                closeInput={() => setIsEditing(false)}
+                prePropulatedContent={editedContent}
+                prePropulatedImageUrl={image}
+                disabled={isSubmittingEdit}
+                onSubmit={handleEditSubmit}
+                setEditedComment={setEditedContent}
+              />
+            ) : content ? (
+              <p className={cn("text-[14px] leading-[21px] break-all", isDeletingComment && "text-gray-500")}>
+                {content}
+              </p>
+            ) : (
+              <img src={image} className="py-2" />
+            )}
             {!isEditing && (
               <div className="flex items-center gap-x-2">
                 <div className="flex items-center gap-x-1.5">
                   <ArrowUpCircle
-                    className={cn("h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black dark:hover:text-gray-200", hasUpvotedComment && "text-orange-500 font-bold hover:text-orange-700 dark:hover:text-orange-300", isUpvoting && "bg-gray-200 rounded-sm cursor-not-allowed dark:bg-stone-600", isDeletingComment && "cursor-not-allowed")}
+                    className={cn(
+                      "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black dark:hover:text-gray-200",
+                      hasUpvotedComment && "text-orange-500 font-bold hover:text-orange-700 dark:hover:text-orange-300",
+                      isUpvoting && "bg-gray-200 rounded-sm cursor-not-allowed dark:bg-stone-600",
+                      isDeletingComment && "cursor-not-allowed",
+                    )}
                     onClick={(e) => {
                       e.stopPropagation();
                       if (!isUpvoting && !isDeletingComment) votePost("upvote");
@@ -183,7 +245,13 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
                   />
                   <p className="text-sm font-bold">{upvotes}</p>
                   <ArrowDownCircle
-                    className={cn("h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black dark:hover:text-gray-200", hasDownvotedComment && "text-orange-500 font-bold hover:text-orange-700 dark:hover:text-orange-300", isDownvoting && "bg-gray-200 rounded-sm cursor-not-allowed dark:bg-stone-600", isDeletingComment && "cursor-not-allowed")}
+                    className={cn(
+                      "h-5 w-5 cursor-pointer p-0.5 text-gray-500 hover:text-black dark:hover:text-gray-200",
+                      hasDownvotedComment &&
+                        "text-orange-500 font-bold hover:text-orange-700 dark:hover:text-orange-300",
+                      isDownvoting && "bg-gray-200 rounded-sm cursor-not-allowed dark:bg-stone-600",
+                      isDeletingComment && "cursor-not-allowed",
+                    )}
                     onClick={(e) => {
                       e.stopPropagation();
                       if (!isDownvoting && !isDeletingComment) votePost("downvote");
@@ -192,7 +260,17 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
                 </div>
 
                 <div className="flex items-center">
-                  {showReplies && <PostFooterItem Icon={MessageSquare} className={cn("py-0.5 px-1 rounded-sm", isDeletingComment && "cursor-not-allowed")} IconClassName="h-5 w-5" textClassName="text-[12px]" text="Reply" onClick={() => setIsReplying(true)} disabled={isDeletingComment} />}
+                  {showReplies && (
+                    <PostFooterItem
+                      Icon={MessageSquare}
+                      className={cn("py-0.5 px-1 rounded-sm", isDeletingComment && "cursor-not-allowed")}
+                      IconClassName="h-5 w-5"
+                      textClassName="text-[12px]"
+                      text="Reply"
+                      onClick={() => setIsReplying(true)}
+                      disabled={isDeletingComment}
+                    />
+                  )}
                   {isOwner && (
                     <div className="relative">
                       <PostFooterItem
@@ -243,7 +321,17 @@ export const Comment = ({ comment, getReplies, setComments, showReplies = true }
                 </div>
               </div>
             )}
-            {isReplying && <PostCommentInput memberId={currentMember?.id} setComments={setComments} post={comment.post} type="reply" parentCommentId={comment.id} className="mt-1.5" closeInput={() => setIsReplying(false)} />}
+            {isReplying && (
+              <PostCommentInput
+                memberId={currentMember?.id}
+                setComments={setComments}
+                post={comment.post}
+                type="reply"
+                parentCommentId={comment.id}
+                className="mt-1.5"
+                closeInput={() => setIsReplying(false)}
+              />
+            )}
           </div>
         </div>
         {childComments?.length > 0 && showReplies && (

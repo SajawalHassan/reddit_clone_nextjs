@@ -17,13 +17,13 @@ export const PostClient = ({ postId }: { postId: string }) => {
 
     const visitedPosts: any[] = JSON.parse(localStorage.getItem("visitedPosts") || "[]");
 
-    const existingIndex = visitedPosts.indexOf(post.id);
+    const existingIndex = visitedPosts.indexOf(post?.id);
 
     if (existingIndex !== -1) {
       visitedPosts.splice(existingIndex, 1); // Remove the element
-      visitedPosts.unshift(post.id); // Add it as the first element of the list
+      visitedPosts.unshift(post?.id); // Add it as the first element of the list
     } else {
-      visitedPosts.unshift(post.id);
+      visitedPosts.unshift(post?.id);
     }
 
     localStorage.setItem("visitedPosts", JSON.stringify(visitedPosts));
@@ -44,8 +44,8 @@ export const PostClient = ({ postId }: { postId: string }) => {
 
   useEffect(() => {
     if (post) {
-      setHeaderActivePlace({ text: post.community.uniqueName, imageUrl: post.community.imageUrl });
-      document.title = `${post.title} : ${post.community.uniqueName}`;
+      setHeaderActivePlace({ text: post?.community.uniqueName, imageUrl: post?.community.imageUrl });
+      document.title = `${post?.title} : ${post?.community.uniqueName}`;
     }
   }, [post]);
 

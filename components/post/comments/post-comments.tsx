@@ -5,7 +5,10 @@ import qs from "query-string";
 
 import { useEffect, useMemo, useState } from "react";
 import { PostCommentInput } from "./post-comment-input";
-import { CommentWithMemberWithProfileWithVotesWithPost, PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
+import {
+  CommentWithMemberWithProfileWithVotesWithPost,
+  PostWithMemberWithProfileWithCommunityWithVotes,
+} from "@/types";
 import { CommentList } from "./comment-list";
 import { CommentSectionSkeleton } from "@/components/skeletons/comment-section-skeleton";
 
@@ -28,7 +31,7 @@ export const PostComments = ({ post }: { post: PostWithMemberWithProfileWithComm
   useEffect(() => {
     const getComments = async () => {
       setIsLoading(true);
-      const url = qs.stringifyUrl({ url: "/api/posts/comments", query: { postId: post.id } });
+      const url = qs.stringifyUrl({ url: "/api/posts/comments", query: { postId: post?.id } });
       const res = await axios.get(url);
       setComments(res.data);
       setIsLoading(false);

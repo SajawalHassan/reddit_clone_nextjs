@@ -57,7 +57,7 @@ export const UserOverviewFeed = ({ profileId }: { profileId: string }) => {
     setPosts(
       data?.pages?.reduce((prev: any, current: any) => {
         return [...prev, ...current.feedItems];
-      }, [])
+      }, []),
     );
   }, [data]);
 
@@ -85,9 +85,10 @@ export const UserOverviewFeed = ({ profileId }: { profileId: string }) => {
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
           }
-          className="space-y-2 pb-20">
+          className="space-y-2 pb-20"
+        >
           {posts?.map((post: PostWithMemberWithProfileWithCommunityWithVotes) => (
-            <PostAndCommentsHomeComponent post={post} key={post.id} />
+            <PostAndCommentsHomeComponent post={post} key={post?.id} />
           ))}
         </InfiniteScroll>
       ) : (

@@ -2,7 +2,10 @@ import TextareaAutosize from "react-textarea-autosize";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { CommentWithMemberWithProfileWithVotesWithPost, PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
+import {
+  CommentWithMemberWithProfileWithVotesWithPost,
+  PostWithMemberWithProfileWithCommunityWithVotes,
+} from "@/types";
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import { IconButton } from "@/components/icon-button";
 import { Image, Loader2, Trash, Tv } from "lucide-react";
@@ -57,7 +60,7 @@ export const PostCommentInput = ({
     if (onSubmit) return onSubmit(e, comment, image);
     if (!currentMember)
       return openModal("joinCommunity", {
-        joinCommunityText: `In order to comment on this post you must be a member of r/${post.community.uniqueName}.`,
+        joinCommunityText: `In order to comment on this post you must be a member of r/${post?.community.uniqueName}.`,
       });
 
     try {
@@ -66,7 +69,7 @@ export const PostCommentInput = ({
       if (type === "comment") {
         var res = await axios.post("/api/posts/comments", {
           content: comment,
-          postId: post.id,
+          postId: post?.id,
           memberId: memberId || currentMember.id,
           imageUrl: image,
         });
@@ -74,7 +77,7 @@ export const PostCommentInput = ({
         var res = await axios.post("/api/posts/comments", {
           content: comment,
           imageUrl: image,
-          postId: post.id,
+          postId: post?.id,
           memberId: memberId || currentMember.id,
           parentId: parentCommentId,
         });
@@ -150,16 +153,32 @@ export const PostCommentInput = ({
           </div>
           <div className="flex items-center gap-x-2">
             {type === "reply" && (
-              <Button variant="secondary" className="h-7" disabled={isLoading || disabled} type="button" onClick={closeInput!}>
+              <Button
+                variant="secondary"
+                className="h-7"
+                disabled={isLoading || disabled}
+                type="button"
+                onClick={closeInput!}
+              >
                 Cancel
               </Button>
             )}
             {type === "custom" && (
-              <Button variant="secondary" className="h-7" disabled={isLoading || disabled} type="button" onClick={closeInput!}>
+              <Button
+                variant="secondary"
+                className="h-7"
+                disabled={isLoading || disabled}
+                type="button"
+                onClick={closeInput!}
+              >
                 Cancel
               </Button>
             )}
-            <Button variant="primary" className="disabled:bg-zinc-700 h-7" disabled={(comment.length === 0 && !image) || isLoading || disabled}>
+            <Button
+              variant="primary"
+              className="disabled:bg-zinc-700 h-7"
+              disabled={(comment.length === 0 && !image) || isLoading || disabled}
+            >
               Comment
             </Button>
           </div>

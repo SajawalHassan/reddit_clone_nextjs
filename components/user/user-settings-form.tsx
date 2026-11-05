@@ -45,7 +45,8 @@ export const UserSettingsForm = ({ profile }: { profile: Profile }) => {
   });
 
   const profilePicUploadRef = useRef<any>(null);
-  const canSaveInfo = form.getValues().displayName !== profile.displayName || form.getValues().about !== (profile.about || "");
+  const canSaveInfo =
+    form.getValues().displayName !== profile.displayName || form.getValues().about !== (profile.about || "");
 
   useEffect(() => {
     if (currentProfile) {
@@ -127,7 +128,10 @@ export const UserSettingsForm = ({ profile }: { profile: Profile }) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full sm:w-[80%] lg:w-[60%] px-6 xl:pl-[20rem]">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4 w-full sm:w-[80%] lg:w-[60%] px-6 xl:pl-[20rem]"
+      >
         <p className="font-semibold text-xl">Customise your profile</p>
         <div className="space-y-8">
           <div className="space-y-8">
@@ -162,7 +166,9 @@ export const UserSettingsForm = ({ profile }: { profile: Profile }) => {
                     <FormItem>
                       <div>
                         <FormLabel className="text-lg font-semibold">About (optional)</FormLabel>
-                        <p className="text-xs font-semibold text-gray-500">A brief description of yourself shown on your profile.</p>
+                        <p className="text-xs font-semibold text-gray-500">
+                          A brief description of yourself shown on your profile.
+                        </p>
                       </div>
                       <FormControl>
                         <TextareaAutosize
@@ -211,7 +217,11 @@ export const UserSettingsForm = ({ profile }: { profile: Profile }) => {
                           text="Upload profile picture"
                           imageAvailableContent={
                             <div className="relative w-max">
-                              <img src={field.value} alt={profile.displayName} className="h-[8rem] w-[8rem] rounded-sm" />
+                              <img
+                                src={field.value}
+                                alt={profile.displayName}
+                                className="h-[8rem] w-[8rem] rounded-sm object-cover"
+                              />
                               <IconButton
                                 Icon={isSubmittingProfilePic ? Loader2 : Camera}
                                 IconClassName={cn("text-blue-500 h-5 w-5", isSubmittingProfilePic && "animate-spin")}
@@ -262,7 +272,13 @@ export const UserSettingsForm = ({ profile }: { profile: Profile }) => {
           </div>
         </div>
       </form>
-      <input type="file" ref={profilePicUploadRef} onChange={(e) => uploadProfilePic(e)} className="hidden" accept="image/*" />
+      <input
+        type="file"
+        ref={profilePicUploadRef}
+        onChange={(e) => uploadProfilePic(e)}
+        className="hidden"
+        accept="image/*"
+      />
       {/* <input type="file" ref={bannerUploadRef} onChange={(e) => uploadBanner(e)} className="hidden" accept="image/*" /> */}
     </Form>
   );

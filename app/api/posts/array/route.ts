@@ -6,7 +6,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     const { searchParams } = new URL(req.url);
     const postsIdArray = JSON.parse(searchParams.get("postsIdArray") || "[]");
 
-    const posts = await db.post.findMany({
+    const posts = await db.post?.findMany({
       where: {
         id: {
           in: postsIdArray,
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       },
     });
 
-    const orderedPosts = postsIdArray.map((id: string) => posts.find((post) => post.id === id));
+    const orderedPosts = postsIdArray.map((id: string) => posts.find((post) => post?.id === id));
     const nonNullOrderedPosts = orderedPosts.filter((post: any) => post !== undefined);
 
     return NextResponse.json(nonNullOrderedPosts);

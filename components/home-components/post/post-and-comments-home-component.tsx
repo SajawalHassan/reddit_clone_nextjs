@@ -1,4 +1,7 @@
-import { CommentWithMemberWithProfileWithVotesWithPost, PostWithMemberWithProfileWithCommunityWithVotes } from "@/types";
+import {
+  CommentWithMemberWithProfileWithVotesWithPost,
+  PostWithMemberWithProfileWithCommunityWithVotes,
+} from "@/types";
 import { PostHomeComponent } from "./post-home-component";
 import { CommentList } from "@/components/post/comments/comment-list";
 import { useEffect, useMemo, useState } from "react";
@@ -12,10 +15,10 @@ interface Props {
 export const PostAndCommentsHomeComponent = ({ post, showPost = true }: Props) => {
   const { viewingProfile } = useProfileInfo();
 
-  const [comments, setComments] = useState<CommentWithMemberWithProfileWithVotesWithPost[]>(post.comments);
+  const [comments, setComments] = useState<CommentWithMemberWithProfileWithVotesWithPost[]>(post?.comments);
 
   useEffect(() => {
-    if (viewingProfile) setComments(post.comments.filter((comment) => comment.member.profileId === viewingProfile.id));
+    if (viewingProfile) setComments(post?.comments.filter((comment) => comment.member.profileId === viewingProfile.id));
   }, [viewingProfile]);
 
   const commentsByParentId = useMemo(() => {
@@ -31,7 +34,7 @@ export const PostAndCommentsHomeComponent = ({ post, showPost = true }: Props) =
   const rootComments = commentsByParentId[null!];
   const getReplies = (parentId: string) => commentsByParentId[parentId];
 
-  if (!showPost && post.comments.length < 1) return;
+  if (!showPost && post?.comments.length < 1) return;
 
   return (
     <div className="bg-white dark:bg-[#1a1a1a] py-2 rounded-sm">
@@ -43,7 +46,13 @@ export const PostAndCommentsHomeComponent = ({ post, showPost = true }: Props) =
         />
       )}
       <div className="mx-2">
-        <CommentList comments={rootComments} getReplies={getReplies} setComments={setComments} max={3} showReplies={false} />
+        <CommentList
+          comments={rootComments}
+          getReplies={getReplies}
+          setComments={setComments}
+          max={3}
+          showReplies={false}
+        />
       </div>
     </div>
   );

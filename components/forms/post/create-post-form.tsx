@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Image, Link, Menu, Trash } from "lucide-react";
-import { Editor } from "@tinymce/tinymce-react";
 import { Input } from "@/components/ui/input";
 
 import axios from "axios";
@@ -20,6 +19,12 @@ import { CommunitySelecter } from "@/components/community/community-selecter";
 import { PostTagItem } from "./post-tag-item";
 import { linkFormSchema, mediaFormSchema, plainFormSchema } from "@/schemas/post-schema";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+
+// @ts-ignore
+import "froala-editor/css/froala_style.min.css";
+// @ts-ignore
+import "froala-editor/css/froala_editor.pkgd.min.css";
+import FroalaEditorComponent from "react-froala-wysiwyg";
 
 export const CreatePostForm = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -60,12 +65,15 @@ export const CreatePostForm = () => {
     }
 
     try {
-      const response = await axios.post("/api/posts", { ...values, type: isPlain ? "plain" : isMedia ? "media" : "link" });
+      const response = await axios.post("/api/posts", {
+        ...values,
+        type: isPlain ? "plain" : isMedia ? "media" : "link",
+      });
       const post = response.data;
 
       form.reset();
-      setHeaderActivePlace({ text: post.community.uniqueName, imageUrl: post.community.imageUrl });
-      router.push(`/main/communities/${post.community.id}/post/${post.post.id}`);
+      setHeaderActivePlace({ text: post?.community.uniqueName, imageUrl: post?.community.imageUrl });
+      router.push(`/main/communities/${post?.community.id}/post/${post?.post?.id}`);
     } catch (error) {
       console.log(error);
     }
@@ -82,7 +90,11 @@ export const CreatePostForm = () => {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <CommunitySelecter value={field.value} setValue={field.onChange} preSelectedCommunityId={preSelectedCommunityId} />
+                <CommunitySelecter
+                  value={field.value}
+                  setValue={field.onChange}
+                  preSelectedCommunityId={preSelectedCommunityId}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -114,7 +126,8 @@ export const CreatePostForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Editor
+                      <FroalaEditorComponent tag="textarea" onModelChange={field.onChange} />
+                      {/* <Editor
                         apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
                         value={field.value}
                         onEditorChange={field.onChange}
@@ -122,11 +135,34 @@ export const CreatePostForm = () => {
                         init={{
                           height: 200,
                           menubar: false,
-                          plugins: ["advlist", "autolink", "lists", "link", "image", "charmap", "preview", "anchor", "searchreplace", "visualblocks", "code", "fullscreen", "insertdatetime", "media", "table", "code", "help", "wordcount"],
-                          toolbar: "undo redo | blocks | " + "bold italic forecolor | alignleft aligncenter " + "alignright alignjustify | bullist numlist outdent indent | " + "removeformat | help",
+                          plugins: [
+                            "advlist",
+                            "autolink",
+                            "lists",
+                            "link",
+                            "image",
+                            "charmap",
+                            "preview",
+                            "anchor",
+                            "searchreplace",
+                            "visualblocks",
+                            "code",
+                            "fullscreen",
+                            "insertdatetime",
+                            "media",
+                            "table",
+                            "code",
+                            "help",
+                            "wordcount",
+                          ],
+                          toolbar:
+                            "undo redo | blocks | " +
+                            "bold italic forecolor | alignleft aligncenter " +
+                            "alignright alignjustify | bullist numlist outdent indent | " +
+                            "removeformat | help",
                           content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
                         }}
-                      />
+                      /> */}
                     </FormControl>
                   </FormItem>
                 )}

@@ -20,7 +20,10 @@ export const RecentPosts = () => {
 
   useEffect(() => {
     const getVisitedPosts = async () => {
-      const url = qs.stringifyUrl({ url: "/api/posts/array", query: { postsIdArray: localStorage.getItem("visitedPosts") || "[]" } });
+      const url = qs.stringifyUrl({
+        url: "/api/posts/array",
+        query: { postsIdArray: localStorage.getItem("visitedPosts") || "[]" },
+      });
       const res = await axios.get(url);
 
       setVisitedPosts(res.data);
@@ -40,7 +43,7 @@ export const RecentPosts = () => {
   };
 
   const pushToUrl = (url: string, post: PostWithCommentsWithCommunity) => {
-    setHeaderActivePlace({ text: post.community.uniqueName, imageUrl: post.community.imageUrl });
+    setHeaderActivePlace({ text: post?.community.uniqueName, imageUrl: post?.community.imageUrl });
     router.push(url);
   };
 
@@ -49,14 +52,15 @@ export const RecentPosts = () => {
       <p className="uppercase text-xs font-bold mb-2">Recent Posts</p>
       <div className="space-y-2">
         {visitedPosts?.slice(0, 5).map((post: PostWithCommentsWithCommunity) => (
-          <Link key={post.id} href={`/main/communities/${post.communityId}/post/${post.id}`}>
+          <Link key={post?.id} href={`/main/communities/${post?.communityId}/post/${post?.id}`}>
             <div
               className="flex gap-x-2 cursor-pointer group"
-              onClick={() => pushToUrl(`/main/communities/${post.communityId}/post/${post.id}`, post)}>
+              onClick={() => pushToUrl(`/main/communities/${post?.communityId}/post/${post?.id}`, post)}
+            >
               <div className="min-h-[4rem] min-w-[6rem] max-h-[4rem] max-w-[6rem]">
-                {post.imageUrl ? (
+                {post?.imageUrl ? (
                   <div className="overflow-hidden rounded-md h-full w-full">
-                    <img src={post.imageUrl} alt={post.title} className="rounded-md" />
+                    <img src={post?.imageUrl} alt={post?.title} className="rounded-md" />
                   </div>
                 ) : (
                   <div className="flex items-center justify-center rounded-md border h-full w-full">
@@ -65,9 +69,9 @@ export const RecentPosts = () => {
                 )}
               </div>
               <div className="flex flex-col justify-between pb-0.5">
-                <p className="font-semibold group-hover:underline text-sm line-clamp-2">{post.title}</p>
+                <p className="font-semibold group-hover:underline text-sm line-clamp-2">{post?.title}</p>
                 <p className="text-sm text-gray-500">
-                  {formatter.format(post.comments.length)} comments · {format(new Date(post.createdAt), DATE_FORMAT)}
+                  {formatter.format(post?.comments.length)} comments · {format(new Date(post?.createdAt), DATE_FORMAT)}
                 </p>
               </div>
             </div>
@@ -75,7 +79,10 @@ export const RecentPosts = () => {
           </Link>
         ))}
         <div className="text-right">
-          <p className="text-gray-600 hover:underline text-sm cursor-pointer dark:text-stone-500" onClick={() => clearPostHistory()}>
+          <p
+            className="text-gray-600 hover:underline text-sm cursor-pointer dark:text-stone-500"
+            onClick={() => clearPostHistory()}
+          >
             Clear
           </p>
         </div>

@@ -21,11 +21,17 @@ export const HomeFeed = () => {
   const { setFeedPosts } = useFeedInfo();
 
   useEffect(() => {
-    setPosts(
-      data?.pages?.reduce((prev: any, current: any) => {
+    if (!data || !data?.pages) return;
+
+    const _posts: PostWithMemberWithProfileWithCommunityWithVotes[] = data.pages.reduce(
+      (prev: any, current: any, i: number) => {
         return [...prev, ...current.feedItems];
-      }, [])
+      },
+      [],
     );
+
+    console.log(_posts?.slice(1));
+    setPosts(_posts?.slice(1));
   }, [data]);
 
   useEffect(() => {
@@ -48,20 +54,23 @@ export const HomeFeed = () => {
 
   return (
     <div className="home-component-container">
-      <InfiniteScroll
-        dataLength={posts ? posts.length : 0}
-        next={() => fetchNextPage()}
-        hasMore={hasNextPage ? true : false}
-        loader={
-          <div className="w-full flex items-center justify-center p-10">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
-        }
-        className="mt-2 space-y-2 pb-20">
-        {posts?.map((post: PostWithMemberWithProfileWithCommunityWithVotes) => (
-          <PostHomeComponent post={post} key={post.id} />
-        ))}
-      </InfiniteScroll>
+      {posts && posts.length > 0 && (
+        <InfiniteScroll
+          dataLength={posts ? posts.length : 0}
+          next={() => fetchNextPage()}
+          hasMore={hasNextPage ? true : false}
+          loader={
+            <div className="w-full flex items-center justify-center p-10">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          }
+          className="mt-2 space-y-2 pb-20"
+        >
+          {posts?.map((post: PostWithMemberWithProfileWithCommunityWithVotes) => (
+            <PostHomeComponent post={post} key={post?.id} />
+          ))}
+        </InfiniteScroll>
+      )}
     </div>
   );
 };

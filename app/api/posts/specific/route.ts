@@ -8,7 +8,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     if (!postId) return new NextResponse("Post id not found", { status: 404 });
 
-    const post = await db.post.findUnique({
+    const post = await db.post?.findUnique({
       where: {
         id: postId,
       },

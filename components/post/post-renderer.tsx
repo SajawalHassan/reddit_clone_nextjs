@@ -24,7 +24,9 @@ export const PostRenderer = ({ postId, communityId }: { postId: string; communit
 
   useEffect(() => {
     const getPost = async (postId: string) => {
-      const feedPost = feedPosts.filter((feedPost) => feedPost.id === postId)[0];
+      const feedPost = feedPosts.filter(
+        (feedPost: PostWithMemberWithProfileWithCommunityWithVotes) => feedPost?.id === postId,
+      )[0];
       if (feedPost) {
         setIsLoading(false);
         return setPost(feedPost);
@@ -55,26 +57,32 @@ export const PostRenderer = ({ postId, communityId }: { postId: string; communit
   }, []);
 
   return (
-    <div className="w-full flex flex-grow mt-[3rem] px-0 justify-center bg-[#2E2F2F] dark:bg-[#252525]" onClick={() => router.back()}>
-      <div className="w-full max-w-[80rem] gap-x-4 bg-[#DAE0E6] dark:bg-[#1A1A1B] min-h-screen" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="w-full flex flex-grow mt-[3rem] px-0 justify-center bg-[#2E2F2F] dark:bg-[#252525]"
+      onClick={() => router.back()}
+    >
+      <div
+        className="w-full max-w-[80rem] gap-x-4 bg-[#DAE0E6] dark:bg-[#1A1A1B] min-h-screen"
+        onClick={(e) => e.stopPropagation()}
+      >
         {post && (
           <div className="bg-black py-2 px-2 text-white flex justify-center">
             <div className="w-full max-w-[741px] xl:max-w-[1077px] flex items-center justify-between">
               <div className="flex items-center gap-x-2 max-w-[90%]">
-                {post.content ? (
+                {post?.content ? (
                   <div className="border p-1 rounded-sm">
                     <Menu className="text-white min-h-4 min-w-4" />
                   </div>
-                ) : post.imageUrl ? (
+                ) : post?.imageUrl ? (
                   <Image className="text-white min-h-5 min-w-5" />
-                ) : post.link ? (
+                ) : post?.link ? (
                   <Link className="text-white min-h-5 min-w-5" />
                 ) : (
                   <div className="border p-1 rounded-sm">
                     <Menu className="text-white h-4 w-4" />
                   </div>
                 )}
-                <p className="font-semibold truncate">{post.title}</p>
+                <p className="font-semibold truncate">{post?.title}</p>
               </div>
               <div className="flex items-center gap-x-1 cursor-pointer" onClick={() => router.back()}>
                 <X className="h-5 w-5" />
