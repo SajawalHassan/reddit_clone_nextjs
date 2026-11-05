@@ -19,12 +19,12 @@ import { CommunitySelecter } from "@/components/community/community-selecter";
 import { PostTagItem } from "./post-tag-item";
 import { linkFormSchema, mediaFormSchema, plainFormSchema } from "@/schemas/post-schema";
 import { useGlobalInfo } from "@/hooks/use-global-info";
+import dynamic from "next/dynamic";
 
-// @ts-ignore
-import "froala-editor/css/froala_style.min.css";
-// @ts-ignore
-import "froala-editor/css/froala_editor.pkgd.min.css";
-import FroalaEditorComponent from "react-froala-wysiwyg";
+const QuillEditor = dynamic(() => import("@/components/forms/post/quill-editor"), {
+  ssr: false,
+  loading: () => <p className="text-center p-4">Loading Editor...</p>,
+});
 
 export const CreatePostForm = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -126,43 +126,7 @@ export const CreatePostForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <FroalaEditorComponent tag="textarea" onModelChange={field.onChange} />
-                      {/* <Editor
-                        apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-                        value={field.value}
-                        onEditorChange={field.onChange}
-                        initialValue=""
-                        init={{
-                          height: 200,
-                          menubar: false,
-                          plugins: [
-                            "advlist",
-                            "autolink",
-                            "lists",
-                            "link",
-                            "image",
-                            "charmap",
-                            "preview",
-                            "anchor",
-                            "searchreplace",
-                            "visualblocks",
-                            "code",
-                            "fullscreen",
-                            "insertdatetime",
-                            "media",
-                            "table",
-                            "code",
-                            "help",
-                            "wordcount",
-                          ],
-                          toolbar:
-                            "undo redo | blocks | " +
-                            "bold italic forecolor | alignleft aligncenter " +
-                            "alignright alignjustify | bullist numlist outdent indent | " +
-                            "removeformat | help",
-                          content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-                        }}
-                      /> */}
+                      <QuillEditor value={field.value} setValue={field.onChange} />
                     </FormControl>
                   </FormItem>
                 )}

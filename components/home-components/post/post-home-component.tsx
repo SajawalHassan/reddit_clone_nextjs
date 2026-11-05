@@ -22,7 +22,6 @@ import { PostFooterItem } from "@/components/post/post-footer-item";
 import { PostFooterItemMenuItem } from "@/components/post/post-footer-item-menu-item";
 
 import axios from "axios";
-import dynamic from "next/dynamic";
 import qs from "query-string";
 
 import { useGlobalInfo } from "@/hooks/use-global-info";
@@ -50,6 +49,7 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
   const [moreMenuIsOpen, setMoreMenuIsOpen] = useState(false);
   const [hasViewedPost, setHasViewedPost] = useState(false);
   const [isDeletingPost, setIsDeletingPost] = useState(false);
+  const [showSpoiler, setShowSpoiler] = useState(post?.spoiler ? false : true);
 
   const { profile: currentProfile, setProfile: setCurrentProfile } = useProfileInfo();
 
@@ -165,6 +165,7 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
     router.push(url);
   };
 
+  console.log(post?.content);
   return (
     <div className={cn("px-2", isOnPostPage ? "w-full dark:bg-[#1a1a1a]" : "home-component-container")}>
       {isDeletingPost && <div className="absolute inset-0 m-auto bg-black opacity-10 mx-2" />}
@@ -260,17 +261,22 @@ export const PostHomeComponent = ({ post, isOnPostPage = false, className, votes
               <div>
                 {post?.content && (
                   <div className={hasViewedPost ? "text-gray-500" : ""}>
-                    {post?.spoiler ? (
-                      <div className="flex items-center justify-center">
+                    {!showSpoiler ? (
+                      <div
+                        onClick={() => {
+                          if (isOnPostPage) setShowSpoiler(true);
+                        }}
+                        className="flex items-center justify-center"
+                      >
                         <p className="w-full max-w-[15rem] py-1.5 font-bold mt-2 text-center text-gray-600 hover:bg-opacity-80 bg-gray-200 dark:text-gray-800 bg-opacity-60 rounded-md uppercase">
                           Click to see spoiler
                         </p>
                       </div>
                     ) : (
-                      <div className={isOnPostPage ? "" : "max-h-[45rem] overflow-y-auto"}>
+                      <div className={isOnPostPage ? "" : "max-h-[45rem] h-full overflow-y-auto w-full shrink-0"}>
                         <div
-                          dangerouslySetInnerHTML={{ __html: post?.content }}
-                          className="prose dark:!text-white dark:prose-headings:!text-white"
+                          dangerouslySetInnerHTML={{ __html: post?.content?.replace(/&nbsp;/g, " ") }}
+                          className="prose max-w-none break-words !h-full dark:!text-white dark:prose-headings:!text-white"
                         />
                       </div>
                     )}
